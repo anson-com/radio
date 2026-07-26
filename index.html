@@ -616,7 +616,7 @@
            ✅【移动端竖屏适配 宽度 ≤ 768px】仅手机生效，PC完全不受影响
            安全区、溢屏、裁切修复全部写在此媒体查询内
            ============================================================ */
-        @media (max-width: 768px) {
+        @media (max-width: 640px) {
             body {
                 padding: 0;
                 overscroll-behavior: none;
@@ -1214,7 +1214,7 @@
             // 播放控制
             document.getElementById('playBtn').addEventListener('click', togglePlay);
             document.getElementById('prevBtn').addEventListener('click', prevStation);
-            document.getElementById('nextBtnnextBtn').addEventListener('click', nextStation);
+            document.getElementById('nextBtn').addEventListener('click', nextStation);
 
             // 主题色切换
             document.getElementById('themeToggle').addEventListener('click', (e) => {
