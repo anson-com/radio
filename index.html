@@ -1,0 +1,1376 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>Anson Radio · 纯净版</title>
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+    <style>
+        /* ===== 全局 ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        :root {
+            --primary: #7c8dff;
+            --primary-light: #8e9dff;
+            --primary-dark: #5a6be0;
+            --primary-glow: rgba(124, 141, 255, 0.35);
+            --primary-soft: rgba(124, 141, 255, 0.12);
+            --primary-border: rgba(124, 141, 255, 0.25);
+            --bg-body: radial-gradient(circle at 20% 30%, #1a1f2e, #0b0d14);
+            --bg-card: rgba(255, 255, 255, 0.06);
+            --text-primary: rgba(255, 255, 255, 0.92);
+            --text-secondary: rgba(255, 255, 255, 0.66);
+            --text-weak: rgba(255, 255, 255, 0.40);
+            --border-line: rgba(255, 255, 255, 0.09);
+            --radius-sm: 8px;
+            --radius-md: 14px;
+            --radius-lg: 48px;
+            --gap-xs: 6px;
+            --gap-sm: 12px;
+            --gap-md: 18px;
+            --gap-lg: 24px;
+        }
+
+        /* 亮色模式 */
+        body.light-mode {
+            --bg-body: #f4f6fc;
+            --bg-card: rgba(255, 255, 255, 0.7);
+            --text-primary: #181c2c;
+            --text-secondary: #444860;
+            --text-weak: #868aa0;
+            --border-line: rgba(0, 0, 0, 0.08);
+        }
+
+        body {
+            background: var(--bg-body);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            transition: background 0.4s ease;
+        }
+
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 99px; }
+
+        /* ===== 主卡片 ===== */
+        .radio-app {
+            width: 100%;
+            max-width: 560px;
+            background: var(--bg-card);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border-radius: var(--radius-lg);
+            padding: 28px 22px 30px;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+            border: 1px solid var(--border-line);
+            transition: background 0.3s ease, color 0.3s ease;
+            position: relative;
+            height: 96vh;
+            max-height: 96vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* ===== 头部 ===== */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-shrink: 0;
+        }
+        .header h1 {
+            font-size: 22px;
+            font-weight: 600;
+            letter-spacing: 0.3px;
+        }
+        .header h1 span {
+            color: var(--primary);
+            margin-right: 6px;
+        }
+        .header-actions {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+        .icon-btn {
+            background: rgba(255,255,255,0.04);
+            border: 1px solid var(--border-line);
+            border-radius: 30px;
+            width: 36px;
+            height: 36px;
+            font-size: 18px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-secondary);
+            line-height: 1;
+        }
+        .icon-btn:hover {
+            background: var(--primary-soft);
+            border-color: var(--primary);
+            color: var(--primary);
+            transform: scale(1.05);
+        }
+        .icon-btn.active-mode {
+            background: var(--primary-soft);
+            color: var(--primary);
+        }
+
+        /* 主题色选择器浮窗 */
+        .theme-picker {
+            display: none;
+            position: absolute;
+            right: 10px;
+            top: 70px;
+            background: var(--bg-card);
+            backdrop-filter: blur(16px);
+            padding: 12px 16px;
+            border-radius: 24px;
+            border: 1px solid var(--border-line);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+            z-index: 100;
+            gap: 10px;
+            flex-wrap: wrap;
+            width: 176px;
+            justify-content: center;
+        }
+        .theme-picker.open { display: flex; }
+        .color-dot {
+            width: 34px;
+            height: 34px;
+            border-radius: 34px;
+            border: 2px solid transparent;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .color-dot:hover { transform: scale(1.12); }
+        .color-dot.active { border-color: #fff; box-shadow: 0 0 16px rgba(255,255,255,0.2); }
+
+        /* ===== 播放器展示 ===== */
+        .player-display {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 16px;
+            flex-shrink: 0;
+        }
+        .disc-wrapper {
+            position: relative;
+            width: 160px;
+            height: 160px;
+            margin-bottom: 12px;
+        }
+        .disc {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: radial-gradient(circle at 35% 35%, #3c4055, #171a26);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 12px 40px rgba(0,0,0,0.6), inset 0 -4px 8px rgba(0,0,0,0.6);
+            transition: box-shadow 0.4s ease;
+        }
+        .disc-inner {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 40% 40%, #727a9e, #2a2f42);
+            box-shadow: inset 0 0 0 4px #1c1f2b, 0 0 0 6px rgba(255,255,255,0.03);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 36px;
+            color: rgba(255,255,255,0.2);
+            transition: all 0.5s ease;
+        }
+        .disc-wrapper.playing .disc {
+            box-shadow: 0 12px 48px var(--primary-glow), 0 0 80px rgba(124,141,255,0.12);
+        }
+        .disc-wrapper.playing .disc-inner {
+            animation: spin 8s linear infinite;
+            color: #fff;
+            text-shadow: 0 0 20px var(--primary);
+        }
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .now-playing {
+            font-size: 20px;
+            font-weight: 600;
+            text-align: center;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        }
+
+        /* ===== 控制栏 ===== */
+        .controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 16px;
+            margin: 4px 0 16px;
+            flex-shrink: 0;
+        }
+        .controls button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 30px;
+            background: rgba(255,255,255,0.04);
+            backdrop-filter: blur(8px);
+            border: 1px solid var(--border-line);
+            width: 48px;
+            height: 48px;
+            color: var(--text-secondary);
+        }
+        .controls button:hover {
+            color: #fff;
+            background: rgba(255,255,255,0.08);
+        }
+        .controls .btn-skip:hover {
+            color: var(--primary);
+            border-color: var(--primary-border);
+            background: var(--primary-soft);
+        }
+        .controls .btn-play {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: #fff;
+            box-shadow: 0 8px 24px var(--primary-glow);
+            border: none;
+            width: 64px;
+            height: 64px;
+        }
+        .controls .btn-play:hover {
+            background: linear-gradient(135deg, var(--primary-light), var(--primary));
+            box-shadow: 0 8px 32px var(--primary-glow);
+            transform: scale(1.04);
+        }
+        .controls .btn-play.playing {
+            background: linear-gradient(135deg, #ff7c7c, #e05a5a);
+            box-shadow: 0 8px 24px rgba(255,124,124,0.35);
+        }
+        .controls .btn-play.playing:hover {
+            background: linear-gradient(135deg, #ff8e8e, #f56b6b);
+        }
+        .controls button svg {
+            width: 20px;
+            height: 20px;
+            fill: currentColor;
+            display: block;
+        }
+        .controls .btn-play svg {
+            width: 26px;
+            height: 26px;
+        }
+
+        /* ===== 功能栏：分类标签 + 搜索 ===== */
+        .function-bar {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 14px;
+            flex-shrink: 0;
+        }
+
+        .category-tabs {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            padding-bottom: 4px;
+            scrollbar-width: none;
+            -webkit-overflow-scrolling: touch;
+        }
+        .category-tabs::-webkit-scrollbar { display: none; }
+        .category-tab {
+            padding: 6px 16px;
+            border-radius: 30px;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid var(--border-line);
+            color: var(--text-secondary);
+            font-size: 13px;
+            white-space: nowrap;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            flex-shrink: 0;
+        }
+        .category-tab.active {
+            background: var(--primary);
+            color: #fff;
+            border-color: var(--primary);
+            box-shadow: 0 4px 12px var(--primary-glow);
+        }
+        .category-tab:hover:not(.active) {
+            background: rgba(255,255,255,0.06);
+            color: var(--text-primary);
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 10px 16px;
+            border-radius: 30px;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid var(--border-line);
+            color: var(--text-primary);
+            font-size: 14px;
+            outline: none;
+            transition: 0.2s;
+        }
+        .search-box input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px var(--primary-soft);
+        }
+        .search-box input::placeholder {
+            color: var(--text-weak);
+        }
+
+        /* ===== 电台列表 ===== */
+        .station-list-wrapper {
+            flex: 1 1 0;
+            overflow-y: auto;
+            margin-top: 4px;
+            padding-right: 4px;
+            min-height: 0;
+        }
+        .station-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .station-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 14px 10px 18px;
+            background: rgba(255,255,255,0.03);
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border-line);
+            transition: all 0.25s ease;
+            cursor: pointer;
+        }
+        .station-item:hover {
+            background: rgba(255,255,255,0.06);
+            border-color: var(--primary-border);
+        }
+        .station-item.active {
+            background: var(--primary-soft);
+            border-color: var(--primary-border);
+            box-shadow: 0 4px 12px var(--primary-glow);
+        }
+        .station-item .info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex: 1;
+            min-width: 0;
+        }
+        .station-item .info .idx {
+            color: var(--text-weak);
+            font-size: 12px;
+            font-weight: 500;
+            width: 22px;
+            flex-shrink: 0;
+        }
+        .station-item .info .name {
+            font-weight: 500;
+            font-size: 15px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .station-item .info .city {
+            font-size: 12px;
+            color: var(--text-weak);
+            margin-left: 6px;
+            flex-shrink: 0;
+        }
+        .station-item .actions {
+            display: flex;
+            gap: 8px;
+            flex-shrink: 0;
+            margin-left: 8px;
+        }
+        .station-item .actions button {
+            background: none;
+            border: none;
+            color: var(--text-weak);
+            cursor: pointer;
+            font-size: 16px;
+            padding: 4px;
+            border-radius: 20px;
+            transition: all 0.2s ease;
+            line-height: 1;
+        }
+        .station-item .actions .fav-btn.active {
+            color: #ff6b6b;
+        }
+        .station-item .actions .fav-btn:hover {
+            color: #ff6b6b;
+            background: rgba(255,107,107,0.1);
+        }
+        .station-item .actions .play-btn {
+            color: var(--text-secondary);
+        }
+        .station-item .actions .play-btn:hover {
+            color: var(--primary);
+        }
+
+        .empty-state {
+            text-align: center;
+            color: var(--text-weak);
+            padding: 30px 0;
+            font-size: 14px;
+        }
+
+        /* ===== 底部操作栏 ===== */
+        .bottom-actions {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 14px;
+            flex-shrink: 0;
+            flex-wrap: wrap;
+        }
+        .bottom-actions .btn-action {
+            background: rgba(255,255,255,0.04);
+            border: 1px solid var(--border-line);
+            padding: 8px 16px;
+            border-radius: 30px;
+            color: var(--text-secondary);
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .bottom-actions .btn-action:hover {
+            background: var(--primary-soft);
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        /* ===== 管理弹窗 ===== */
+        .modal-mask {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(8px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 999;
+        }
+        .modal-mask.open { display: flex; }
+
+        .modal-box {
+            width: min(92%, 440px);
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            border-radius: var(--radius-lg);
+            padding: var(--gap-lg);
+            border: 1px solid var(--border-line);
+            box-shadow: 0 40px 80px rgba(0,0,0,0.5);
+            max-height: 80vh;
+            display: flex;
+            flex-direction: column;
+        }
+        .modal-box h3 {
+            margin-bottom: 16px;
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+        .modal-list {
+            overflow-y: auto;
+            flex: 1;
+            margin-bottom: 16px;
+        }
+        .modal-list .manage-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 12px;
+            border-bottom: 1px solid var(--border-line);
+        }
+        .modal-list .manage-item .name {
+            font-size: 15px;
+        }
+        .modal-list .manage-item .btn-del {
+            background: none;
+            border: none;
+            color: var(--text-weak);
+            cursor: pointer;
+            font-size: 20px;
+            transition: 0.2s;
+            padding: 4px 8px;
+            border-radius: 20px;
+        }
+        .modal-list .manage-item .btn-del:hover {
+            color: #ff6b6b;
+            background: rgba(255,107,107,0.1);
+        }
+
+        .modal-footer {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+            flex-shrink: 0;
+        }
+        .btn-line {
+            padding: 9px 18px;
+            border-radius: var(--radius-sm);
+            background: transparent;
+            border: 1px solid var(--border-line);
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .btn-line:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            left: 50%;
+            top: 30px;
+            transform: translateX(-50%);
+            background: var(--bg-card);
+            backdrop-filter: blur(12px);
+            padding: 10px 24px;
+            border-radius: 99px;
+            border: 1px solid var(--border-line);
+            color: var(--text-primary);
+            z-index: 9999;
+            display: none;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+        }
+
+        /* ===== 新增电台弹窗（与删除共用） ===== */
+        .modal-box .form-row {
+            margin-bottom: 14px;
+        }
+        .modal-box .form-row label {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+        .modal-box .form-row input {
+            width: 100%;
+            padding: 11px 14px;
+            border-radius: var(--radius-sm);
+            background: rgba(0,0,0,0.15);
+            border: 1px solid var(--border-line);
+            color: var(--text-primary);
+            outline: none;
+            font-size: 14px;
+            transition: 0.2s;
+        }
+        .modal-box .form-row input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px var(--primary-soft);
+        }
+        .btn-fill {
+            padding: 9px 22px;
+            border-radius: var(--radius-sm);
+            border: none;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: #fff;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 4px 12px var(--primary-glow);
+            transition: 0.2s;
+        }
+        .btn-fill:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px var(--primary-glow);
+        }
+
+        /* ============================================================
+           手机端全屏适配（宽度 ≤ 768px）
+           ============================================================ */
+        @media (max-width: 768px) {
+            body {
+                padding: 0;
+            }
+            .radio-app {
+                width: 100%;
+                max-width: 100%;
+                height: 100dvh;
+                max-height: 100dvh;
+                border-radius: 48px;             /* ← 已设置为 48px */
+                box-shadow: none;
+                border: none;
+                padding: 28px 12px 30px;         /* ← 左右边距 12px */
+                padding-top: env(safe-area-inset-top, 28px);
+                padding-bottom: env(safe-area-inset-bottom, 30px);
+                padding-left: env(safe-area-inset-left, 12px);
+                padding-right: env(safe-area-inset-right, 12px);
+                overflow: hidden;                /* ← 确保圆角生效，内容不溢出 */
+            }
+            .station-list-wrapper {
+                flex: 1 1 0;
+                overflow-y: auto;
+                min-height: 0;
+            }
+        }
+
+        /* ===== 响应式（小屏手机微调） ===== */
+        @media (max-width: 480px) {
+            .radio-app {
+                padding: 20px 12px 24px;
+                padding-top: env(safe-area-inset-top, 20px);
+                padding-bottom: env(safe-area-inset-bottom, 24px);
+                padding-left: env(safe-area-inset-left, 12px);
+                padding-right: env(safe-area-inset-right, 12px);
+                border-radius: 48px;             /* ← 保持 48px */
+            }
+            .disc-wrapper {
+                width: 130px;
+                height: 130px;
+            }
+            .controls .btn-play {
+                width: 54px;
+                height: 54px;
+            }
+            .controls .btn-play svg {
+                width: 22px;
+                height: 22px;
+            }
+            .controls button {
+                width: 40px;
+                height: 40px;
+            }
+            .controls button svg {
+                width: 18px;
+                height: 18px;
+            }
+            .station-item .info .city {
+                display: none;
+            }
+            .bottom-actions .btn-action {
+                font-size: 12px;
+                padding: 6px 10px;
+            }
+            .theme-picker {
+                right: 0;
+                width: 160px;
+            }
+        }
+
+/* ============================================================
+   手机横屏模式适配（orientation: landscape）
+   仅隐藏列表和菜单，不改变播放装置尺寸
+   ============================================================ */
+@media (orientation: landscape) and (max-height: 500px) {
+    body {
+        padding: 0;
+    }
+    .radio-app {
+        width: 100%;
+        max-width: 100%;
+        height: 100dvh;
+        max-height: 100dvh;
+        border-radius: 48px;             /* ← 保持四个圆角 */
+        box-shadow: none;
+        border: none;
+        padding: 24px 30px 24px;         /* ← 左右边距加大，居中更好看 */
+        padding-top: env(safe-area-inset-top, 24px);
+        padding-bottom: env(safe-area-inset-bottom, 24px);
+        padding-left: env(safe-area-inset-left, 30px);
+        padding-right: env(safe-area-inset-right, 30px);
+        overflow: hidden;
+    }
+
+    /* 隐藏：分类标签、搜索框、电台列表、底部操作栏 */
+    .function-bar,
+    .station-list-wrapper,
+    .bottom-actions {
+        display: none !important;
+    }
+
+    /* 播放器展示区：保持原尺寸，不缩小 */
+    .player-display {
+        margin-bottom: 16px;
+    }
+    /* 唱片尺寸保持 160px × 160px，不改变 */
+    /* 当前播放字号保持 20px，不改变 */
+
+    /* 控制栏：保持原尺寸，不缩小 */
+    .controls {
+        gap: 16px;
+        margin: 4px 0 0;
+    }
+    /* 按钮尺寸保持：48px / 64px，不改变 */
+
+    /* 头部：可微调，但保持原尺寸 */
+    .header {
+        margin-bottom: 16px;
+    }
+    .header h1 {
+        font-size: 22px;
+    }
+    .icon-btn {
+        width: 36px;
+        height: 36px;
+        font-size: 18px;
+    }
+}
+    </style>
+</head>
+<body>
+
+    <!-- ===== 主卡片 ===== -->
+    <div class="radio-app" id="app">
+        <!-- 头部 -->
+        <div class="header">
+            <h1><span>📡</span>AnsonRadio</h1>
+            <div class="header-actions">
+                <button class="icon-btn" id="themeToggle" title="切换主题色">🎨</button>
+                <button class="icon-btn" id="darkModeToggle" title="切换明暗">🌓</button>
+                <!-- 主题色选择器浮窗 -->
+                <div class="theme-picker" id="themePicker">
+                    <div class="color-dot active" style="background:#7c8dff;" data-color="#7c8dff"></div>
+                    <div class="color-dot" style="background:#ff6b6b;" data-color="#ff6b6b"></div>
+                    <div class="color-dot" style="background:#4ecdc4;" data-color="#4ecdc4"></div>
+                    <div class="color-dot" style="background:#ffb347;" data-color="#ffb347"></div>
+                    <div class="color-dot" style="background:#ff6b9d;" data-color="#ff6b9d"></div>
+                    <div class="color-dot" style="background:#4dabf7;" data-color="#4dabf7"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 播放器展示 -->
+        <div class="player-display">
+            <div class="disc-wrapper" id="discWrapper">
+                <div class="disc">
+                    <div class="disc-inner" id="discInner">♪</div>
+                </div>
+            </div>
+            <div class="now-playing" id="nowPlaying">未播放</div>
+        </div>
+
+        <!-- 控制栏 -->
+        <div class="controls">
+            <button class="btn-skip" id="prevBtn">
+                <svg viewBox="0 0 24 24"><path d="M4 4v16M16 4l-8 8 8 8"/></svg>
+            </button>
+            <button class="btn-play" id="playBtn">
+                <svg viewBox="0 0 24 24" id="playIcon">
+                    <polygon points="5,3 19,12 5,21"/>
+                </svg>
+            </button>
+            <button class="btn-skip" id="nextBtn">
+                <svg viewBox="0 0 24 24"><path d="M8 4l8 8-8 8V4z M20 4v16"/></svg>
+            </button>
+        </div>
+
+        <!-- 功能栏：分类标签 + 搜索 -->
+        <div class="function-bar">
+            <div class="category-tabs" id="categoryTabs">
+                <span class="category-tab active" data-filter="all">全部</span>
+                <span class="category-tab" data-filter="gd">广东</span>
+                <span class="category-tab" data-filter="china">全国</span>
+                <span class="category-tab" data-filter="traffic">交通</span>
+                <span class="category-tab" data-filter="music">音乐</span>
+                <span class="category-tab" data-filter="fav">❤️ 收藏</span>
+                <span class="category-tab" data-filter="history">🕐 历史</span>
+            </div>
+            <div class="search-box">
+                <input id="searchInput" placeholder="🔍 搜索电台名称或城市...">
+            </div>
+        </div>
+
+        <!-- 电台列表 -->
+        <div class="station-list-wrapper">
+            <div class="station-list" id="stationList">
+                <!-- 动态渲染 -->
+            </div>
+        </div>
+
+        <!-- 底部操作（含「管理」按钮） -->
+        <div class="bottom-actions">
+            <button class="btn-action" id="btnAddRadio">➕ 新增</button>
+            <button class="btn-action" id="btnImport">📥 导入</button>
+            <button class="btn-action" id="btnExport">📤 导出</button>
+            <button class="btn-action" id="btnManage">⚙️ 管理</button>
+        </div>
+    </div>
+
+    <!-- ===== 新增电台弹窗 ===== -->
+    <div class="modal-mask" id="addRadioModal">
+        <div class="modal-box">
+            <h3>📻 添加新电台</h3>
+            <div class="form-row">
+                <label>电台名称 *</label>
+                <input type="text" id="formName" placeholder="例如：广东音乐之声">
+            </div>
+            <div class="form-row">
+                <label>所属城市</label>
+                <input type="text" id="formCity" placeholder="例如：广州">
+            </div>
+            <div class="form-row">
+                <label>直播流地址 (m3u8 / mp3) *</label>
+                <input type="text" id="formStream" placeholder="http://...">
+            </div>
+            <div class="form-row">
+                <label>台标图片 URL（选填）</label>
+                <input type="text" id="formLogo" placeholder="https://...">
+            </div>
+            <div class="modal-footer">
+                <button class="btn-line closeModal">取消</button>
+                <button class="btn-fill" id="saveRadio">保存</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== 管理弹窗（删除功能） ===== -->
+    <div class="modal-mask" id="manageModal">
+        <div class="modal-box">
+            <h3>⚙️ 管理电台</h3>
+            <div class="modal-list" id="manageList">
+                <!-- 动态渲染 -->
+            </div>
+            <div class="modal-footer">
+                <button class="btn-line" id="closeManageModal">关闭</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast"></div>
+
+    <!-- 隐藏文件选择 -->
+    <input type="file" accept=".json" id="fileSelector" style="display:none;">
+    <audio id="audioPlayer"></audio>
+
+    <script>
+    (function() {
+        "use strict";
+
+        // ============================================================
+        // 数据层
+        // ============================================================
+        let radioDataSource = [];
+        let favList = [];
+        let historyList = [];
+        let currentPlayingId = null;
+        let currentFilter = "all";
+        let volumeValue = 80;
+
+        const initRadioList = [
+            { "id":"test001","name":"喜马拉雅测试","area":"全国","city":"网络","tag":"音乐电台","stream":"http://live.xmcdn.com/live/248/64.m3u8","logo":"" },
+            { "id":"cnr1","name":"中国之声","area":"全国","city":"北京","tag":"全国广播","stream":"http://satellitepull.cnr.cn/live/wxzgzs/playlist.m3u8","logo":"" },
+            { "id":"cnr3","name":"音乐之声","area":"全国","city":"北京","tag":"音乐电台","stream":"http://satellitepull.cnr.cn/live/wxyyzs/playlist.m3u8","logo":"" },
+            { "id":"hitfm","name":"HIT FM","area":"全国","city":"北京","tag":"音乐电台","stream":"http://sk.cri.cn/887.m3u8","logo":"" }
+        ];
+
+        const Storage = {
+            save(key, data) { localStorage.setItem(key, JSON.stringify(data)); },
+            load(key) { const s = localStorage.getItem(key); return s ? JSON.parse(s) : null; }
+        };
+
+        function initData() {
+            let saved = Storage.load("ansonradio_list");
+            if (!saved || saved.length === 0) {
+                radioDataSource = [...initRadioList];
+                Storage.save("ansonradio_list", radioDataSource);
+            } else {
+                radioDataSource = saved;
+            }
+            favList = Storage.load("ansonradio_fav") || [];
+            historyList = Storage.load("ansonradio_history") || [];
+            const theme = Storage.load("ansonradio_theme");
+            if (theme === "light") document.body.classList.add("light-mode");
+            volumeValue = Storage.load("ansonradio_volume") ?? 80;
+            document.getElementById("audioPlayer").volume = volumeValue / 100;
+        }
+
+        function showToast(msg, time = 2800) {
+            const t = document.getElementById("toast");
+            t.innerText = msg;
+            t.style.display = "block";
+            clearTimeout(t._timer);
+            t._timer = setTimeout(() => t.style.display = "none", time);
+        }
+
+        // ============================================================
+        // 渲染
+        // ============================================================
+        function renderStationList() {
+            const container = document.getElementById("stationList");
+            const keyword = document.getElementById("searchInput").value.trim().toLowerCase();
+
+            let renderData = [...radioDataSource];
+
+            if (currentFilter === "gd") renderData = renderData.filter(item => item.area === "广东");
+            else if (currentFilter === "china") renderData = renderData.filter(item => item.area === "全国");
+            else if (currentFilter === "traffic") renderData = renderData.filter(item => item.tag && item.tag.includes("交通"));
+            else if (currentFilter === "music") renderData = renderData.filter(item => item.tag && item.tag.includes("音乐"));
+            else if (currentFilter === "fav") renderData = renderData.filter(item => favList.includes(item.id));
+            else if (currentFilter === "history") renderData = historyList.map(id => radioDataSource.find(r => r.id === id)).filter(Boolean);
+
+            if (keyword) {
+                renderData = renderData.filter(item =>
+                    item.name.toLowerCase().includes(keyword) ||
+                    (item.city && item.city.toLowerCase().includes(keyword))
+                );
+            }
+
+            container.innerHTML = "";
+            if (renderData.length === 0) {
+                container.innerHTML = `<div class="empty-state">📭 没有找到电台</div>`;
+                return;
+            }
+
+            renderData.forEach((radio, idx) => {
+                const isPlaying = radio.id === currentPlayingId;
+                const isFav = favList.includes(radio.id);
+
+                const item = document.createElement("div");
+                item.className = `station-item ${isPlaying ? 'active' : ''}`;
+                item.dataset.id = radio.id;
+
+                item.innerHTML = `
+                    <div class="info">
+                        <span class="idx">${idx+1}</span>
+                        <span class="name">${radio.name}</span>
+                        <span class="city">${radio.city || ''}</span>
+                    </div>
+                    <div class="actions">
+                        <button class="fav-btn ${isFav ? 'active' : ''}" data-id="${radio.id}">${isFav ? '❤️' : '🤍'}</button>
+                        <button class="play-btn" data-id="${radio.id}">▶</button>
+                    </div>
+                `;
+
+                item.addEventListener('click', (e) => {
+                    if (e.target.closest('.actions')) return;
+                    playRadio(radio.id);
+                });
+
+                container.appendChild(item);
+            });
+
+            container.querySelectorAll('.fav-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    toggleFav(btn.dataset.id);
+                });
+            });
+            container.querySelectorAll('.play-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    playRadio(btn.dataset.id);
+                });
+            });
+        }
+
+        // ============================================================
+        // 播放引擎
+        // ============================================================
+        let hlsInstance = null;
+        const audioPlayer = document.getElementById("audioPlayer");
+        const playBtn = document.getElementById("playBtn");
+        const playIcon = document.getElementById("playIcon");
+        const discWrapper = document.getElementById("discWrapper");
+        const nowPlaying = document.getElementById("nowPlaying");
+
+        function updatePlayButton(state) {
+            if (state) {
+                playIcon.innerHTML = '<rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/>';
+                playBtn.classList.add('playing');
+                discWrapper.classList.add('playing');
+            } else {
+                playIcon.innerHTML = '<polygon points="5,3 19,12 5,21"/>';
+                playBtn.classList.remove('playing');
+                discWrapper.classList.remove('playing');
+            }
+        }
+
+        function stopPlayback() {
+            if (hlsInstance) { hlsInstance.destroy(); hlsInstance = null; }
+            audioPlayer.pause();
+            audioPlayer.src = '';
+            updatePlayButton(false);
+        }
+
+        function playRadio(radioId) {
+            const radio = radioDataSource.find(r => r.id === radioId);
+            if (!radio) { showToast("找不到电台"); return; }
+
+            stopPlayback();
+            currentPlayingId = radioId;
+
+            nowPlaying.textContent = radio.name;
+
+            if (!historyList.includes(radioId)) {
+                historyList.unshift(radioId);
+                if (historyList.length > 30) historyList.pop();
+                Storage.save("ansonradio_history", historyList);
+            }
+
+            renderStationList();
+
+            const streamUrl = radio.stream.trim();
+            if (!streamUrl) { showToast("直播地址为空"); return; }
+
+            const isM3U8 = streamUrl.includes('.m3u8') || streamUrl.includes('m3u8');
+
+            if (isM3U8 && Hls.isSupported()) {
+                hlsInstance = new Hls({ enableWorker: true, lowLatencyMode: true });
+                hlsInstance.loadSource(streamUrl);
+                hlsInstance.attachMedia(audioPlayer);
+
+                hlsInstance.on(Hls.Events.MANIFEST_PARSED, () => {
+                    audioPlayer.play().then(() => {
+                        updatePlayButton(true);
+                    }).catch(() => {
+                        updatePlayButton(true);
+                    });
+                });
+
+                hlsInstance.on(Hls.Events.ERROR, (e, data) => {
+                    if (data.fatal) {
+                        let msg = "加载失败";
+                        if (data.type === Hls.ErrorTypes.NETWORK_ERROR) msg = "网络错误/跨域";
+                        else if (data.type === Hls.ErrorTypes.MEDIA_ERROR) msg = "媒体解析错误";
+                        showToast(msg);
+                        if (hlsInstance) { hlsInstance.destroy(); hlsInstance = null; }
+                        updatePlayButton(false);
+                    }
+                });
+
+                audioPlayer.addEventListener('playing', () => {
+                    updatePlayButton(true);
+                });
+                audioPlayer.addEventListener('pause', () => {
+                    if (!audioPlayer.ended) updatePlayButton(false);
+                });
+                audioPlayer.addEventListener('ended', () => {
+                    updatePlayButton(false);
+                });
+                audioPlayer.addEventListener('error', () => {
+                    showToast("播放错误");
+                    updatePlayButton(false);
+                });
+
+            } else {
+                audioPlayer.src = streamUrl;
+                audioPlayer.play().then(() => {
+                    updatePlayButton(true);
+                }).catch(() => {
+                    showToast("无法播放此流");
+                    updatePlayButton(false);
+                });
+            }
+        }
+
+        // ============================================================
+        // 控制函数
+        // ============================================================
+        function togglePlay() {
+            if (!currentPlayingId) {
+                if (radioDataSource.length > 0) playRadio(radioDataSource[0].id);
+                else showToast("请先添加电台");
+                return;
+            }
+            if (audioPlayer.paused) {
+                audioPlayer.play().then(() => {
+                    updatePlayButton(true);
+                }).catch(() => playRadio(currentPlayingId));
+            } else {
+                audioPlayer.pause();
+                updatePlayButton(false);
+            }
+        }
+
+        function prevStation() {
+            if (radioDataSource.length === 0) return;
+            if (!currentPlayingId) { playRadio(radioDataSource[0].id); return; }
+            const idx = radioDataSource.findIndex(r => r.id === currentPlayingId);
+            if (idx === -1) { playRadio(radioDataSource[0].id); return; }
+            let newIdx = idx - 1;
+            if (newIdx < 0) newIdx = radioDataSource.length - 1;
+            playRadio(radioDataSource[newIdx].id);
+        }
+
+        function nextStation() {
+            if (radioDataSource.length === 0) return;
+            if (!currentPlayingId) { playRadio(radioDataSource[0].id); return; }
+            const idx = radioDataSource.findIndex(r => r.id === currentPlayingId);
+            if (idx === -1) { playRadio(radioDataSource[0].id); return; }
+            let newIdx = idx + 1;
+            if (newIdx >= radioDataSource.length) newIdx = 0;
+            playRadio(radioDataSource[newIdx].id);
+        }
+
+        function toggleFav(id) {
+            const idx = favList.indexOf(id);
+            if (idx > -1) favList.splice(idx, 1);
+            else favList.push(id);
+            Storage.save("ansonradio_fav", favList);
+            renderStationList();
+        }
+
+        // ============================================================
+        // 管理（删除）功能
+        // ============================================================
+        function openManageModal() {
+            const list = document.getElementById("manageList");
+            list.innerHTML = "";
+            if (radioDataSource.length === 0) {
+                list.innerHTML = '<div style="text-align:center;color:var(--text-weak);padding:20px;">暂无电台</div>';
+            } else {
+                radioDataSource.forEach(radio => {
+                    const div = document.createElement("div");
+                    div.className = "manage-item";
+                    div.innerHTML = `
+                        <span class="name">${radio.name} (${radio.city || '未知'})</span>
+                        <button class="btn-del" data-id="${radio.id}">❌</button>
+                    `;
+                    list.appendChild(div);
+                });
+                list.querySelectorAll('.btn-del').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const id = this.dataset.id;
+                        if (!confirm(`确定删除「${radioDataSource.find(r=>r.id===id).name}」吗？`)) return;
+                        deleteRadioById(id);
+                        openManageModal();
+                    });
+                });
+            }
+            document.getElementById("manageModal").classList.add("open");
+        }
+
+        function deleteRadioById(id) {
+            const idx = radioDataSource.findIndex(r => r.id === id);
+            if (idx === -1) return;
+            radioDataSource.splice(idx, 1);
+            Storage.save("ansonradio_list", radioDataSource);
+            if (currentPlayingId === id) {
+                stopPlayback();
+                currentPlayingId = null;
+                nowPlaying.textContent = "未播放";
+            }
+            renderStationList();
+            showToast("已删除");
+        }
+
+        // ============================================================
+        // 导入导出 / 新增
+        // ============================================================
+        function exportJson() {
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(radioDataSource, null, 2));
+            const a = document.createElement("a");
+            a.href = dataStr;
+            a.download = "AnsonRadio_备份.json";
+            a.click();
+            showToast("导出成功");
+        }
+
+        async function importJson(file) {
+            try {
+                const text = await file.text();
+                const arr = JSON.parse(text);
+                if (!Array.isArray(arr)) throw new Error("格式错误");
+                let count = 0;
+                arr.forEach(item => {
+                    if (!item.id || !item.name || !item.stream) return;
+                    if (!radioDataSource.find(r => r.id === item.id)) {
+                        radioDataSource.push(item);
+                        count++;
+                    }
+                });
+                Storage.save("ansonradio_list", radioDataSource);
+                renderStationList();
+                showToast(`导入 ${count} 个电台`);
+            } catch (e) {
+                showToast("JSON 文件格式不正确");
+            }
+        }
+
+        function saveNewRadio() {
+            const name = document.getElementById("formName").value.trim();
+            const city = document.getElementById("formCity").value.trim();
+            const stream = document.getElementById("formStream").value.trim();
+            const logo = document.getElementById("formLogo").value.trim();
+            if (!name || !stream) { showToast("名称和地址不能为空"); return; }
+            const newId = "auto_" + Date.now();
+            radioDataSource.push({
+                id: newId,
+                name, city: city || "未知",
+                area: "自定义",
+                tag: "自定义",
+                stream,
+                logo
+            });
+            Storage.save("ansonradio_list", radioDataSource);
+            document.getElementById("addRadioModal").classList.remove("open");
+            document.getElementById("formName").value = "";
+            document.getElementById("formCity").value = "";
+            document.getElementById("formStream").value = "";
+            document.getElementById("formLogo").value = "";
+            renderStationList();
+            showToast("添加成功");
+        }
+
+        // ============================================================
+        // 主题
+        // ============================================================
+        function setThemeColor(color) {
+            const root = document.documentElement;
+            const r = parseInt(color.slice(1,3),16), g = parseInt(color.slice(3,5),16), b = parseInt(color.slice(5,7),16);
+            root.style.setProperty('--primary', color);
+            root.style.setProperty('--primary-light', color);
+            root.style.setProperty('--primary-dark', color);
+            root.style.setProperty('--primary-glow', `rgba(${r},${g},${b},0.35)`);
+            root.style.setProperty('--primary-soft', `rgba(${r},${g},${b},0.12)`);
+            root.style.setProperty('--primary-border', `rgba(${r},${g},${b},0.25)`);
+            document.querySelectorAll('.color-dot').forEach(d => d.classList.remove('active'));
+            document.querySelector(`.color-dot[data-color="${color}"]`)?.classList.add('active');
+            localStorage.setItem('radioThemeColor', color);
+        }
+
+        function loadThemeColor() {
+            const saved = localStorage.getItem('radioThemeColor');
+            if (saved) setThemeColor(saved);
+        }
+
+        // ============================================================
+        // 事件绑定
+        // ============================================================
+        function bindEvents() {
+            // 分类标签
+            document.querySelectorAll('.category-tab').forEach(tab => {
+                tab.addEventListener('click', function() {
+                    document.querySelectorAll('.category-tab').forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                    currentFilter = this.dataset.filter;
+                    renderStationList();
+                });
+            });
+
+            // 搜索
+            document.getElementById('searchInput').addEventListener('input', renderStationList);
+
+            // 播放控制
+            document.getElementById('playBtn').addEventListener('click', togglePlay);
+            document.getElementById('prevBtn').addEventListener('click', prevStation);
+            document.getElementById('nextBtn').addEventListener('click', nextStation);
+
+            // 主题色切换
+            document.getElementById('themeToggle').addEventListener('click', (e) => {
+                e.stopPropagation();
+                document.getElementById('themePicker').classList.toggle('open');
+            });
+            document.addEventListener('click', () => {
+                document.getElementById('themePicker').classList.remove('open');
+            });
+            document.querySelectorAll('.color-dot').forEach(dot => {
+                dot.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    setThemeColor(dot.dataset.color);
+                    document.getElementById('themePicker').classList.remove('open');
+                });
+            });
+
+            // 明暗切换
+            document.getElementById('darkModeToggle').addEventListener('click', function() {
+                document.body.classList.toggle('light-mode');
+                const mode = document.body.classList.contains('light-mode') ? 'light' : 'dark';
+                Storage.save("ansonradio_theme", mode);
+            });
+
+            // 新增弹窗
+            document.getElementById('btnAddRadio').addEventListener('click', () => {
+                document.getElementById('addRadioModal').classList.add('open');
+            });
+            document.querySelectorAll('.closeModal').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.getElementById('addRadioModal').classList.remove('open');
+                });
+            });
+            document.getElementById('saveRadio').addEventListener('click', saveNewRadio);
+            document.getElementById('addRadioModal').addEventListener('click', (e) => {
+                if (e.target === e.currentTarget) {
+                    document.getElementById('addRadioModal').classList.remove('open');
+                }
+            });
+
+            // 管理弹窗
+            document.getElementById('btnManage').addEventListener('click', openManageModal);
+            document.getElementById('closeManageModal').addEventListener('click', () => {
+                document.getElementById('manageModal').classList.remove('open');
+            });
+            document.getElementById('manageModal').addEventListener('click', (e) => {
+                if (e.target === e.currentTarget) {
+                    document.getElementById('manageModal').classList.remove('open');
+                }
+            });
+
+            // 导入导出
+            document.getElementById('btnImport').addEventListener('click', () => document.getElementById('fileSelector').click());
+            document.getElementById('btnExport').addEventListener('click', exportJson);
+            document.getElementById('fileSelector').addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) importJson(file);
+                this.value = '';
+            });
+
+            // 键盘快捷键（空格）
+            document.addEventListener('keydown', (e) => {
+                if (e.target.tagName === 'INPUT') return;
+                if (e.key === ' ' || e.key === 'Space') {
+                    e.preventDefault();
+                    togglePlay();
+                }
+            });
+        }
+
+        // ============================================================
+        // 启动
+        // ============================================================
+        function init() {
+            initData();
+            loadThemeColor();
+            renderStationList();
+            bindEvents();
+            nowPlaying.textContent = "未播放";
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', init);
+        } else {
+            init();
+        }
+
+        window.addEventListener('beforeunload', () => {
+            if (hlsInstance) { hlsInstance.destroy(); hlsInstance = null; }
+            audioPlayer.pause();
+        });
+
+    })();
+    </script>
+</body>
+</html>
