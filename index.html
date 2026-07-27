@@ -21,7 +21,7 @@
             --primary: #7c8dff;
             --primary-light: #8e9dff;
             --primary-dark: #5a6be0;
-            --primary-glow: rgba(124, 141, 255, 0.35);
+            --primary-glow: rgba(124, 141, 255, 0.5);
             --primary-soft: rgba(124, 141, 255, 0.12);
             --primary-border: rgba(124, 141, 255, 0.25);
             --bg-body: radial-gradient(circle at 20% 30%, #1a1f2e, #0b0d14);
@@ -31,7 +31,7 @@
             --text-weak: rgba(255, 255, 255, 0.40);
             --border-line: rgba(255, 255, 255, 0.09);
             --radius-sm: 8px;
-            --radius-md: 30px;   /* ← 改为 30px，与搜索框一致 */
+            --radius-md: 30px;
             --radius-lg: 48px;
             --gap-xs: 6px;
             --gap-sm: 12px;
@@ -49,16 +49,28 @@
             --border-line: rgba(0, 0, 0, 0.08);
         }
 
+        html, body {
+            height: 100%;
+            overflow: hidden;
+            margin: 0;
+            padding: 0;
+        }
+
         body {
             background: var(--bg-body);
             color: var(--text-primary);
-            min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
             padding: 20px;
             transition: background 0.4s ease;
             overscroll-behavior: none;
+            overflow: hidden;
+            height: 100dvh;
+            width: 100%;
+            position: fixed;
+            top: 0;
+            left: 0;
         }
 
         ::-webkit-scrollbar { width: 4px; }
@@ -93,7 +105,7 @@
             flex-shrink: 0;
         }
         .header h1 {
-            font-size: 19px;
+            font-size: 22px;
             font-weight: 600;
             letter-spacing: 0.3px;
             color: var(--primary);
@@ -180,7 +192,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 20px;
+            gap: 30px;
             width: 100%;
         }
 
@@ -224,7 +236,7 @@
             user-select: none;
         }
         .disc-wrapper.playing .disc {
-            box-shadow: 0 12px 48px var(--primary-glow), 0 0 80px rgba(124,141,255,0.12);
+            box-shadow: 0 12px 60px var(--primary-glow), 0 0 100px rgba(124,141,255,0.12);
         }
         .disc-wrapper.playing .disc-inner {
             animation: spin 8s linear infinite;
@@ -267,7 +279,6 @@
             display: block;
         }
 
-        /* ---- 播放状态标签（相对定位容器） ---- */
         .now-playing-wrapper {
             position: relative;
             display: inline-block;
@@ -291,40 +302,33 @@
             padding: 0 4px;
         }
 
-        /* ---- 错误提示覆盖层（闪现1.5秒后自动消失） ---- */
-        .play-error-overlay {
-            position: absolute;
-            top: 50%;
+        /* ===== Toast（错误提示用，随主题变色） ===== */
+        .toast {
+            position: fixed;
             left: 50%;
-            transform: translate(-50%, -50%);
+            top: 40px;
+            transform: translateX(-50%);
             background: var(--bg-card);
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
-            padding: 6px 18px;
+            padding: 10px 24px;
             border-radius: 99px;
             border: 1px solid var(--border-line);
-            color: #ff6b6b;
+            color: var(--text-primary);
+            z-index: 9999;
+            display: none;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.3);
             font-size: 14px;
             font-weight: 500;
+            transition: background 0.3s ease, color 0.3s ease, border-color 0.3s ease;
             text-align: center;
-            white-space: nowrap;
-            box-shadow: 0 4px 16px rgba(255,107,107,0.15);
-            display: none;
-            z-index: 5;
-            pointer-events: none;
-            text-shadow: 0 0 10px rgba(255,107,107,0.2);
-            letter-spacing: 0.3px;
-            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
-            opacity: 0;
-            transition: opacity 0.3s ease;
+            max-width: 90%;
         }
-        .play-error-overlay.show {
-            display: block;
-            opacity: 1;
-        }
-        .play-error-overlay.hide {
-            opacity: 0;
-            transition: opacity 0.3s ease;
+        .toast.error {
+            color: var(--primary);
+            border-color: var(--primary-border);
+            box-shadow: 0 8px 24px var(--primary-glow), inset 0 0 30px var(--primary-soft);
+            text-shadow: 0 0 10px rgba(255,255,255,0.05);
         }
 
         /* ===== 功能栏：分类标签 + 搜索 ===== */
@@ -332,7 +336,7 @@
             display: flex;
             flex-direction: column;
             gap: 10px;
-            margin-bottom: 14px;  /* ← 恢复搜索框与列表间距 */
+            margin-bottom: 4px;
             flex-shrink: 0;
         }
 
@@ -418,7 +422,7 @@
             align-items: center;
             padding: 8px 12px 8px 16px;
             background: rgba(255,255,255,0.03);
-            border-radius: var(--radius-md);  /* ← 改为 30px，与搜索框一致 */
+            border-radius: var(--radius-md);
             border: 1px solid var(--border-line);
             transition: all 0.25s ease;
             cursor: pointer;
@@ -677,23 +681,6 @@
             box-shadow: 0 0 0 3px var(--primary-soft);
         }
 
-        /* Toast（仅用于非播放错误） */
-        .toast {
-            position: fixed;
-            left: 50%;
-            top: 30px;
-            transform: translateX(-50%);
-            background: var(--bg-card);
-            backdrop-filter: blur(12px);
-            padding: 10px 24px;
-            border-radius: 99px;
-            border: 1px solid var(--border-line);
-            color: var(--text-primary);
-            z-index: 9999;
-            display: none;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.3);
-        }
-
         /* ===== 新增电台弹窗 ===== */
         .modal-box .form-row {
             margin-bottom: 12px;
@@ -806,7 +793,7 @@
                 height: 18px;
             }
             .player-row {
-                gap: 14px;
+                gap: 16px;
             }
             .now-playing-wrapper {
                 margin-top: 14px;
@@ -814,9 +801,10 @@
             .now-playing {
                 font-size: 18px;
             }
-            .play-error-overlay {
+            .toast {
                 font-size: 12px;
-                padding: 4px 14px;
+                padding: 8px 18px;
+                top: 30px;
             }
             .category-tab {
                 font-size: 11px;
@@ -866,11 +854,11 @@
                 justify-content: center;
             }
             .player-row {
-                gap: 20px;
+                gap: 41px;
             }
             .disc-wrapper {
-                width: 160px;
-                height: 160px;
+                width: 220px;
+                height: 220px;
             }
             .btn-skip-disc {
                 width: 44px;
@@ -886,12 +874,13 @@
             .now-playing {
                 font-size: 18px;
             }
-            .play-error-overlay {
+            .toast {
                 font-size: 13px;
-                padding: 4px 16px;
+                padding: 6px 16px;
+                top: 20px;
             }
             .header {
-                margin-bottom: 12px;
+                margin-bottom: 30px;
             }
             .header h1 {
                 font-size: 20px;
@@ -910,7 +899,7 @@
     <div class="radio-app" id="app">
         <!-- 头部 -->
         <div class="header">
-            <h1><span>📡</span>Anson FM</h1>
+            <h1><span>📡</span>AnsonFM</h1>
             <div class="header-actions">
                 <button class="icon-btn" id="themeToggle" title="切换主题色">🎨</button>
                 <button class="icon-btn" id="darkModeToggle" title="切换明暗">🌓</button>
@@ -944,7 +933,6 @@
             <!-- 播放状态标签 -->
             <div class="now-playing-wrapper">
                 <span class="now-playing" id="nowPlaying">未播放</span>
-                <div class="play-error-overlay" id="playError">无法播放此流</div>
             </div>
         </div>
 
@@ -1045,6 +1033,8 @@
             </div>
             <div class="modal-list" id="manageList"></div>
             <div class="modal-footer">
+                <!-- 清空按钮（在关闭按钮左边） -->
+                <button class="btn-line" id="clearAllBtn">🗑️ 清空</button>
                 <button class="btn-line" id="closeManageModal">关闭</button>
             </div>
         </div>
@@ -1069,7 +1059,7 @@
                 </div>
                 <div class="form-row">
                     <label>分类标签</label>
-                    <input type="text" id="editTag" placeholder="例如：广东 / 交通 / 音乐 / 国际">
+                    <input type="text" id="editTag" placeholder="例如：广东 / 全国 / 交通 / 音乐 / 国际">
                 </div>
                 <div class="form-row">
                     <label>直播流地址 (m3u8 / mp3) *</label>
@@ -1087,7 +1077,7 @@
         </div>
     </div>
 
-    <!-- Toast（仅用于非播放错误） -->
+    <!-- Toast（错误提示用） -->
     <div class="toast" id="toast"></div>
 
     <!-- 隐藏文件选择 -->
@@ -1111,7 +1101,7 @@
         let errorTimer = null;
 
         const initRadioList = [
-            { "id":"test001","name":"喜马拉雅测试","area":"全国","city":"网络","tag":"音乐","stream":"http://live.xmcdn.com/live/248/64.m3u8","logo":"","desc":"喜马拉雅测试流" },
+            { "id":"test001","name":"羊城交通广播","area":"广东","city":"广州","tag":"交通","stream":"http://live.xmcdn.com/live/248/64.m3u8","logo":"","desc":"广东羊城交通广播" },
             { "id":"cnr1","name":"中国之声","area":"全国","city":"北京","tag":"全国","stream":"http://satellitepull.cnr.cn/live/wxzgzs/playlist.m3u8","logo":"","desc":"中央人民广播电台中国之声" },
             { "id":"cnr3","name":"音乐之声","area":"全国","city":"北京","tag":"音乐","stream":"http://satellitepull.cnr.cn/live/wxyyzs/playlist.m3u8","logo":"","desc":"中央人民广播电台音乐之声" },
             { "id":"hitfm","name":"HIT FM","area":"国际","city":"北京","tag":"国际","stream":"http://sk.cri.cn/887.m3u8","logo":"","desc":"中国国际广播电台HIT FM" }
@@ -1138,46 +1128,31 @@
             document.getElementById("audioPlayer").volume = volumeValue / 100;
         }
 
-        function showToast(msg, time = 2800) {
+        // ---- Toast 提示 ----
+        function showToast(msg, time = 2000) {
             const t = document.getElementById("toast");
-            t.innerText = msg;
-            t.style.display = "block";
-            clearTimeout(t._timer);
-            t._timer = setTimeout(() => t.style.display = "none", time);
+            if (t._timer) {
+                clearTimeout(t._timer);
+                t._timer = null;
+            }
+            t.textContent = msg;
+            t.className = 'toast error';
+            t.style.display = 'block';
+            t._timer = setTimeout(function() {
+                t.style.display = 'none';
+                t.className = 'toast';
+                t._timer = null;
+            }, time);
         }
 
-        // ---- 播放错误提示（闪现1.5秒后自动消失） ----
-        function showPlayError(msg) {
-            const el = document.getElementById('playError');
-            // 清除之前的定时器
-            if (errorTimer) {
-                clearTimeout(errorTimer);
-                errorTimer = null;
+        function hideToast() {
+            const t = document.getElementById("toast");
+            if (t._timer) {
+                clearTimeout(t._timer);
+                t._timer = null;
             }
-            el.textContent = msg;
-            el.className = 'play-error-overlay show';
-            // 1.5秒后自动隐藏
-            errorTimer = setTimeout(function() {
-                el.className = 'play-error-overlay hide';
-                setTimeout(function() {
-                    el.style.display = 'none';
-                    el.className = 'play-error-overlay';
-                }, 300);
-                errorTimer = null;
-            }, 1500);
-        }
-
-        function hidePlayError() {
-            const el = document.getElementById('playError');
-            if (errorTimer) {
-                clearTimeout(errorTimer);
-                errorTimer = null;
-            }
-            el.className = 'play-error-overlay hide';
-            setTimeout(function() {
-                el.style.display = 'none';
-                el.className = 'play-error-overlay';
-            }, 300);
+            t.style.display = 'none';
+            t.className = 'toast';
         }
 
         // ============================================================
@@ -1270,11 +1245,10 @@
         function updatePlayState(state) {
             if (state) {
                 discWrapper.classList.add('playing');
-                // 播放成功后，如果有错误提示正在显示，延迟一下再隐藏（给用户看到）
-                const el = document.getElementById('playError');
-                if (el.style.display === 'block' || el.style.display === '' || el.className.includes('show')) {
-                    // 如果错误提示正在显示，立即隐藏
-                    hidePlayError();
+                hideToast();
+                if (errorTimer) {
+                    clearTimeout(errorTimer);
+                    errorTimer = null;
                 }
             } else {
                 discWrapper.classList.remove('playing');
@@ -1286,7 +1260,10 @@
             audioPlayer.pause();
             audioPlayer.src = '';
             updatePlayState(false);
-            hidePlayError();
+            if (errorTimer) {
+                clearTimeout(errorTimer);
+                errorTimer = null;
+            }
         }
 
         function fallbackToHLS(url) {
@@ -1306,9 +1283,9 @@
             hlsInstance.on(Hls.Events.ERROR, (e, data) => {
                 if (data.fatal) {
                     let msg = "加载失败";
-                    if (data.type === Hls.ErrorTypes.NETWORK_ERROR) msg = "网络错误/跨域";
+                    if (data.type === Hls.ErrorTypes.NETWORK_ERROR) msg = "网络错误跨域";
                     else if (data.type === Hls.ErrorTypes.MEDIA_ERROR) msg = "媒体解析错误";
-                    showPlayError(msg);
+                    showToast(msg);
                     if (hlsInstance) { hlsInstance.destroy(); hlsInstance = null; }
                     updatePlayState(false);
                 }
@@ -1317,10 +1294,6 @@
             audioPlayer.addEventListener('playing', () => updatePlayState(true));
             audioPlayer.addEventListener('pause', () => { if (!audioPlayer.ended) updatePlayState(false); });
             audioPlayer.addEventListener('ended', () => updatePlayState(false));
-            audioPlayer.addEventListener('error', () => {
-                showPlayError("播放错误");
-                updatePlayState(false);
-            });
         }
 
         // ---------- 主播放函数 ----------
@@ -1331,7 +1304,11 @@
             stopPlayback();
             currentPlayingId = radioId;
             nowPlaying.textContent = radio.name;
-            hidePlayError();
+            hideToast();
+            if (errorTimer) {
+                clearTimeout(errorTimer);
+                errorTimer = null;
+            }
 
             if (!historyList.includes(radioId)) {
                 historyList.unshift(radioId);
@@ -1343,7 +1320,7 @@
 
             const streamUrl = radio.stream.trim();
             if (!streamUrl) {
-                showPlayError("直播地址为空");
+                showToast("直播地址为空");
                 return;
             }
 
@@ -1351,7 +1328,6 @@
             const nativeHlsSupport = audioPlayer.canPlayType('application/vnd.apple.mpegurl') ||
                                      audioPlayer.canPlayType('audio/mpegurl');
 
-            // ---------- 播放策略 ----------
             if (isM3U8 && nativeHlsSupport) {
                 audioPlayer.src = streamUrl;
                 audioPlayer.play().then(() => {
@@ -1375,16 +1351,12 @@
                 audioPlayer.play().then(() => {
                     updatePlayState(true);
                 }).catch(() => {
-                    showPlayError("无法播放此流");
+                    showToast("无法播放此流");
                     updatePlayState(false);
                 });
                 audioPlayer.addEventListener('playing', () => updatePlayState(true));
                 audioPlayer.addEventListener('pause', () => { if (!audioPlayer.ended) updatePlayState(false); });
                 audioPlayer.addEventListener('ended', () => updatePlayState(false));
-                audioPlayer.addEventListener('error', () => {
-                    showPlayError("播放错误");
-                    updatePlayState(false);
-                });
             }
         }
 
@@ -1401,7 +1373,7 @@
                 audioPlayer.play().then(() => {
                     updatePlayState(true);
                 }).catch(() => {
-                    showPlayError("无法播放此流");
+                    showToast("无法播放此流");
                     updatePlayState(false);
                 });
             } else {
@@ -1439,7 +1411,7 @@
         }
 
         // ============================================================
-        // 管理功能（含搜索 + 编辑）
+        // 管理功能
         // ============================================================
         function openManageModal() {
             document.getElementById("manageSearchInput").value = "";
@@ -1498,10 +1470,39 @@
                 stopPlayback();
                 currentPlayingId = null;
                 nowPlaying.textContent = "未播放";
-                hidePlayError();
             }
             renderStationList();
             showToast("已删除");
+        }
+
+        // ============================================================
+        // 清空全部电台
+        // ============================================================
+        function clearAllStations() {
+            if (radioDataSource.length === 0) {
+                showToast("列表已空，无需清空");
+                return;
+            }
+            if (!confirm("⚠️ 确定要清空全部电台吗？此操作不可撤销！")) return;
+
+            radioDataSource = [];
+            favList = [];
+            historyList = [];
+            Storage.save("ansonradio_list", radioDataSource);
+            Storage.save("ansonradio_fav", favList);
+            Storage.save("ansonradio_history", historyList);
+
+            // 重置播放状态
+            stopPlayback();
+            currentPlayingId = null;
+            nowPlaying.textContent = "未播放";
+            hideToast();
+
+            // 关闭管理弹窗
+            document.getElementById("manageModal").classList.remove("open");
+
+            renderStationList();
+            showToast("已清空全部电台", 2000);
         }
 
         // ============================================================
@@ -1769,6 +1770,9 @@
                 renderManageList(this.value);
             });
 
+            // ---- 清空按钮事件 ----
+            document.getElementById('clearAllBtn').addEventListener('click', clearAllStations);
+
             document.getElementById('closeEditModal').addEventListener('click', () => {
                 document.getElementById('editModal').classList.remove('open');
             });
@@ -1797,7 +1801,6 @@
             renderStationList();
             bindEvents();
             nowPlaying.textContent = "未播放";
-            hidePlayError();
         }
 
         if (document.readyState === 'loading') {
