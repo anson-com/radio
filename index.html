@@ -776,10 +776,10 @@
                 border-radius: 32px;
                 box-shadow: none;
                 border: none;
-                padding-top: max(16px, env(safe-area-inset-top));
-                padding-bottom: max(16px, env(safe-area-inset-bottom));
-                padding-left: max(12px, env(safe-area-inset-left));
-                padding-right: max(12px, env(safe-area-inset-right));
+               padding-top: env(safe-area-inset-top, 16px);  /* 顶部保留安全区 */
+        padding-bottom: 0;                             /* 底部完全贴紧 */
+        padding-left: max(12px, env(safe-area-inset-left));
+        padding-right: max(12px, env(safe-area-inset-right));
             }
             .player-display {
                 min-height: 170px;
