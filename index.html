@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>AnsonRadio</title>
+    <title>AnsonFM</title>
     <link href="https://fonts.googleapis.com/css2?family=Lobster&family=Pacifico&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
     <style>
@@ -21,7 +21,7 @@
             --primary: #7c8dff;
             --primary-light: #8e9dff;
             --primary-dark: #5a6be0;
-            --primary-glow: rgba(124, 141, 255, 0.35);
+            --primary-glow: rgba(124, 141, 255, 0.5);
             --primary-soft: rgba(124, 141, 255, 0.12);
             --primary-border: rgba(124, 141, 255, 0.25);
             --bg-body: radial-gradient(circle at 20% 30%, #1a1f2e, #0b0d14);
@@ -31,7 +31,7 @@
             --text-weak: rgba(255, 255, 255, 0.40);
             --border-line: rgba(255, 255, 255, 0.09);
             --radius-sm: 8px;
-            --radius-md: 14px;
+            --radius-md: 30px;
             --radius-lg: 48px;
             --gap-xs: 6px;
             --gap-sm: 12px;
@@ -224,7 +224,7 @@
             user-select: none;
         }
         .disc-wrapper.playing .disc {
-            box-shadow: 0 12px 48px var(--primary-glow), 0 0 80px rgba(124,141,255,0.12);
+            box-shadow: 0 12px 60px var(--primary-glow), 0 0 100px rgba(124,141,255,0.12);
         }
         .disc-wrapper.playing .disc-inner {
             animation: spin 8s linear infinite;
@@ -267,15 +267,59 @@
             display: block;
         }
 
+        .now-playing-wrapper {
+            position: relative;
+            display: inline-block;
+            margin-top: 16px;
+            width: auto;
+            max-width: 100%;
+        }
+
         .now-playing {
             font-size: 20px;
             font-weight: 600;
             text-align: center;
-            margin-top: 16px;
             color: var(--primary);
             text-shadow: 0 0 20px var(--primary-glow);
             font-family: 'Dancing Script', cursive;
+            display: block;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 100%;
+            padding: 0 4px;
         }
+
+        /* ===== Toast（错误提示用，随主题变色） ===== */
+        .toast {
+            position: fixed;
+            left: 50%;
+            top: 30px;
+            transform: translateX(-50%);
+            background: var(--bg-card);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            padding: 10px 24px;
+            border-radius: 99px;
+            border: 1px solid var(--border-line);
+            color: var(--text-primary);
+            z-index: 9999;
+            display: none;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+            font-size: 14px;
+            font-weight: 500;
+            transition: background 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+            text-align: center;
+            max-width: 90%;
+        }
+        /* Toast 错误状态（系统跟随） */
+        .toast.error {
+    color: var(--primary);
+    border-color: var(--primary-border);
+    box-shadow: 0 8px 24px var(--primary-glow), 
+                inset 0 0 30px var(--primary-soft);  /* ← 新增：内发光 */
+    text-shadow: 0 0 10px rgba(255,255,255,0.05);    /* 可选：微弱文字光 */
+}
 
         /* ===== 功能栏：分类标签 + 搜索 ===== */
         .function-bar {
@@ -286,49 +330,48 @@
             flex-shrink: 0;
         }
 
-       .category-tabs {
-    display: flex;
-    gap: 0;                    /* 取消间距，让标签紧贴 */
-    overflow-x: visible;       /* 不需要滚动 */
-    padding: 0;
-    scrollbar-width: none;
-    -webkit-overflow-scrolling: touch;
-    justify-content: space-between;  /* 两端对齐 */
-}
-.category-tabs::-webkit-scrollbar { display: none; }
+        .category-tabs {
+            display: flex;
+            gap: 0;
+            overflow-x: visible;
+            padding: 0;
+            scrollbar-width: none;
+            -webkit-overflow-scrolling: touch;
+            justify-content: space-between;
+        }
+        .category-tabs::-webkit-scrollbar { display: none; }
 
-.category-tab {
-    flex: 1;                   /* 等宽拉伸 */
-    text-align: center;        /* 文字居中 */
-    padding: 6px 2px;
-    border-radius: 30px;
-    background: rgba(255,255,255,0.04);
-    border: 1px solid var(--border-line);
-    color: var(--text-secondary);
-    font-size: 13px;
-    white-space: nowrap;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    margin: 0 2px;             /* 标签之间的小间隔，代替gap */
-    
-    -webkit-tap-highlight-color: transparent !important;
-    -webkit-touch-callout: none;
-    outline: none !important;
-    user-select: none;
-}
-.category-tab:active {
-    transform: scale(0.96);
-}
-.category-tab.active {
-    background: var(--primary);
-    color: #fff;
-    border-color: var(--primary);
-    box-shadow: 0 4px 12px var(--primary-glow);
-}
-.category-tab:hover:not(.active) {
-    background: rgba(255,255,255,0.06);
-    color: var(--text-primary);
-}
+        .category-tab {
+            flex: 1;
+            text-align: center;
+            padding: 6px 2px;
+            border-radius: 30px;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid var(--border-line);
+            color: var(--text-secondary);
+            font-size: 13px;
+            white-space: nowrap;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin: 0 2px;
+            -webkit-tap-highlight-color: transparent !important;
+            -webkit-touch-callout: none;
+            outline: none !important;
+            user-select: none;
+        }
+        .category-tab:active {
+            transform: scale(0.96);
+        }
+        .category-tab.active {
+            background: var(--primary);
+            color: #fff;
+            border-color: var(--primary);
+            box-shadow: 0 4px 12px var(--primary-glow);
+        }
+        .category-tab:hover:not(.active) {
+            background: rgba(255,255,255,0.06);
+            color: var(--text-primary);
+        }
 
         .search-box input {
             width: 100%;
@@ -510,6 +553,7 @@
             margin-bottom: 14px;
             font-size: 20px;
             flex-shrink: 0;
+            text-align: center;
         }
         .modal-search-box {
             margin-bottom: 12px;
@@ -549,18 +593,34 @@
         }
         .modal-list .manage-item .name {
             font-size: 14px;
+            flex: 1;
+            min-width: 0;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
         }
-        .modal-list .manage-item .btn-del {
+        .modal-list .manage-item .actions {
+            display: flex;
+            gap: 4px;
+            flex-shrink: 0;
+            margin-left: 8px;
+        }
+        .modal-list .manage-item .actions button {
             background: none;
             border: none;
             color: var(--text-weak);
             cursor: pointer;
-            font-size: 18px;
+            font-size: 17px;
             transition: 0.2s;
             padding: 2px 6px;
             border-radius: 20px;
+            line-height: 1;
         }
-        .modal-list .manage-item .btn-del:hover {
+        .modal-list .manage-item .actions .btn-edit:hover {
+            color: var(--primary);
+            background: var(--primary-soft);
+        }
+        .modal-list .manage-item .actions .btn-del:hover {
             color: #ff6b6b;
             background: rgba(255,107,107,0.1);
         }
@@ -585,21 +645,30 @@
             color: var(--primary);
         }
 
-        /* Toast */
-        .toast {
-            position: fixed;
-            left: 50%;
-            top: 30px;
-            transform: translateX(-50%);
-            background: var(--bg-card);
-            backdrop-filter: blur(12px);
-            padding: 10px 24px;
-            border-radius: 99px;
+        /* ---- 编辑弹窗 ---- */
+        .edit-form .form-row {
+            margin-bottom: 12px;
+        }
+        .edit-form .form-row label {
+            display: block;
+            margin-bottom: 4px;
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+        .edit-form .form-row input {
+            width: 100%;
+            padding: 10px 14px;
+            border-radius: var(--radius-sm);
+            background: rgba(0,0,0,0.15);
             border: 1px solid var(--border-line);
             color: var(--text-primary);
-            z-index: 9999;
-            display: none;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+            outline: none;
+            font-size: 14px;
+            transition: 0.2s;
+        }
+        .edit-form .form-row input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px var(--primary-soft);
         }
 
         /* ===== 新增电台弹窗 ===== */
@@ -648,7 +717,7 @@
             display: flex;
             flex-direction: column;
             gap: 12px;
-            padding: 8px 0 16px;
+            padding: 4px 0 16px;
         }
         .import-options .import-btn-option {
             padding: 14px 20px;
@@ -668,6 +737,7 @@
         }
         .import-options .import-btn-option .icon {
             font-size: 28px;
+            opacity: 0.8;
         }
         .import-options .import-btn-option .text .title {
             font-size: 16px;
@@ -715,9 +785,16 @@
             .player-row {
                 gap: 14px;
             }
+            .now-playing-wrapper {
+                margin-top: 14px;
+            }
             .now-playing {
                 font-size: 18px;
-                margin-top: 10px;
+            }
+            .toast {
+                font-size: 12px;
+                padding: 8px 18px;
+                top: 20px;
             }
             .category-tab {
                 font-size: 11px;
@@ -770,8 +847,8 @@
                 gap: 20px;
             }
             .disc-wrapper {
-                width: 160px;
-                height: 160px;
+                width: 220px;
+                height: 220px;
             }
             .btn-skip-disc {
                 width: 44px;
@@ -781,12 +858,19 @@
                 width: 20px;
                 height: 20px;
             }
+            .now-playing-wrapper {
+                margin-top: 12px;
+            }
             .now-playing {
                 font-size: 18px;
-                margin-top: 10px;
+            }
+            .toast {
+                font-size: 13px;
+                padding: 6px 16px;
+                top: 20px;
             }
             .header {
-                margin-bottom: 12px;
+                margin-bottom: 30px;
             }
             .header h1 {
                 font-size: 20px;
@@ -805,7 +889,7 @@
     <div class="radio-app" id="app">
         <!-- 头部 -->
         <div class="header">
-            <h1><span>📡</span>AnsonRadio</h1>
+            <h1><span>📡</span>Anson FM</h1>
             <div class="header-actions">
                 <button class="icon-btn" id="themeToggle" title="切换主题色">🎨</button>
                 <button class="icon-btn" id="darkModeToggle" title="切换明暗">🌓</button>
@@ -835,7 +919,11 @@
                     <svg viewBox="0 0 24 24"><path d="M8 4l8 8-8 8V4z M20 4v16"/></svg>
                 </button>
             </div>
-            <div class="now-playing" id="nowPlaying">未播放</div>
+
+            <!-- 播放状态标签 -->
+            <div class="now-playing-wrapper">
+                <span class="now-playing" id="nowPlaying">未播放</span>
+            </div>
         </div>
 
         <!-- ===== 功能栏：分类标签 + 搜索 ===== -->
@@ -903,18 +991,17 @@
     <!-- ===== 导入选择弹窗 ===== -->
     <div class="modal-mask" id="importModal">
         <div class="modal-box">
-            <h3>📥 导入电台</h3>
-            <p style="color:var(--text-secondary);font-size:14px;margin-bottom:12px;">请选择导入方式：</p>
+            <h3 style="text-align:center;">📥 导入电台</h3>
             <div class="import-options">
                 <div class="import-btn-option" id="importOverwrite">
-                    <span class="icon">🔄</span>
+                    <span class="icon">📄</span>
                     <div class="text">
                         <div class="title">覆盖导入</div>
                         <div class="desc">清空现有电台列表，用新数据完全替换</div>
                     </div>
                 </div>
                 <div class="import-btn-option" id="importAppend">
-                    <span class="icon">➕</span>
+                    <span class="icon">📋</span>
                     <div class="text">
                         <div class="title">追加导入</div>
                         <div class="desc">将新电台追加到现有列表末尾（重复ID自动跳过）</div>
@@ -927,7 +1014,7 @@
         </div>
     </div>
 
-    <!-- ===== 管理弹窗（含搜索） ===== -->
+    <!-- ===== 管理弹窗（含搜索 + 编辑功能） ===== -->
     <div class="modal-mask" id="manageModal">
         <div class="modal-box">
             <h3>⚙️ 管理电台</h3>
@@ -941,7 +1028,44 @@
         </div>
     </div>
 
-    <!-- Toast -->
+    <!-- ===== 编辑电台弹窗 ===== -->
+    <div class="modal-mask" id="editModal">
+        <div class="modal-box">
+            <h3>✏️ 编辑电台</h3>
+            <div class="edit-form">
+                <div class="form-row">
+                    <label>电台 ID（不可修改）</label>
+                    <input type="text" id="editId" disabled style="opacity:0.5;cursor:not-allowed;">
+                </div>
+                <div class="form-row">
+                    <label>电台名称 *</label>
+                    <input type="text" id="editName" placeholder="电台名称">
+                </div>
+                <div class="form-row">
+                    <label>所属城市</label>
+                    <input type="text" id="editCity" placeholder="城市">
+                </div>
+                <div class="form-row">
+                    <label>分类标签</label>
+                    <input type="text" id="editTag" placeholder="例如：广东 / 全国 / 交通 / 音乐 / 国际">
+                </div>
+                <div class="form-row">
+                    <label>直播流地址 (m3u8 / mp3) *</label>
+                    <input type="text" id="editStream" placeholder="http://...">
+                </div>
+                <div class="form-row">
+                    <label>台标图片 URL（选填）</label>
+                    <input type="text" id="editLogo" placeholder="https://...">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-line" id="closeEditModal">取消</button>
+                <button class="btn-fill" id="saveEditRadio">保存修改</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast（错误提示用） -->
     <div class="toast" id="toast"></div>
 
     <!-- 隐藏文件选择 -->
@@ -961,9 +1085,11 @@
         let currentPlayingId = null;
         let currentFilter = "all";
         let volumeValue = 80;
+        let editingRadioId = null;
+        let errorTimer = null;   // 保留防抖定时器
 
         const initRadioList = [
-            { "id":"test001","name":"喜马拉雅测试","area":"全国","city":"网络","tag":"音乐","stream":"http://live.xmcdn.com/live/248/64.m3u8","logo":"","desc":"喜马拉雅测试流" },
+            { "id":"test001","name":"羊城交通广播","area":"广东","city":"广州","tag":"交通","stream":"http://live.xmcdn.com/live/248/64.m3u8","logo":"","desc":"广东羊城交通广播" },
             { "id":"cnr1","name":"中国之声","area":"全国","city":"北京","tag":"全国","stream":"http://satellitepull.cnr.cn/live/wxzgzs/playlist.m3u8","logo":"","desc":"中央人民广播电台中国之声" },
             { "id":"cnr3","name":"音乐之声","area":"全国","city":"北京","tag":"音乐","stream":"http://satellitepull.cnr.cn/live/wxyyzs/playlist.m3u8","logo":"","desc":"中央人民广播电台音乐之声" },
             { "id":"hitfm","name":"HIT FM","area":"国际","city":"北京","tag":"国际","stream":"http://sk.cri.cn/887.m3u8","logo":"","desc":"中国国际广播电台HIT FM" }
@@ -990,12 +1116,33 @@
             document.getElementById("audioPlayer").volume = volumeValue / 100;
         }
 
-        function showToast(msg, time = 2800) {
+        // ---- Toast 提示（用于错误和其他非播放状态提示） ----
+        function showToast(msg, time = 2000) {
             const t = document.getElementById("toast");
-            t.innerText = msg;
-            t.style.display = "block";
-            clearTimeout(t._timer);
-            t._timer = setTimeout(() => t.style.display = "none", time);
+            // 清除之前的定时器
+            if (t._timer) {
+                clearTimeout(t._timer);
+                t._timer = null;
+            }
+            t.textContent = msg;
+            t.className = 'toast error';  // 错误样式（红色文字）
+            t.style.display = 'block';
+            t._timer = setTimeout(function() {
+                t.style.display = 'none';
+                t.className = 'toast';
+                t._timer = null;
+            }, time);
+        }
+
+        // ---- 隐藏 Toast（用于播放成功时主动消除） ----
+        function hideToast() {
+            const t = document.getElementById("toast");
+            if (t._timer) {
+                clearTimeout(t._timer);
+                t._timer = null;
+            }
+            t.style.display = 'none';
+            t.className = 'toast';
         }
 
         // ============================================================
@@ -1069,7 +1216,6 @@
                 });
             });
 
-            // 更新底部收藏按钮的高亮状态
             const favBtn = document.getElementById('btnFav');
             if (currentFilter === 'fav') {
                 favBtn.classList.add('active-fav');
@@ -1089,6 +1235,13 @@
         function updatePlayState(state) {
             if (state) {
                 discWrapper.classList.add('playing');
+                // 播放成功后，如果有错误提示（Toast）正在显示，立即隐藏
+                hideToast();
+                // 清除防抖定时器
+                if (errorTimer) {
+                    clearTimeout(errorTimer);
+                    errorTimer = null;
+                }
             } else {
                 discWrapper.classList.remove('playing');
             }
@@ -1099,6 +1252,11 @@
             audioPlayer.pause();
             audioPlayer.src = '';
             updatePlayState(false);
+            // 清除防抖定时器
+            if (errorTimer) {
+                clearTimeout(errorTimer);
+                errorTimer = null;
+            }
         }
 
         function fallbackToHLS(url) {
@@ -1118,7 +1276,7 @@
             hlsInstance.on(Hls.Events.ERROR, (e, data) => {
                 if (data.fatal) {
                     let msg = "加载失败";
-                    if (data.type === Hls.ErrorTypes.NETWORK_ERROR) msg = "网络错误/跨域";
+                    if (data.type === Hls.ErrorTypes.NETWORK_ERROR) msg = "网络错误跨域";
                     else if (data.type === Hls.ErrorTypes.MEDIA_ERROR) msg = "媒体解析错误";
                     showToast(msg);
                     if (hlsInstance) { hlsInstance.destroy(); hlsInstance = null; }
@@ -1129,12 +1287,13 @@
             audioPlayer.addEventListener('playing', () => updatePlayState(true));
             audioPlayer.addEventListener('pause', () => { if (!audioPlayer.ended) updatePlayState(false); });
             audioPlayer.addEventListener('ended', () => updatePlayState(false));
-            audioPlayer.addEventListener('error', () => {
+             /* =====audioPlayer.addEventListener('error', () => {
                 showToast("播放错误");
                 updatePlayState(false);
-            });
+            });===== */
         }
 
+        // ---------- 主播放函数 ----------
         function playRadio(radioId) {
             const radio = radioDataSource.find(r => r.id === radioId);
             if (!radio) { showToast("找不到电台"); return; }
@@ -1142,6 +1301,12 @@
             stopPlayback();
             currentPlayingId = radioId;
             nowPlaying.textContent = radio.name;
+            // 清除任何待处理的错误提示
+            hideToast();
+            if (errorTimer) {
+                clearTimeout(errorTimer);
+                errorTimer = null;
+            }
 
             if (!historyList.includes(radioId)) {
                 historyList.unshift(radioId);
@@ -1152,12 +1317,16 @@
             renderStationList();
 
             const streamUrl = radio.stream.trim();
-            if (!streamUrl) { showToast("直播地址为空"); return; }
+            if (!streamUrl) {
+                showToast("直播地址为空");
+                return;
+            }
 
             const isM3U8 = streamUrl.includes('.m3u8') || streamUrl.includes('m3u8');
             const nativeHlsSupport = audioPlayer.canPlayType('application/vnd.apple.mpegurl') ||
                                      audioPlayer.canPlayType('audio/mpegurl');
 
+            // ---------- 播放策略 ----------
             if (isM3U8 && nativeHlsSupport) {
                 audioPlayer.src = streamUrl;
                 audioPlayer.play().then(() => {
@@ -1187,10 +1356,12 @@
                 audioPlayer.addEventListener('playing', () => updatePlayState(true));
                 audioPlayer.addEventListener('pause', () => { if (!audioPlayer.ended) updatePlayState(false); });
                 audioPlayer.addEventListener('ended', () => updatePlayState(false));
-                audioPlayer.addEventListener('error', () => {
+
+
+               /* ===== audioPlayer.addEventListener('error', () => {
                     showToast("播放错误");
                     updatePlayState(false);
-                });
+                });===== */
             }
         }
 
@@ -1206,7 +1377,10 @@
             if (audioPlayer.paused) {
                 audioPlayer.play().then(() => {
                     updatePlayState(true);
-                }).catch(() => playRadio(currentPlayingId));
+                }).catch(() => {
+                    showToast("无法播放此流");
+                    updatePlayState(false);
+                });
             } else {
                 audioPlayer.pause();
                 updatePlayState(false);
@@ -1242,7 +1416,7 @@
         }
 
         // ============================================================
-        // 管理功能（含搜索）
+        // 管理功能（含搜索 + 编辑）
         // ============================================================
         function openManageModal() {
             document.getElementById("manageSearchInput").value = "";
@@ -1268,9 +1442,18 @@
                 div.className = "manage-item";
                 div.innerHTML = `
                     <span class="name">${radio.name} (${radio.city || '未知'})</span>
-                    <button class="btn-del" data-id="${radio.id}">❌</button>
+                    <div class="actions">
+                        <button class="btn-edit" data-id="${radio.id}" title="编辑">✏️</button>
+                        <button class="btn-del" data-id="${radio.id}" title="删除">❌</button>
+                    </div>
                 `;
                 list.appendChild(div);
+            });
+            list.querySelectorAll('.btn-edit').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const id = this.dataset.id;
+                    openEditModal(id);
+                });
             });
             list.querySelectorAll('.btn-del').forEach(btn => {
                 btn.addEventListener('click', function() {
@@ -1298,7 +1481,46 @@
         }
 
         // ============================================================
-        // 导入功能（覆盖 / 追加）
+        // 编辑功能
+        // ============================================================
+        function openEditModal(id) {
+            const radio = radioDataSource.find(r => r.id === id);
+            if (!radio) { showToast("找不到电台"); return; }
+            editingRadioId = id;
+            document.getElementById("editId").value = radio.id;
+            document.getElementById("editName").value = radio.name || "";
+            document.getElementById("editCity").value = radio.city || "";
+            document.getElementById("editTag").value = radio.tag || "";
+            document.getElementById("editStream").value = radio.stream || "";
+            document.getElementById("editLogo").value = radio.logo || "";
+            document.getElementById("editModal").classList.add("open");
+        }
+
+        function saveEditRadio() {
+            if (!editingRadioId) { showToast("没有选中要编辑的电台"); return; }
+            const name = document.getElementById("editName").value.trim();
+            const stream = document.getElementById("editStream").value.trim();
+            if (!name || !stream) { showToast("名称和地址不能为空"); return; }
+            const radio = radioDataSource.find(r => r.id === editingRadioId);
+            if (!radio) { showToast("电台不存在"); return; }
+            radio.name = name;
+            radio.city = document.getElementById("editCity").value.trim() || "未知";
+            radio.tag = document.getElementById("editTag").value.trim() || "自定义";
+            radio.stream = stream;
+            radio.logo = document.getElementById("editLogo").value.trim() || "";
+            Storage.save("ansonradio_list", radioDataSource);
+            document.getElementById("editModal").classList.remove("open");
+            if (currentPlayingId === editingRadioId) {
+                nowPlaying.textContent = radio.name;
+            }
+            renderStationList();
+            const kw = document.getElementById("manageSearchInput").value;
+            renderManageList(kw);
+            showToast("修改已保存");
+        }
+
+        // ============================================================
+        // 导入功能
         // ============================================================
         let importMode = null;
 
@@ -1329,7 +1551,6 @@
                     }
                     arr.forEach(item => {
                         if (!item.id || !item.name || !item.stream) return;
-                        // 追加模式：跳过已存在的ID
                         if (importMode === "append") {
                             if (radioDataSource.find(r => r.id === item.id)) return;
                         }
@@ -1427,7 +1648,6 @@
         // 事件绑定
         // ============================================================
         function bindEvents() {
-            // 分类标签
             document.querySelectorAll('.category-tab').forEach(tab => {
                 tab.addEventListener('click', function() {
                     document.querySelectorAll('.category-tab').forEach(t => t.classList.remove('active'));
@@ -1437,22 +1657,18 @@
                 });
             });
 
-            // 搜索
             document.getElementById('searchInput').addEventListener('input', renderStationList);
 
-            // 播放控制
             discWrapper.addEventListener('click', togglePlay);
             document.getElementById('prevBtn').addEventListener('click', prevStation);
             document.getElementById('nextBtn').addEventListener('click', nextStation);
 
-            // 底部收藏按钮
             document.getElementById('btnFav').addEventListener('click', function() {
                 document.querySelectorAll('.category-tab').forEach(t => t.classList.remove('active'));
                 currentFilter = "fav";
                 renderStationList();
             });
 
-            // 主题色切换
             document.getElementById('themeToggle').addEventListener('click', (e) => {
                 e.stopPropagation();
                 document.getElementById('themePicker').classList.toggle('open');
@@ -1468,14 +1684,12 @@
                 });
             });
 
-            // 明暗切换
             document.getElementById('darkModeToggle').addEventListener('click', function() {
                 document.body.classList.toggle('light-mode');
                 const mode = document.body.classList.contains('light-mode') ? 'light' : 'dark';
                 Storage.save("ansonradio_theme", mode);
             });
 
-            // 新增弹窗
             document.getElementById('btnAddRadio').addEventListener('click', () => {
                 document.getElementById('addRadioModal').classList.add('open');
             });
@@ -1491,14 +1705,12 @@
                 }
             });
 
-            // 导入弹窗
             document.getElementById('btnImport').addEventListener('click', openImportModal);
             document.getElementById('importCancel').addEventListener('click', closeImportModal);
             document.getElementById('importModal').addEventListener('click', (e) => {
                 if (e.target === e.currentTarget) closeImportModal();
             });
 
-            // 导入方式选择
             document.getElementById('importOverwrite').addEventListener('click', function() {
                 importMode = "overwrite";
                 document.getElementById('fileSelector').click();
@@ -1508,7 +1720,6 @@
                 document.getElementById('fileSelector').click();
             });
 
-            // 文件选择处理
             document.getElementById('fileSelector').addEventListener('change', function(e) {
                 const file = e.target.files[0];
                 if (file && importMode) {
@@ -1519,10 +1730,8 @@
                 }
             });
 
-            // 导出
             document.getElementById('btnExport').addEventListener('click', exportJson);
 
-            // 管理弹窗
             document.getElementById('btnManage').addEventListener('click', openManageModal);
             document.getElementById('closeManageModal').addEventListener('click', () => {
                 document.getElementById('manageModal').classList.remove('open');
@@ -1536,7 +1745,16 @@
                 renderManageList(this.value);
             });
 
-            // 键盘快捷键（空格）
+            document.getElementById('closeEditModal').addEventListener('click', () => {
+                document.getElementById('editModal').classList.remove('open');
+            });
+            document.getElementById('editModal').addEventListener('click', (e) => {
+                if (e.target === e.currentTarget) {
+                    document.getElementById('editModal').classList.remove('open');
+                }
+            });
+            document.getElementById('saveEditRadio').addEventListener('click', saveEditRadio);
+
             document.addEventListener('keydown', (e) => {
                 if (e.target.tagName === 'INPUT') return;
                 if (e.key === ' ' || e.key === 'Space') {
