@@ -760,12 +760,7 @@
             margin-top: 2px;
         }
 
-        /* /* ============================================================
-   移动端竖屏适配（宽度 ≤ 640px）【推荐方案】
-   顶部：系统安全区 + 基础间距
-   页面容器底部：紧贴屏幕0留白；底部操作栏单独避让手势条
-   ============================================================ */
-@media (max-width: 640px) {
+        /* @media (max-width: 640px) {
     body {
         padding: 0;
         overscroll-behavior: none;
@@ -778,17 +773,12 @@
         border-radius: 32px;
         box-shadow: none;
         border: none;
-        /* 顶部：基础间距 + 系统状态栏安全区，取最大值 */
+        /* 顶部：基础间距 + 系统状态栏安全区 */
         padding-top: max(16px, env(safe-area-inset-top, 0px));
-        /* 底部：基础固定间距【不再叠加safe-area，实现贴近屏幕】 */
-        padding-bottom: 12px;
+        /* 底部固定极小间距，完全不读取系统底部安全区，紧贴屏幕 */
+        padding-bottom: 0px;
         padding-left: max(12px, env(safe-area-inset-left, 0px));
         padding-right: max(12px, env(safe-area-inset-right, 0px));
-    }
-
-    /* 重点：给底部操作栏额外增加底部安全内边距，防止按钮被iPhone手势条遮挡 */
-    .bottom-actions {
-        padding-bottom: env(safe-area-inset-bottom, 0px);
     }
 
     .player-display {
