@@ -496,7 +496,7 @@
             display: flex;
             justify-content: center;
             gap: 8px;
-            margin-top: 18px;
+            margin-top: 22px;
             flex-shrink: 0;
             flex-wrap: wrap;
         }
@@ -1569,7 +1569,7 @@
                     Storage.save("ansonradio_list", radioDataSource);
                     renderStationList();
                     closeImportModal();
-                    showToast(`${importMode === "overwrite" ? "覆盖" : "追加"}导入成功，共导入 ${count} 个电台`);
+                    showToast(`${importMode === "overwrite" ? "覆盖" : "追加"}导入成功共导入 ${count} 个电台`);
                 } catch (err) {
                     showToast("JSON 文件格式不正确");
                     console.error(err);
