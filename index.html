@@ -49,16 +49,28 @@
             --border-line: rgba(0, 0, 0, 0.08);
         }
 
+        html, body {
+            height: 100%;
+            overflow: hidden;
+            margin: 0;
+            padding: 0;
+        }
+
         body {
             background: var(--bg-body);
             color: var(--text-primary);
-            min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
             padding: 20px;
             transition: background 0.4s ease;
             overscroll-behavior: none;
+            overflow: hidden;
+            height: 100dvh;
+            width: 100%;
+            position: fixed;
+            top: 0;
+            left: 0;
         }
 
         ::-webkit-scrollbar { width: 4px; }
@@ -93,7 +105,7 @@
             flex-shrink: 0;
         }
         .header h1 {
-            font-size: 19px;
+            font-size: 22px;
             font-weight: 600;
             letter-spacing: 0.3px;
             color: var(--primary);
@@ -180,7 +192,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 20px;
+            gap: 30px;
             width: 100%;
         }
 
@@ -294,7 +306,7 @@
         .toast {
             position: fixed;
             left: 50%;
-            top: 30px;
+            top: 40px;
             transform: translateX(-50%);
             background: var(--bg-card);
             backdrop-filter: blur(12px);
@@ -312,14 +324,12 @@
             text-align: center;
             max-width: 90%;
         }
-        /* Toast 错误状态（系统跟随） */
         .toast.error {
-    color: var(--primary);
-    border-color: var(--primary-border);
-    box-shadow: 0 8px 24px var(--primary-glow), 
-                inset 0 0 30px var(--primary-soft);  /* ← 新增：内发光 */
-    text-shadow: 0 0 10px rgba(255,255,255,0.05);    /* 可选：微弱文字光 */
-}
+            color: var(--primary);
+            border-color: var(--primary-border);
+            box-shadow: 0 8px 24px var(--primary-glow), inset 0 0 30px var(--primary-soft);
+            text-shadow: 0 0 10px rgba(255,255,255,0.05);
+        }
 
         /* ===== 功能栏：分类标签 + 搜索 ===== */
         .function-bar {
@@ -783,7 +793,7 @@
                 height: 18px;
             }
             .player-row {
-                gap: 14px;
+                gap: 16px;
             }
             .now-playing-wrapper {
                 margin-top: 14px;
@@ -794,7 +804,7 @@
             .toast {
                 font-size: 12px;
                 padding: 8px 18px;
-                top: 20px;
+                top: 30px;
             }
             .category-tab {
                 font-size: 11px;
@@ -844,7 +854,7 @@
                 justify-content: center;
             }
             .player-row {
-                gap: 20px;
+                gap: 41px;
             }
             .disc-wrapper {
                 width: 220px;
@@ -889,7 +899,7 @@
     <div class="radio-app" id="app">
         <!-- 头部 -->
         <div class="header">
-            <h1><span>📡</span>Anson FM</h1>
+            <h1><span>📡</span>AnsonFM</h1>
             <div class="header-actions">
                 <button class="icon-btn" id="themeToggle" title="切换主题色">🎨</button>
                 <button class="icon-btn" id="darkModeToggle" title="切换明暗">🌓</button>
@@ -1023,6 +1033,8 @@
             </div>
             <div class="modal-list" id="manageList"></div>
             <div class="modal-footer">
+                <!-- 清空按钮（在关闭按钮左边） -->
+                <button class="btn-line" id="clearAllBtn">🗑️ 清空</button>
                 <button class="btn-line" id="closeManageModal">关闭</button>
             </div>
         </div>
@@ -1086,7 +1098,7 @@
         let currentFilter = "all";
         let volumeValue = 80;
         let editingRadioId = null;
-        let errorTimer = null;   // 保留防抖定时器
+        let errorTimer = null;
 
         const initRadioList = [
             { "id":"test001","name":"羊城交通广播","area":"广东","city":"广州","tag":"交通","stream":"http://live.xmcdn.com/live/248/64.m3u8","logo":"","desc":"广东羊城交通广播" },
@@ -1116,16 +1128,15 @@
             document.getElementById("audioPlayer").volume = volumeValue / 100;
         }
 
-        // ---- Toast 提示（用于错误和其他非播放状态提示） ----
+        // ---- Toast 提示 ----
         function showToast(msg, time = 2000) {
             const t = document.getElementById("toast");
-            // 清除之前的定时器
             if (t._timer) {
                 clearTimeout(t._timer);
                 t._timer = null;
             }
             t.textContent = msg;
-            t.className = 'toast error';  // 错误样式（红色文字）
+            t.className = 'toast error';
             t.style.display = 'block';
             t._timer = setTimeout(function() {
                 t.style.display = 'none';
@@ -1134,7 +1145,6 @@
             }, time);
         }
 
-        // ---- 隐藏 Toast（用于播放成功时主动消除） ----
         function hideToast() {
             const t = document.getElementById("toast");
             if (t._timer) {
@@ -1235,9 +1245,7 @@
         function updatePlayState(state) {
             if (state) {
                 discWrapper.classList.add('playing');
-                // 播放成功后，如果有错误提示（Toast）正在显示，立即隐藏
                 hideToast();
-                // 清除防抖定时器
                 if (errorTimer) {
                     clearTimeout(errorTimer);
                     errorTimer = null;
@@ -1252,7 +1260,6 @@
             audioPlayer.pause();
             audioPlayer.src = '';
             updatePlayState(false);
-            // 清除防抖定时器
             if (errorTimer) {
                 clearTimeout(errorTimer);
                 errorTimer = null;
@@ -1287,10 +1294,6 @@
             audioPlayer.addEventListener('playing', () => updatePlayState(true));
             audioPlayer.addEventListener('pause', () => { if (!audioPlayer.ended) updatePlayState(false); });
             audioPlayer.addEventListener('ended', () => updatePlayState(false));
-             /* =====audioPlayer.addEventListener('error', () => {
-                showToast("播放错误");
-                updatePlayState(false);
-            });===== */
         }
 
         // ---------- 主播放函数 ----------
@@ -1301,7 +1304,6 @@
             stopPlayback();
             currentPlayingId = radioId;
             nowPlaying.textContent = radio.name;
-            // 清除任何待处理的错误提示
             hideToast();
             if (errorTimer) {
                 clearTimeout(errorTimer);
@@ -1326,7 +1328,6 @@
             const nativeHlsSupport = audioPlayer.canPlayType('application/vnd.apple.mpegurl') ||
                                      audioPlayer.canPlayType('audio/mpegurl');
 
-            // ---------- 播放策略 ----------
             if (isM3U8 && nativeHlsSupport) {
                 audioPlayer.src = streamUrl;
                 audioPlayer.play().then(() => {
@@ -1356,12 +1357,6 @@
                 audioPlayer.addEventListener('playing', () => updatePlayState(true));
                 audioPlayer.addEventListener('pause', () => { if (!audioPlayer.ended) updatePlayState(false); });
                 audioPlayer.addEventListener('ended', () => updatePlayState(false));
-
-
-               /* ===== audioPlayer.addEventListener('error', () => {
-                    showToast("播放错误");
-                    updatePlayState(false);
-                });===== */
             }
         }
 
@@ -1416,7 +1411,7 @@
         }
 
         // ============================================================
-        // 管理功能（含搜索 + 编辑）
+        // 管理功能
         // ============================================================
         function openManageModal() {
             document.getElementById("manageSearchInput").value = "";
@@ -1478,6 +1473,36 @@
             }
             renderStationList();
             showToast("已删除");
+        }
+
+        // ============================================================
+        // 清空全部电台
+        // ============================================================
+        function clearAllStations() {
+            if (radioDataSource.length === 0) {
+                showToast("列表已空，无需清空");
+                return;
+            }
+            if (!confirm("⚠️ 确定要清空全部电台吗？此操作不可撤销！")) return;
+
+            radioDataSource = [];
+            favList = [];
+            historyList = [];
+            Storage.save("ansonradio_list", radioDataSource);
+            Storage.save("ansonradio_fav", favList);
+            Storage.save("ansonradio_history", historyList);
+
+            // 重置播放状态
+            stopPlayback();
+            currentPlayingId = null;
+            nowPlaying.textContent = "未播放";
+            hideToast();
+
+            // 关闭管理弹窗
+            document.getElementById("manageModal").classList.remove("open");
+
+            renderStationList();
+            showToast("已清空全部电台", 2000);
         }
 
         // ============================================================
@@ -1744,6 +1769,9 @@
             document.getElementById('manageSearchInput').addEventListener('input', function() {
                 renderManageList(this.value);
             });
+
+            // ---- 清空按钮事件 ----
+            document.getElementById('clearAllBtn').addEventListener('click', clearAllStations);
 
             document.getElementById('closeEditModal').addEventListener('click', () => {
                 document.getElementById('editModal').classList.remove('open');
