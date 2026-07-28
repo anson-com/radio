@@ -7,16 +7,16 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <title>AnsonFM</title>
     <link href="https://fonts.googleapis.com/css2?family=Lobster&family=Pacifico&display=swap" rel="stylesheet">
-   <script>
-// 检测是否支持新版 HLS.js 所需的特性
-if (typeof Promise !== 'undefined' && typeof Symbol !== 'undefined') {
-    // 新设备加载最新版本
-    document.write('<script src="https://cdn.jsdelivr.net/npm/hls.js@latest"><\/script>');
-} else {
-    // 旧设备加载 0.14.17
-    document.write('<script src="https://cdn.jsdelivr.net/npm/hls.js@0.14.17/dist/hls.min.js"><\/script>');
-}
-</script>
+    <!-- Font Awesome 6 (免费) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        // 检测是否支持新版 HLS.js 所需的特性
+        if (typeof Promise !== 'undefined' && typeof Symbol !== 'undefined') {
+            document.write('<script src="https://cdn.jsdelivr.net/npm/hls.js@latest"><\/script>');
+        } else {
+            document.write('<script src="https://cdn.jsdelivr.net/npm/hls.js@0.14.17/dist/hls.min.js"><\/script>');
+        }
+    </script>
     <style>
         /* ===== 全局 ===== */
         * {
@@ -55,7 +55,7 @@ if (typeof Promise !== 'undefined' && typeof Symbol !== 'undefined') {
             --text-primary: #181c2c;
             --text-secondary: #444860;
             --text-weak: #868aa0;
-            --border-line: rgba(0,  0, 0, 0.08);
+            --border-line: rgba(0, 0, 0, 0.08);
         }
 
         body {
@@ -68,11 +68,15 @@ if (typeof Promise !== 'undefined' && typeof Symbol !== 'undefined') {
             padding: 20px;
             transition: background 0.4s ease;
             overscroll-behavior: none;
-            /* iOS 12.5.8 兼容：不用 position: fixed，用 flex 居中 */
         }
 
-        ::-webkit-scrollbar { width: 4px; }
-        ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 99px; }
+        ::-webkit-scrollbar {
+            width: 4px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 99px;
+        }
 
         /* ===== 主卡片 ===== */
         .radio-app {
@@ -118,7 +122,7 @@ if (typeof Promise !== 'undefined' && typeof Symbol !== 'undefined') {
             align-items: center;
         }
         .icon-btn {
-            background: rgba(255,255,255,0.04);
+            background: rgba(255, 255, 255, 0.04);
             border: 1px solid var(--border-line);
             border-radius: 30px;
             width: 36px;
@@ -154,14 +158,16 @@ if (typeof Promise !== 'undefined' && typeof Symbol !== 'undefined') {
             padding: 12px 16px;
             border-radius: 24px;
             border: 1px solid var(--border-line);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
             z-index: 100;
             gap: 10px;
             flex-wrap: wrap;
             width: 176px;
             justify-content: center;
         }
-        .theme-picker.open { display: flex; }
+        .theme-picker.open {
+            display: flex;
+        }
         .color-dot {
             width: 34px;
             height: 34px;
@@ -170,8 +176,13 @@ if (typeof Promise !== 'undefined' && typeof Symbol !== 'undefined') {
             cursor: pointer;
             transition: all 0.2s ease;
         }
-        .color-dot:hover { transform: scale(1.12); }
-        .color-dot.active { border-color: #fff; box-shadow: 0 0 16px rgba(255,255,255,0.2); }
+        .color-dot:hover {
+            transform: scale(1.12);
+        }
+        .color-dot.active {
+            border-color: #fff;
+            box-shadow: 0 0 16px rgba(255, 255, 255, 0.2);
+        }
 
         /* ============================================================
            播放器展示区
@@ -180,9 +191,8 @@ if (typeof Promise !== 'undefined' && typeof Symbol !== 'undefined') {
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
             flex-shrink: 0;
-            margin-bottom: 30px;
+            margin-bottom: 18px;
             min-height: 200px;
         }
 
@@ -214,7 +224,7 @@ if (typeof Promise !== 'undefined' && typeof Symbol !== 'undefined') {
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 12px 40px rgba(0,0,0,0.6), inset 0 -4px 8px rgba(0,0,0,0.6);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6), inset 0 -4px 8px rgba(0, 0, 0, 0.6);
             transition: box-shadow 0.4s ease;
             pointer-events: none;
         }
@@ -223,18 +233,18 @@ if (typeof Promise !== 'undefined' && typeof Symbol !== 'undefined') {
             height: 70px;
             border-radius: 50%;
             background: radial-gradient(circle at 40% 40%, #727a9e, #2a2f42);
-            box-shadow: inset 0 0 0 4px #1c1f2b, 0 0 0 6px rgba(255,255,255,0.03);
+            box-shadow: inset 0 0 0 4px #1c1f2b, 0 0 0 6px rgba(255, 255, 255, 0.03);
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 36px;
-            color: rgba(255,255,255,0.2);
+            color: rgba(255, 255, 255, 0.2);
             transition: all 0.5s ease;
             pointer-events: none;
             user-select: none;
         }
         .disc-wrapper.playing .disc {
-            box-shadow: 0 12px 60px var(--primary-glow), 0 0 100px rgba(124,141,255,0.12);
+            box-shadow: 0 12px 60px var(--primary-glow), 0 0 100px rgba(124, 141, 255, 0.12);
         }
         .disc-wrapper.playing .disc-inner {
             animation: spin 8s linear infinite;
@@ -242,12 +252,16 @@ if (typeof Promise !== 'undefined' && typeof Symbol !== 'undefined') {
             text-shadow: 0 0 20px var(--primary);
         }
         @keyframes spin {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
         }
 
         .btn-skip-disc {
-            background: rgba(255,255,255,0.04);
+            background: rgba(255, 255, 255, 0.04);
             border: 1px solid var(--border-line);
             border-radius: 50%;
             width: 48px;
@@ -264,7 +278,7 @@ if (typeof Promise !== 'undefined' && typeof Symbol !== 'undefined') {
         }
         .btn-skip-disc:hover {
             color: #fff;
-            background: rgba(255,255,255,0.08);
+            background: rgba(255, 255, 255, 0.08);
             border-color: var(--primary-border);
         }
         .btn-skip-disc:active {
@@ -277,15 +291,14 @@ if (typeof Promise !== 'undefined' && typeof Symbol !== 'undefined') {
             display: block;
         }
 
-       .now-playing-wrapper {
-    position: relative;
-    display: flex;          /* 改为 flex，配合 margin 居中 */
-    align-items: center;
-    justify-content: center;
-    margin: auto 0;         /* 上下自动平分空间，左右保持原样 */
-    width: auto;
-    max-width: 100%;
-}
+        .now-playing-wrapper {
+            position: relative;
+            display: inline-block;
+            margin-top: 12px;
+            margin-bottom: 12px;
+            width: auto;
+            max-width: 100%;
+        }
 
         .now-playing {
             font-size: 20px;
@@ -317,7 +330,7 @@ if (typeof Promise !== 'undefined' && typeof Symbol !== 'undefined') {
             color: var(--text-primary);
             z-index: 9999;
             display: none;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
             font-size: 14px;
             font-weight: 500;
             transition: background 0.3s ease, color 0.3s ease, border-color 0.3s ease;
@@ -328,7 +341,7 @@ if (typeof Promise !== 'undefined' && typeof Symbol !== 'undefined') {
             color: var(--primary);
             border-color: var(--primary-border);
             box-shadow: 0 8px 24px var(--primary-glow), inset 0 0 30px var(--primary-soft);
-            text-shadow: 0 0 10px rgba(255,255,255,0.05);
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.05);
         }
 
         /* ===== 功能栏 ===== */
@@ -340,37 +353,42 @@ if (typeof Promise !== 'undefined' && typeof Symbol !== 'undefined') {
             flex-shrink: 0;
         }
 
+        /* ===== 分类菜单 - 横向滚动 ===== */
         .category-tabs {
             display: flex;
-            gap: 0;
-            overflow-x: visible;
-            padding: 0;
+            gap: 6px;
+            overflow-x: auto;
+            overflow-y: hidden;
+            padding: 2px 0 6px 0;
             scrollbar-width: none;
             -webkit-overflow-scrolling: touch;
-            justify-content: space-between;
+            flex-wrap: nowrap;
+            justify-content: flex-start;
+            -webkit-tap-highlight-color: transparent;
         }
-        .category-tabs::-webkit-scrollbar { display: none; }
+        .category-tabs::-webkit-scrollbar {
+            display: none;
+        }
 
         .category-tab {
-            flex: 1;
+            flex: 0 0 auto;
             text-align: center;
-            padding: 6px 2px;
+            padding: 6px 14px;
             border-radius: 30px;
-            background: rgba(255,255,255,0.04);
+            background: rgba(255, 255, 255, 0.04);
             border: 1px solid var(--border-line);
             color: var(--text-secondary);
             font-size: 13px;
             white-space: nowrap;
             cursor: pointer;
             transition: all 0.2s ease;
-            margin: 0 2px;
             -webkit-tap-highlight-color: transparent !important;
             -webkit-touch-callout: none;
             outline: none !important;
             user-select: none;
         }
         .category-tab:active {
-            transform: scale(0.96);
+            transform: scale(0.94);
         }
         .category-tab.active {
             background: var(--primary);
@@ -379,15 +397,15 @@ if (typeof Promise !== 'undefined' && typeof Symbol !== 'undefined') {
             box-shadow: 0 4px 12px var(--primary-glow);
         }
         .category-tab:hover:not(.active) {
-            background: rgba(255,255,255,0.06);
+            background: rgba(255, 255, 255, 0.06);
             color: var(--text-primary);
         }
 
         .search-box input {
             width: 100%;
-            padding: 10px 16px;
+            padding: 6px 16px;
             border-radius: 30px;
-            background: rgba(255,255,255,0.04);
+            background: rgba(255, 255, 255, 0.04);
             border: 1px solid var(--border-line);
             color: var(--text-primary);
             font-size: 14px;
@@ -421,14 +439,14 @@ if (typeof Promise !== 'undefined' && typeof Symbol !== 'undefined') {
             justify-content: space-between;
             align-items: center;
             padding: 8px 12px 8px 16px;
-            background: rgba(255,255,255,0.03);
+            background: rgba(255, 255, 255, 0.03);
             border-radius: var(--radius-md);
             border: 1px solid var(--border-line);
             transition: all 0.25s ease;
             cursor: pointer;
         }
         .station-item:hover {
-            background: rgba(255,255,255,0.06);
+            background: rgba(255, 255, 255, 0.06);
             border-color: var(--primary-border);
         }
         .station-item.active {
@@ -465,33 +483,49 @@ if (typeof Promise !== 'undefined' && typeof Symbol !== 'undefined') {
         }
         .station-item .actions {
             display: flex;
-            gap: 6px;
+            gap: 12px;
             flex-shrink: 0;
-            margin-left: 6px;
+            margin-left: 8px;
+            align-items: center;
         }
-        .station-item .actions button {
-            background: none;
-            border: none;
-            color: var(--text-weak);
-            cursor: pointer;
-            font-size: 15px;
-            padding: 3px;
-            border-radius: 20px;
-            transition: all 0.2s ease;
-            line-height: 1;
+      .station-item .actions button {
+    background: none;
+    border: none;
+    color: var(--text-weak);
+    cursor: pointer;
+    font-size: 12px;
+    padding: 3px;
+    border-radius: 20px;
+    transition: all 0.2s ease;
+    line-height: 1;
+}
+        /* 所有操作按钮 hover 统一为主色柔光 */
+        .station-item .actions button:hover {
+            color: var(--primary);
+            background: var(--primary-soft);
+            transform: scale(1.05);
         }
         .station-item .actions .fav-btn.active {
             color: #ff6b6b;
         }
         .station-item .actions .fav-btn:hover {
             color: #ff6b6b;
-            background: rgba(255,107,107,0.1);
+            background: rgba(255, 107, 107, 0.1);
         }
         .station-item .actions .play-btn {
             color: var(--text-secondary);
         }
         .station-item .actions .play-btn:hover {
             color: var(--primary);
+            background: var(--primary-soft);
+        }
+        /* 删除按钮（仅全部分类） */
+        .station-item .actions .del-btn {
+            color: var(--text-weak);
+        }
+        .station-item .actions .del-btn:hover {
+            color: var(--primary);
+            background: var(--primary-soft);
         }
 
         .empty-state {
@@ -501,51 +535,108 @@ if (typeof Promise !== 'undefined' && typeof Symbol !== 'undefined') {
             font-size: 14px;
         }
 
-        /* ===== 底部操作栏 ===== */
-        .bottom-actions {
-            display: flex;
-            justify-content: center;
-            gap: 8px;
-            margin-top: 22px;
-            flex-shrink: 0;
-            flex-wrap: wrap;
-        }
-        .bottom-actions .btn-action {
-            background: rgba(255,255,255,0.04);
-            border: 1px solid var(--border-line);
-            padding: 6px 14px;
-            border-radius: 30px;
-            color: var(--text-secondary);
-            font-size: 12px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
-        .bottom-actions .btn-action:hover {
-            background: var(--primary-soft);
-            border-color: var(--primary);
-            color: var(--primary);
-        }
-        .bottom-actions .btn-action.active-fav {
-            background: var(--primary-soft);
-            border-color: var(--primary);
-            color: var(--primary);
-        }
+        /* ===== 底部导航栏（新样式） ===== */
+.bottom-actions {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    background: var(--bg-card);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-top: 1px solid var(--border-line);
+    border-radius: 20px 20px 0 0;        /* 顶部圆角，更柔和 */
+    margin-top: 12px;
+    padding: 6px 4px 10px;
+    flex-shrink: 0;
+    gap: 0;
+    /* 去掉之前的 flex-wrap 和 gap，改为 space-around */
+}
+
+.bottom-actions .btn-action {
+    background: transparent;
+    border: none;
+    padding: 6px 0 4px 0;
+    border-radius: 0;
+    color: var(--text-weak);
+    font-size: 11px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    flex-direction: column;      /* 图标在上，文字在下 */
+    align-items: center;
+    gap: 2px;
+    flex: 1;
+    text-align: center;
+    position: relative;
+    min-height: 48px;
+    justify-content: center;
+}
+
+.bottom-actions .btn-action i {
+    font-size: 20px;            /* 图标稍大，更醒目 */
+    transition: transform 0.2s ease;
+}
+
+.bottom-actions .btn-action span {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.3px;
+    opacity: 0.8;
+}
+
+/* hover 效果 (桌面) */
+.bottom-actions .btn-action:hover {
+    color: var(--text-secondary);
+    background: transparent;
+    transform: translateY(-1px);
+}
+.bottom-actions .btn-action:hover i {
+    transform: scale(1.05);
+}
+
+/* 激活/选中状态 */
+.bottom-actions .btn-action.active-fav,
+.bottom-actions .btn-action:active {
+    color: var(--primary);
+}
+.bottom-actions .btn-action.active-fav i,
+.bottom-actions .btn-action:active i {
+    transform: scale(1.1);
+}
+
+/* 小圆点指示器（选中时显示） */
+.bottom-actions .btn-action.active-fav::after {
+    content: '';
+    position: absolute;
+    bottom: 0px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 16px;
+    height: 3px;
+    background: var(--primary);
+    border-radius: 3px;
+    box-shadow: 0 0 8px var(--primary-glow);
+}
+
+/* 针对收藏按钮特殊处理（因为会动态切换 active-fav） */
+.bottom-actions .btn-action#btnFav.active-fav {
+    color: var(--primary);
+}
 
         /* ===== 弹窗 ===== */
         .modal-mask {
             position: fixed;
             inset: 0;
-            background: rgba(0,0,0,0.7);
+            background: rgba(0, 0, 0, 0.7);
             backdrop-filter: blur(8px);
             display: none;
             align-items: center;
             justify-content: center;
             z-index: 999;
         }
-        .modal-mask.open { display: flex; }
+        .modal-mask.open {
+            display: flex;
+        }
 
         .modal-box {
             width: min(92%, 440px);
@@ -554,7 +645,7 @@ if (typeof Promise !== 'undefined' && typeof Symbol !== 'undefined') {
             border-radius: var(--radius-lg);
             padding: var(--gap-lg);
             border: 1px solid var(--border-line);
-            box-shadow: 0 40px 80px rgba(0,0,0,0.5);
+            box-shadow: 0 40px 80px rgba(0, 0, 0, 0.5);
             max-height: 80vh;
             display: flex;
             flex-direction: column;
@@ -572,8 +663,8 @@ if (typeof Promise !== 'undefined' && typeof Symbol !== 'undefined') {
         .modal-search-box input {
             width: 100%;
             padding: 8px 14px;
-            border-radius: 30px;
-            background: rgba(0,0,0,0.15);
+            border-radius: 30px;   /* 与搜索框一致 */
+            background: rgba(0, 0, 0, 0.15);
             border: 1px solid var(--border-line);
             color: var(--text-primary);
             font-size: 13px;
@@ -611,7 +702,7 @@ if (typeof Promise !== 'undefined' && typeof Symbol !== 'undefined') {
         }
         .modal-list .manage-item .actions {
             display: flex;
-            gap: 4px;
+            gap: 6px;
             flex-shrink: 0;
             margin-left: 8px;
         }
@@ -620,19 +711,32 @@ if (typeof Promise !== 'undefined' && typeof Symbol !== 'undefined') {
             border: none;
             color: var(--text-weak);
             cursor: pointer;
-            font-size: 17px;
-            transition: 0.2s;
-            padding: 2px 6px;
+            font-size: 14px;
+            padding: 6px;
             border-radius: 20px;
+            transition: all 0.25s ease;
             line-height: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+        }
+        .modal-list .manage-item .actions .btn-edit {
+            color: var(--text-weak);
         }
         .modal-list .manage-item .actions .btn-edit:hover {
             color: var(--primary);
             background: var(--primary-soft);
+            transform: scale(1.05);
+        }
+        .modal-list .manage-item .actions .btn-del {
+            color: var(--text-weak);
         }
         .modal-list .manage-item .actions .btn-del:hover {
-            color: #ff6b6b;
-            background: rgba(255,107,107,0.1);
+            color: var(--primary);
+            background: var(--primary-soft);
+            transform: scale(1.05);
         }
 
         .modal-footer {
@@ -643,16 +747,33 @@ if (typeof Promise !== 'undefined' && typeof Symbol !== 'undefined') {
         }
         .btn-line {
             padding: 8px 18px;
-            border-radius: var(--radius-sm);
+            border-radius: 30px;   /* 与搜索框圆角一致 */
             background: transparent;
             border: 1px solid var(--border-line);
             color: var(--text-secondary);
             cursor: pointer;
             transition: 0.2s;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
         }
         .btn-line:hover {
             border-color: var(--primary);
             color: var(--primary);
+            background: var(--primary-soft);
+        }
+
+        /* 清空按钮特殊样式（警示色） */
+        .btn-line.btn-clear {
+            color: #ff6b6b;
+            border-color: rgba(255, 107, 107, 0.3);
+            background: rgba(255, 0, 0, 0.06);
+        }
+        .btn-line.btn-clear:hover {
+            background: rgba(255, 0, 0, 0.12);
+            border-color: #ff6b6b;
+            color: #ff4757;
         }
 
         /* ---- 编辑弹窗 ---- */
@@ -669,7 +790,7 @@ if (typeof Promise !== 'undefined' && typeof Symbol !== 'undefined') {
             width: 100%;
             padding: 10px 14px;
             border-radius: var(--radius-sm);
-            background: rgba(0,0,0,0.15);
+            background: rgba(0, 0, 0, 0.15);
             border: 1px solid var(--border-line);
             color: var(--text-primary);
             outline: none;
@@ -695,7 +816,7 @@ if (typeof Promise !== 'undefined' && typeof Symbol !== 'undefined') {
             width: 100%;
             padding: 10px 14px;
             border-radius: var(--radius-sm);
-            background: rgba(0,0,0,0.15);
+            background: rgba(0, 0, 0, 0.15);
             border: 1px solid var(--border-line);
             color: var(--text-primary);
             outline: none;
@@ -722,7 +843,7 @@ if (typeof Promise !== 'undefined' && typeof Symbol !== 'undefined') {
             box-shadow: 0 8px 20px var(--primary-glow);
         }
 
-        /* 导入选择弹窗 */
+        /* 导入选择弹窗 (无标题) */
         .import-options {
             display: flex;
             flex-direction: column;
@@ -733,7 +854,7 @@ if (typeof Promise !== 'undefined' && typeof Symbol !== 'undefined') {
             padding: 14px 20px;
             border-radius: var(--radius-md);
             border: 1px solid var(--border-line);
-            background: rgba(255,255,255,0.03);
+            background: rgba(255, 255, 255, 0.03);
             cursor: pointer;
             transition: all 0.2s ease;
             text-align: left;
@@ -764,24 +885,23 @@ if (typeof Promise !== 'undefined' && typeof Symbol !== 'undefined') {
            移动端竖屏适配（宽度 ≤ 640px）
            ============================================================ */
         @media (max-width: 640px) {
-    body {
-        padding: 0;
-        overscroll-behavior: none;
-    }
-    .radio-app {
-        width: 100%;
-        max-width: 100%;
-        height: 100vh;
-        max-height: 100vh;
-        border-radius: 32px;
-        box-shadow: none;
-        border: none;
-        /* 明确设置顶部安全区 */
-        padding-top: max(16px, env(safe-area-inset-top));
-        padding-bottom: max(16px, env(safe-area-inset-bottom));
-        padding-left: max(12px, env(safe-area-inset-left));
-        padding-right: max(12px, env(safe-area-inset-right));
-    }
+            body {
+                padding: 0;
+                overscroll-behavior: none;
+            }
+            .radio-app {
+                width: 100%;
+                max-width: 100%;
+                height: 100vh;
+                max-height: 100vh;
+                border-radius: 32px;
+                box-shadow: none;
+                border: none;
+                padding-top: max(16px, env(safe-area-inset-top));
+                padding-bottom: max(16px, env(safe-area-inset-bottom));
+                padding-left: max(12px, env(safe-area-inset-left));
+                padding-right: max(12px, env(safe-area-inset-right));
+            }
             .player-display {
                 min-height: 170px;
             }
@@ -809,18 +929,23 @@ if (typeof Promise !== 'undefined' && typeof Symbol !== 'undefined') {
             }
             .category-tab {
                 font-size: 11px;
-                padding: 4px 10px;
+                padding: 4px 12px;
             }
             .bottom-actions .btn-action {
-                font-size: 11px;
-                padding: 5px 10px;
+                font-size: 12px;
+                padding: 4px 10px;
+                height: 32px;
             }
-            .bottom-actions {
-                gap: 6px;
+            .bottom-actions .btn-action i {
+                font-size: 13px;
+            }
+            .station-item .actions button {
+                font-size: 13px;
+                padding: 4px;
+              
             }
         }
 
-    
         /* ============================================================
            手机横屏适配
            ============================================================ */
@@ -892,8 +1017,10 @@ if (typeof Promise !== 'undefined' && typeof Symbol !== 'undefined') {
                 height: 32px;
                 font-size: 16px;
             }
-        }============================================================
-           ✅ 平板端全屏沉浸式适配（iPad Air iOS 12.5.8 兼容）
+        }
+
+        /* ============================================================
+           ✅ 平板端全屏沉浸式适配
            ============================================================ */
         @media (min-width: 641px) and (max-width: 1024px) {
             body {
@@ -902,12 +1029,11 @@ if (typeof Promise !== 'undefined' && typeof Symbol !== 'undefined') {
                 align-items: flex-start;
                 justify-content: center;
                 background: var(--bg-body);
-                /* 移除 touch-action，避免点击卡顿 */
             }
             .radio-app {
                 max-width: 100% !important;
                 width: 100%;
-                height: 100vh;           /* 兼容旧系统：用 vh 替代 dvh */
+                height: 100vh;
                 max-height: 100vh;
                 border-radius: 0 !important;
                 padding: 20px 16px 0;
@@ -920,9 +1046,8 @@ if (typeof Promise !== 'undefined' && typeof Symbol !== 'undefined') {
                 overflow: hidden;
                 position: relative;
             }
-            /* 列表区域占满剩余空间 */
             .station-list-wrapper {
-                flex: 1 1 auto;         /* 用 auto 替代 0，兼容旧 WebKit */
+                flex: 1 1 auto;
                 overflow-y: auto;
                 min-height: 0;
                 -webkit-overflow-scrolling: touch;
@@ -932,13 +1057,12 @@ if (typeof Promise !== 'undefined' && typeof Symbol !== 'undefined') {
                 flex-shrink: 0;
                 padding-bottom: env(safe-area-inset-bottom, 12px);
             }
-           
             .now-playing {
                 font-size: 19px;
             }
             .category-tab {
                 font-size: 12px;
-                padding: 5px 2px;
+                padding: 5px 12px;
             }
             .bottom-actions .btn-action {
                 font-size: 12px;
@@ -992,14 +1116,16 @@ if (typeof Promise !== 'undefined' && typeof Symbol !== 'undefined') {
 
         <!-- ===== 功能栏 ===== -->
         <div class="function-bar">
+            <!-- 分类菜单 -->
             <div class="category-tabs" id="categoryTabs">
-                <span class="category-tab active" data-filter="all">全部</span>
-                <span class="category-tab" data-filter="gd">广东</span>
-                <span class="category-tab" data-filter="china">全国</span>
+                <span class="category-tab" data-filter="all">全部</span>
+                <span class="category-tab active" data-filter="gd">广东</span>
                 <span class="category-tab" data-filter="traffic">交通</span>
                 <span class="category-tab" data-filter="music">音乐</span>
+                <span class="category-tab" data-filter="news">新闻</span>
+                <span class="category-tab" data-filter="china">全国</span>
                 <span class="category-tab" data-filter="international">国际</span>
-                <span class="category-tab" data-filter="history">🕐 历史</span>
+                <span class="category-tab" data-filter="history"><i class="fa-regular fa-clock"></i> 历史</span>
             </div>
             <div class="search-box">
                 <input id="searchInput" placeholder="🔍 搜索电台名称或城市...">
@@ -1011,23 +1137,24 @@ if (typeof Promise !== 'undefined' && typeof Symbol !== 'undefined') {
             <div class="station-list" id="stationList"></div>
         </div>
 
-        <!-- ===== 底部操作栏 ===== -->
+        <!-- ===== 底部操作栏（统一使用 Font Awesome） ===== -->
         <div class="bottom-actions">
-            <button class="btn-action" id="btnAddRadio">➕ 新增</button>
-            <button class="btn-action" id="btnImport">📥 导入</button>
-            <button class="btn-action" id="btnExport">📤 导出</button>
-            <button class="btn-action" id="btnFav">❤️ 收藏</button>
-            <button class="btn-action" id="btnManage">⚙️ 管理</button>
+            <button class="btn-action" id="btnAddRadio"><i class="fa-solid fa-plus"></i> 新增</button>
+            <button class="btn-action" id="btnImport"><i class="fa-solid fa-file-import"></i> 导入</button>
+            <button class="btn-action" id="btnExport"><i class="fa-solid fa-file-export"></i> 导出</button>
+            <button class="btn-action" id="btnFav"><i class="fa-regular fa-heart"></i> 收藏</button>
+            <button class="btn-action" id="btnManage"><i class="fa-solid fa-sliders"></i> 管理</button>
         </div>
     </div>
 
     <!-- ===== 弹窗 ===== -->
+    <!-- 新增电台 -->
     <div class="modal-mask" id="addRadioModal">
         <div class="modal-box">
             <h3>📻 添加新电台</h3>
             <div class="form-row">
                 <label>电台名称 *</label>
-                <input type="text" id="formName" placeholder="例如：广东音乐之声">
+                <input type="text" id="formName" placeholder="例如：广东新闻广播">
             </div>
             <div class="form-row">
                 <label>所属城市</label>
@@ -1043,18 +1170,18 @@ if (typeof Promise !== 'undefined' && typeof Symbol !== 'undefined') {
             </div>
             <div class="form-row">
                 <label>分类标签</label>
-                <input type="text" id="formTag" placeholder="例如：广东 / 交通 / 音乐 / 国际">
+                <input type="text" id="formTag" placeholder="例如：广东 / 交通 / 音乐 / 新闻 / 国际">
             </div>
             <div class="modal-footer">
-                <button class="btn-line closeModal">取消</button>
-                <button class="btn-fill" id="saveRadio">保存</button>
+                <button class="btn-line closeModal"><i class="fa-regular fa-circle-xmark"></i> 取消</button>
+                <button class="btn-fill" id="saveRadio"><i class="fa-regular fa-floppy-disk"></i> 保存</button>
             </div>
         </div>
     </div>
 
+    <!-- 导入弹窗（无标题） -->
     <div class="modal-mask" id="importModal">
         <div class="modal-box">
-            <h3 style="text-align:center;">📥 导入电台</h3>
             <div class="import-options">
                 <div class="import-btn-option" id="importOverwrite">
                     <span class="icon">📄</span>
@@ -1072,11 +1199,12 @@ if (typeof Promise !== 'undefined' && typeof Symbol !== 'undefined') {
                 </div>
             </div>
             <div class="modal-footer">
-                <button class="btn-line" id="importCancel">取消</button>
+                <button class="btn-line" id="importCancel"><i class="fa-regular fa-circle-xmark"></i> 取消</button>
             </div>
         </div>
     </div>
 
+    <!-- 管理弹窗（清空按钮加警示色，圆角统一） -->
     <div class="modal-mask" id="manageModal">
         <div class="modal-box">
             <h3>⚙️ 管理电台</h3>
@@ -1085,11 +1213,13 @@ if (typeof Promise !== 'undefined' && typeof Symbol !== 'undefined') {
             </div>
             <div class="modal-list" id="manageList"></div>
             <div class="modal-footer">
-                <button class="btn-line" id="closeManageModal">关闭</button>
+                <button class="btn-line btn-clear" id="clearAllBtn"><i class="fa-regular fa-trash-can"></i> 清空</button>
+                <button class="btn-line" id="closeManageModal"><i class="fa-regular fa-circle-xmark"></i> 关闭</button>
             </div>
         </div>
     </div>
 
+    <!-- 编辑弹窗 -->
     <div class="modal-mask" id="editModal">
         <div class="modal-box">
             <h3>✏️ 编辑电台</h3>
@@ -1108,7 +1238,7 @@ if (typeof Promise !== 'undefined' && typeof Symbol !== 'undefined') {
                 </div>
                 <div class="form-row">
                     <label>分类标签</label>
-                    <input type="text" id="editTag" placeholder="例如：广东 / 全国 / 交通 / 音乐 / 国际">
+                    <input type="text" id="editTag" placeholder="例如：广东 / 全国 / 交通 / 音乐 / 新闻 / 国际">
                 </div>
                 <div class="form-row">
                     <label>直播流地址 (m3u8 / mp3) *</label>
@@ -1120,8 +1250,8 @@ if (typeof Promise !== 'undefined' && typeof Symbol !== 'undefined') {
                 </div>
             </div>
             <div class="modal-footer">
-                <button class="btn-line" id="closeEditModal">取消</button>
-                <button class="btn-fill" id="saveEditRadio">保存修改</button>
+                <button class="btn-line" id="closeEditModal"><i class="fa-regular fa-circle-xmark"></i> 取消</button>
+                <button class="btn-fill" id="saveEditRadio"><i class="fa-regular fa-floppy-disk"></i> 保存修改</button>
             </div>
         </div>
     </div>
@@ -1134,735 +1264,804 @@ if (typeof Promise !== 'undefined' && typeof Symbol !== 'undefined') {
     <audio id="audioPlayer"></audio>
 
     <script>
-    (function() {
-        "use strict";
+        (function() {
+            "use strict";
 
-        // ============================================================
-        // 数据层
-        // ============================================================
-        let radioDataSource = [];
-        let favList = [];
-        let historyList = [];
-        let currentPlayingId = null;
-        let currentFilter = "all";
-        let volumeValue = 80;
-        let editingRadioId = null;
-        let errorTimer = null;
+            // ============================================================
+            // 数据层
+            // ============================================================
+            let radioDataSource = [];
+            let favList = [];
+            let historyList = [];
+            let currentPlayingId = null;
+            let currentFilter = "gd";
+            let volumeValue = 80;
+            let editingRadioId = null;
+            let errorTimer = null;
 
-        const initRadioList = [
-            { "id":"test001","name":"羊城交通广播","area":"广东","city":"广州","tag":"交通","stream":"http://live.xmcdn.com/live/248/64.m3u8","logo":"","desc":"广东羊城交通广播" },
-            { "id":"cnr1","name":"中国之声","area":"全国","city":"北京","tag":"全国","stream":"http://satellitepull.cnr.cn/live/wxzgzs/playlist.m3u8","logo":"","desc":"中央人民广播电台中国之声" },
-            { "id":"cnr3","name":"音乐之声","area":"全国","city":"北京","tag":"音乐","stream":"http://satellitepull.cnr.cn/live/wxyyzs/playlist.m3u8","logo":"","desc":"中央人民广播电台音乐之声" },
-            { "id":"hitfm","name":"HIT FM","area":"国际","city":"北京","tag":"国际","stream":"http://sk.cri.cn/887.m3u8","logo":"","desc":"中国国际广播电台HIT FM" }
-        ];
+            const initRadioList = [
+                { "id": "test001", "name": "羊城交通广播", "area": "广东", "city": "广州", "tag": "交通",
+                "stream": "http://live.xmcdn.com/live/248/64.m3u8", "logo": "", "desc": "广东羊城交通广播" },
+                { "id": "cnr1", "name": "中国之声", "area": "全国", "city": "北京", "tag": "全国",
+                    "stream": "http://satellitepull.cnr.cn/live/wxzgzs/playlist.m3u8", "logo": "",
+                "desc": "中央人民广播电台中国之声" },
+                { "id": "cnr3", "name": "音乐之声", "area": "全国", "city": "北京", "tag": "音乐",
+                    "stream": "http://satellitepull.cnr.cn/live/wxyyzs/playlist.m3u8", "logo": "",
+                "desc": "中央人民广播电台音乐之声" },
+                { "id": "hitfm", "name": "HIT FM", "area": "国际", "city": "北京", "tag": "国际",
+                    "stream": "http://sk.cri.cn/887.m3u8", "logo": "", "desc": "中国国际广播电台HIT FM" }
+            ];
 
-        const Storage = {
-            save(key, data) { localStorage.setItem(key, JSON.stringify(data)); },
-            load(key) { const s = localStorage.getItem(key); return s ? JSON.parse(s) : null; }
-        };
+            const Storage = {
+                save(key, data) { localStorage.setItem(key, JSON.stringify(data)); },
+                load(key) { const s = localStorage.getItem(key); return s ? JSON.parse(s) : null; }
+            };
 
-        function initData() {
-            let saved = Storage.load("ansonradio_list");
-            if (!saved || saved.length === 0) {
-                radioDataSource = [...initRadioList];
-                Storage.save("ansonradio_list", radioDataSource);
-            } else {
-                radioDataSource = saved;
+            function initData() {
+                let saved = Storage.load("ansonradio_list");
+                if (!saved || saved.length === 0) {
+                    radioDataSource = [...initRadioList];
+                    Storage.save("ansonradio_list", radioDataSource);
+                } else {
+                    radioDataSource = saved;
+                }
+                favList = Storage.load("ansonradio_fav") || [];
+                historyList = Storage.load("ansonradio_history") || [];
+                const theme = Storage.load("ansonradio_theme");
+                if (theme === "light") document.body.classList.add("light-mode");
+                volumeValue = Storage.load("ansonradio_volume") ?? 80;
+                document.getElementById("audioPlayer").volume = volumeValue / 100;
             }
-            favList = Storage.load("ansonradio_fav") || [];
-            historyList = Storage.load("ansonradio_history") || [];
-            const theme = Storage.load("ansonradio_theme");
-            if (theme === "light") document.body.classList.add("light-mode");
-            volumeValue = Storage.load("ansonradio_volume") ?? 80;
-            document.getElementById("audioPlayer").volume = volumeValue / 100;
-        }
 
-        function showToast(msg, time = 2000) {
-            const t = document.getElementById("toast");
-            if (t._timer) {
-                clearTimeout(t._timer);
-                t._timer = null;
+            function showToast(msg, time = 2000) {
+                const t = document.getElementById("toast");
+                if (t._timer) {
+                    clearTimeout(t._timer);
+                    t._timer = null;
+                }
+                t.textContent = msg;
+                t.className = 'toast error';
+                t.style.display = 'block';
+                t._timer = setTimeout(function() {
+                    t.style.display = 'none';
+                    t.className = 'toast';
+                    t._timer = null;
+                }, time);
             }
-            t.textContent = msg;
-            t.className = 'toast error';
-            t.style.display = 'block';
-            t._timer = setTimeout(function() {
+
+            function hideToast() {
+                const t = document.getElementById("toast");
+                if (t._timer) {
+                    clearTimeout(t._timer);
+                    t._timer = null;
+                }
                 t.style.display = 'none';
                 t.className = 'toast';
-                t._timer = null;
-            }, time);
-        }
-
-        function hideToast() {
-            const t = document.getElementById("toast");
-            if (t._timer) {
-                clearTimeout(t._timer);
-                t._timer = null;
-            }
-            t.style.display = 'none';
-            t.className = 'toast';
-        }
-
-        // ============================================================
-        // 渲染
-        // ============================================================
-        function renderStationList() {
-            const container = document.getElementById("stationList");
-            const keyword = document.getElementById("searchInput").value.trim().toLowerCase();
-
-            let renderData = [...radioDataSource];
-
-            if (currentFilter === "gd") renderData = renderData.filter(item => item.area === "广东" || item.tag === "广东");
-            else if (currentFilter === "china") renderData = renderData.filter(item => item.area === "全国" || item.tag === "全国");
-            else if (currentFilter === "traffic") renderData = renderData.filter(item => item.tag && item.tag.includes("交通"));
-            else if (currentFilter === "music") renderData = renderData.filter(item => item.tag && item.tag.includes("音乐"));
-            else if (currentFilter === "international") renderData = renderData.filter(item => item.tag && item.tag.includes("国际"));
-            else if (currentFilter === "fav") renderData = renderData.filter(item => favList.includes(item.id));
-            else if (currentFilter === "history") renderData = historyList.map(id => radioDataSource.find(r => r.id === id)).filter(Boolean);
-
-            if (keyword) {
-                renderData = renderData.filter(item =>
-                    item.name.toLowerCase().includes(keyword) ||
-                    (item.city && item.city.toLowerCase().includes(keyword))
-                );
             }
 
-            container.innerHTML = "";
-            if (renderData.length === 0) {
-                container.innerHTML = `<div class="empty-state">📭 没有找到电台</div>`;
-                return;
-            }
+            // ============================================================
+            // 渲染
+            // ============================================================
+            function renderStationList() {
+                const container = document.getElementById("stationList");
+                const keyword = document.getElementById("searchInput").value.trim().toLowerCase();
 
-            renderData.forEach((radio, idx) => {
-                const isPlaying = radio.id === currentPlayingId;
-                const isFav = favList.includes(radio.id);
+                let renderData = [...radioDataSource];
 
-                const item = document.createElement("div");
-                item.className = `station-item ${isPlaying ? 'active' : ''}`;
-                item.dataset.id = radio.id;
+                if (currentFilter === "gd") renderData = renderData.filter(item => item.area === "广东" || item.tag ===
+                    "广东");
+                else if (currentFilter === "china") renderData = renderData.filter(item => item.area === "全国" || item
+                    .tag === "全国");
+                else if (currentFilter === "traffic") renderData = renderData.filter(item => item.tag && item.tag.includes(
+                    "交通"));
+                else if (currentFilter === "music") renderData = renderData.filter(item => item.tag && item.tag.includes(
+                    "音乐"));
+                else if (currentFilter === "news") renderData = renderData.filter(item => item.tag && item.tag.includes(
+                    "新闻"));
+                else if (currentFilter === "international") renderData = renderData.filter(item => item.tag && item.tag
+                    .includes("国际"));
+                else if (currentFilter === "fav") renderData = renderData.filter(item => favList.includes(item.id));
+                else if (currentFilter === "history") renderData = historyList.map(id => radioDataSource.find(r => r.id ===
+                    id)).filter(Boolean);
 
-                item.innerHTML = `
-                    <div class="info">
-                        <span class="idx">${idx+1}</span>
-                        <span class="name">${radio.name}</span>
-                        <span class="city">${radio.city || ''}</span>
-                    </div>
-                    <div class="actions">
-                        <button class="fav-btn ${isFav ? 'active' : ''}" data-id="${radio.id}">${isFav ? '❤️' : '🤍'}</button>
-                        <button class="play-btn" data-id="${radio.id}">▶</button>
-                    </div>
-                `;
+                if (keyword) {
+                    renderData = renderData.filter(item =>
+                        item.name.toLowerCase().includes(keyword) ||
+                        (item.city && item.city.toLowerCase().includes(keyword))
+                    );
+                }
 
-                item.addEventListener('click', (e) => {
-                    if (e.target.closest('.actions')) return;
-                    playRadio(radio.id);
+                container.innerHTML = "";
+                if (renderData.length === 0) {
+                    container.innerHTML = `<div class="empty-state">📭 没有找到电台</div>`;
+                    return;
+                }
+
+                const isAllCategory = (currentFilter === 'all');
+
+                renderData.forEach((radio, idx) => {
+                    const isPlaying = radio.id === currentPlayingId;
+                    const isFav = favList.includes(radio.id);
+
+                    const item = document.createElement("div");
+                    item.className = `station-item ${isPlaying ? 'active' : ''}`;
+                    item.dataset.id = radio.id;
+
+                    // 构建 actions
+                    let actionsHtml = `
+                        <button class="fav-btn ${isFav ? 'active' : ''}" data-id="${radio.id}" title="收藏">
+                            <i class="${isFav ? 'fa-solid' : 'fa-regular'} fa-heart"></i>
+                        </button>
+                        <button class="play-btn" data-id="${radio.id}" title="播放">
+                            <i class="fa-solid fa-play"></i>
+                        </button>
+                    `;
+                    if (isAllCategory) {
+                        actionsHtml += `<button class="del-btn" data-id="${radio.id}" title="删除"><i class="fa-regular fa-trash-can"></i></button>`;
+                    }
+
+                    item.innerHTML = `
+                        <div class="info">
+                            <span class="idx">${idx+1}</span>
+                            <span class="name">${radio.name}</span>
+                            <span class="city">${radio.city || ''}</span>
+                        </div>
+                        <div class="actions">
+                            ${actionsHtml}
+                        </div>
+                    `;
+
+                    item.addEventListener('click', (e) => {
+                        if (e.target.closest('.actions')) return;
+                        playRadio(radio.id);
+                    });
+
+                    container.appendChild(item);
                 });
 
-                container.appendChild(item);
-            });
-
-            container.querySelectorAll('.fav-btn').forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    toggleFav(btn.dataset.id);
+                // 事件绑定
+                container.querySelectorAll('.fav-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        toggleFav(btn.dataset.id);
+                    });
                 });
-            });
-            container.querySelectorAll('.play-btn').forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    playRadio(btn.dataset.id);
+                container.querySelectorAll('.play-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        playRadio(btn.dataset.id);
+                    });
                 });
-            });
+                container.querySelectorAll('.del-btn').forEach(btn => {
+                    btn.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        const id = this.dataset.id;
+                        const radio = radioDataSource.find(r => r.id === id);
+                        if (!radio) return;
+                        if (!confirm(`确定删除「${radio.name}」吗？`)) return;
+                        deleteRadioById(id);
+                        renderStationList();
+                    });
+                });
 
-            const favBtn = document.getElementById('btnFav');
-            if (currentFilter === 'fav') {
-                favBtn.classList.add('active-fav');
-            } else {
-                favBtn.classList.remove('active-fav');
+                const favBtn = document.getElementById('btnFav');
+                if (currentFilter === 'fav') {
+                    favBtn.classList.add('active-fav');
+                    favBtn.innerHTML = '<i class="fa-solid fa-heart"></i> 收藏'; // 实心表示激活
+                } else {
+                    favBtn.classList.remove('active-fav');
+                    favBtn.innerHTML = '<i class="fa-regular fa-heart"></i> 收藏';
+                }
             }
-        }
 
-        // ============================================================
-        // 播放引擎（兼容 iOS 12.5.8：Safari 原生 HLS 优先）
-        // ============================================================
-        let hlsInstance = null;
-        const audioPlayer = document.getElementById("audioPlayer");
-        const discWrapper = document.getElementById("discWrapper");
-        const nowPlaying = document.getElementById("nowPlaying");
+            // ============================================================
+            // 播放引擎
+            // ============================================================
+            let hlsInstance = null;
+            const audioPlayer = document.getElementById("audioPlayer");
+            const discWrapper = document.getElementById("discWrapper");
+            const nowPlaying = document.getElementById("nowPlaying");
 
-        function updatePlayState(state) {
-            if (state) {
-                discWrapper.classList.add('playing');
+            function updatePlayState(state) {
+                if (state) {
+                    discWrapper.classList.add('playing');
+                    hideToast();
+                    if (errorTimer) {
+                        clearTimeout(errorTimer);
+                        errorTimer = null;
+                    }
+                } else {
+                    discWrapper.classList.remove('playing');
+                }
+            }
+
+            function stopPlayback() {
+                if (hlsInstance) { hlsInstance.destroy();
+                    hlsInstance = null; }
+                audioPlayer.pause();
+                audioPlayer.src = '';
+                updatePlayState(false);
+                if (errorTimer) {
+                    clearTimeout(errorTimer);
+                    errorTimer = null;
+                }
+            }
+
+            function fallbackToHLS(url) {
+                if (hlsInstance) { hlsInstance.destroy();
+                    hlsInstance = null; }
+                hlsInstance = new Hls({ enableWorker: true, lowLatencyMode: true });
+                hlsInstance.loadSource(url);
+                hlsInstance.attachMedia(audioPlayer);
+
+                hlsInstance.on(Hls.Events.MANIFEST_PARSED, () => {
+                    audioPlayer.play().then(() => {
+                        updatePlayState(true);
+                    }).catch(() => {
+                        updatePlayState(true);
+                    });
+                });
+
+                hlsInstance.on(Hls.Events.ERROR, (e, data) => {
+                    if (data.fatal) {
+                        let msg = "加载失败";
+                        if (data.type === Hls.ErrorTypes.NETWORK_ERROR) msg = "网络错误跨域";
+                        else if (data.type === Hls.ErrorTypes.MEDIA_ERROR) msg = "媒体解析错误";
+                        showToast(msg);
+                        if (hlsInstance) { hlsInstance.destroy();
+                            hlsInstance = null; }
+                        updatePlayState(false);
+                    }
+                });
+
+                audioPlayer.addEventListener('playing', () => updatePlayState(true));
+                audioPlayer.addEventListener('pause', () => { if (!audioPlayer.ended) updatePlayState(false); });
+                audioPlayer.addEventListener('ended', () => updatePlayState(false));
+            }
+
+            function playRadio(radioId) {
+                const radio = radioDataSource.find(r => r.id === radioId);
+                if (!radio) { showToast("找不到电台"); return; }
+
+                stopPlayback();
+                currentPlayingId = radioId;
+                nowPlaying.textContent = radio.name;
                 hideToast();
                 if (errorTimer) {
                     clearTimeout(errorTimer);
                     errorTimer = null;
                 }
-            } else {
-                discWrapper.classList.remove('playing');
+
+                if (!historyList.includes(radioId)) {
+                    historyList.unshift(radioId);
+                    if (historyList.length > 30) historyList.pop();
+                    Storage.save("ansonradio_history", historyList);
+                }
+
+                renderStationList();
+
+                const streamUrl = radio.stream.trim();
+                if (!streamUrl) {
+                    showToast("直播地址为空");
+                    return;
+                }
+
+                const isM3U8 = streamUrl.includes('.m3u8') || streamUrl.includes('m3u8');
+                const nativeHlsSupport = audioPlayer.canPlayType('application/vnd.apple.mpegurl') ||
+                    audioPlayer.canPlayType('audio/mpegurl');
+                const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+
+                if (isM3U8 && (nativeHlsSupport || isIOS)) {
+                    audioPlayer.src = streamUrl;
+                    audioPlayer.play().then(() => {
+                        updatePlayState(true);
+                    }).catch((err) => {
+                        console.warn('原生HLS播放失败，降级到HLS.js:', err);
+                        fallbackToHLS(streamUrl);
+                    });
+                    audioPlayer.addEventListener('playing', () => updatePlayState(true));
+                    audioPlayer.addEventListener('pause', () => { if (!audioPlayer.ended) updatePlayState(false); });
+                    audioPlayer.addEventListener('ended', () => updatePlayState(false));
+                    audioPlayer.addEventListener('error', () => {
+                        console.warn('原生HLS报错，尝试降级');
+                        if (hlsInstance) { hlsInstance.destroy();
+                            hlsInstance = null; }
+                        fallbackToHLS(streamUrl);
+                    });
+                } else if (isM3U8 && Hls.isSupported()) {
+                    fallbackToHLS(streamUrl);
+                } else {
+                    audioPlayer.src = streamUrl;
+                    audioPlayer.play().then(() => {
+                        updatePlayState(true);
+                    }).catch(() => {
+                        showToast("无法播放此流");
+                        updatePlayState(false);
+                    });
+                    audioPlayer.addEventListener('playing', () => updatePlayState(true));
+                    audioPlayer.addEventListener('pause', () => { if (!audioPlayer.ended) updatePlayState(false); });
+                    audioPlayer.addEventListener('ended', () => updatePlayState(false));
+                }
             }
-        }
 
-        function stopPlayback() {
-            if (hlsInstance) { hlsInstance.destroy(); hlsInstance = null; }
-            audioPlayer.pause();
-            audioPlayer.src = '';
-            updatePlayState(false);
-            if (errorTimer) {
-                clearTimeout(errorTimer);
-                errorTimer = null;
-            }
-        }
-
-        function fallbackToHLS(url) {
-            if (hlsInstance) { hlsInstance.destroy(); hlsInstance = null; }
-            hlsInstance = new Hls({ enableWorker: true, lowLatencyMode: true });
-            hlsInstance.loadSource(url);
-            hlsInstance.attachMedia(audioPlayer);
-
-            hlsInstance.on(Hls.Events.MANIFEST_PARSED, () => {
-                audioPlayer.play().then(() => {
-                    updatePlayState(true);
-                }).catch(() => {
-                    updatePlayState(true);
-                });
-            });
-
-            hlsInstance.on(Hls.Events.ERROR, (e, data) => {
-                if (data.fatal) {
-                    let msg = "加载失败";
-                    if (data.type === Hls.ErrorTypes.NETWORK_ERROR) msg = "网络错误跨域";
-                    else if (data.type === Hls.ErrorTypes.MEDIA_ERROR) msg = "媒体解析错误";
-                    showToast(msg);
-                    if (hlsInstance) { hlsInstance.destroy(); hlsInstance = null; }
+            // ============================================================
+            // 控制函数
+            // ============================================================
+            function togglePlay() {
+                if (!currentPlayingId) {
+                    if (radioDataSource.length > 0) playRadio(radioDataSource[0].id);
+                    else showToast("请先添加电台");
+                    return;
+                }
+                if (audioPlayer.paused) {
+                    audioPlayer.play().then(() => {
+                        updatePlayState(true);
+                    }).catch(() => {
+                        showToast("无法播放此流");
+                        updatePlayState(false);
+                    });
+                } else {
+                    audioPlayer.pause();
                     updatePlayState(false);
                 }
-            });
-
-            audioPlayer.addEventListener('playing', () => updatePlayState(true));
-            audioPlayer.addEventListener('pause', () => { if (!audioPlayer.ended) updatePlayState(false); });
-            audioPlayer.addEventListener('ended', () => updatePlayState(false));
-        }
-
-        // ---------- 主播放函数 ----------
-        function playRadio(radioId) {
-            const radio = radioDataSource.find(r => r.id === radioId);
-            if (!radio) { showToast("找不到电台"); return; }
-
-            stopPlayback();
-            currentPlayingId = radioId;
-            nowPlaying.textContent = radio.name;
-            hideToast();
-            if (errorTimer) {
-                clearTimeout(errorTimer);
-                errorTimer = null;
             }
 
-            if (!historyList.includes(radioId)) {
-                historyList.unshift(radioId);
-                if (historyList.length > 30) historyList.pop();
+            function prevStation() {
+                if (radioDataSource.length === 0) return;
+                if (!currentPlayingId) { playRadio(radioDataSource[0].id); return; }
+                const idx = radioDataSource.findIndex(r => r.id === currentPlayingId);
+                if (idx === -1) { playRadio(radioDataSource[0].id); return; }
+                let newIdx = idx - 1;
+                if (newIdx < 0) newIdx = radioDataSource.length - 1;
+                playRadio(radioDataSource[newIdx].id);
+            }
+
+            function nextStation() {
+                if (radioDataSource.length === 0) return;
+                if (!currentPlayingId) { playRadio(radioDataSource[0].id); return; }
+                const idx = radioDataSource.findIndex(r => r.id === currentPlayingId);
+                if (idx === -1) { playRadio(radioDataSource[0].id); return; }
+                let newIdx = idx + 1;
+                if (newIdx >= radioDataSource.length) newIdx = 0;
+                playRadio(radioDataSource[newIdx].id);
+            }
+
+            function toggleFav(id) {
+                const idx = favList.indexOf(id);
+                if (idx > -1) favList.splice(idx, 1);
+                else favList.push(id);
+                Storage.save("ansonradio_fav", favList);
+                renderStationList();
+            }
+
+            // ============================================================
+            // 管理功能
+            // ============================================================
+            function openManageModal() {
+                document.getElementById("manageSearchInput").value = "";
+                renderManageList("");
+                document.getElementById("manageModal").classList.add("open");
+                setTimeout(() => document.getElementById("manageSearchInput").focus(), 100);
+            }
+
+            function renderManageList(keyword) {
+                const list = document.getElementById("manageList");
+                let data = [...radioDataSource];
+                if (keyword && keyword.trim() !== "") {
+                    const kw = keyword.trim().toLowerCase();
+                    data = data.filter(item => item.name.toLowerCase().includes(kw));
+                }
+                list.innerHTML = "";
+                if (data.length === 0) {
+                    list.innerHTML = '<div style="text-align:center;color:var(--text-weak);padding:30px 0;">暂无电台</div>';
+                    return;
+                }
+                data.forEach(radio => {
+                    const div = document.createElement("div");
+                    div.className = "manage-item";
+                    div.innerHTML = `
+                        <span class="name">${radio.name} (${radio.city || '未知'})</span>
+                        <div class="actions">
+                            <button class="btn-edit" data-id="${radio.id}" title="编辑"><i class="fa-regular fa-pen-to-square"></i></button>
+                            <button class="btn-del" data-id="${radio.id}" title="删除"><i class="fa-regular fa-trash-can"></i></button>
+                        </div>
+                    `;
+                    list.appendChild(div);
+                });
+                list.querySelectorAll('.btn-edit').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const id = this.dataset.id;
+                        openEditModal(id);
+                    });
+                });
+                list.querySelectorAll('.btn-del').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const id = this.dataset.id;
+                        if (!confirm(`确定删除「${radioDataSource.find(r=>r.id===id).name}」吗？`)) return;
+                        deleteRadioById(id);
+                        const kw = document.getElementById("manageSearchInput").value;
+                        renderManageList(kw);
+                    });
+                });
+            }
+
+            function deleteRadioById(id) {
+                const idx = radioDataSource.findIndex(r => r.id === id);
+                if (idx === -1) return;
+                radioDataSource.splice(idx, 1);
+                Storage.save("ansonradio_list", radioDataSource);
+                if (currentPlayingId === id) {
+                    stopPlayback();
+                    currentPlayingId = null;
+                    nowPlaying.textContent = "未播放";
+                }
+                renderStationList();
+                showToast("已删除");
+            }
+
+            // ============================================================
+            // 清空功能（二次确认）
+            // ============================================================
+            function clearAllStations() {
+                if (radioDataSource.length === 0) {
+                    showToast("列表已空，无需清空");
+                    document.getElementById("manageModal").classList.remove("open");
+                    return;
+                }
+                if (!confirm("⚠️ 确定要清空全部电台吗？此操作不可撤销！")) return;
+
+                radioDataSource = [];
+                favList = [];
+                historyList = [];
+                Storage.save("ansonradio_list", radioDataSource);
+                Storage.save("ansonradio_fav", favList);
                 Storage.save("ansonradio_history", historyList);
-            }
 
-            renderStationList();
-
-            const streamUrl = radio.stream.trim();
-            if (!streamUrl) {
-                showToast("直播地址为空");
-                return;
-            }
-
-            const isM3U8 = streamUrl.includes('.m3u8') || streamUrl.includes('m3u8');
-            const nativeHlsSupport = audioPlayer.canPlayType('application/vnd.apple.mpegurl') ||
-                                     audioPlayer.canPlayType('audio/mpegurl');
-
-            // ---- 检测是否为 iOS（含 iPad） ----
-            const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-
-            // ---------- 播放策略 ----------
-            if (isM3U8 && (nativeHlsSupport || isIOS)) {
-                // iOS Safari 原生支持 HLS，直接播放（最稳定）
-                audioPlayer.src = streamUrl;
-                audioPlayer.play().then(() => {
-                    updatePlayState(true);
-                }).catch((err) => {
-                    console.warn('原生HLS播放失败，降级到HLS.js:', err);
-                    fallbackToHLS(streamUrl);
-                });
-                audioPlayer.addEventListener('playing', () => updatePlayState(true));
-                audioPlayer.addEventListener('pause', () => { if (!audioPlayer.ended) updatePlayState(false); });
-                audioPlayer.addEventListener('ended', () => updatePlayState(false));
-                audioPlayer.addEventListener('error', () => {
-                    console.warn('原生HLS报错，尝试降级');
-                    if (hlsInstance) { hlsInstance.destroy(); hlsInstance = null; }
-                    fallbackToHLS(streamUrl);
-                });
-            } else if (isM3U8 && Hls.isSupported()) {
-                fallbackToHLS(streamUrl);
-            } else {
-                audioPlayer.src = streamUrl;
-                audioPlayer.play().then(() => {
-                    updatePlayState(true);
-                }).catch(() => {
-                    showToast("无法播放此流");
-                    updatePlayState(false);
-                });
-                audioPlayer.addEventListener('playing', () => updatePlayState(true));
-                audioPlayer.addEventListener('pause', () => { if (!audioPlayer.ended) updatePlayState(false); });
-                audioPlayer.addEventListener('ended', () => updatePlayState(false));
-            }
-        }
-
-        // ============================================================
-        // 控制函数
-        // ============================================================
-        function togglePlay() {
-            if (!currentPlayingId) {
-                if (radioDataSource.length > 0) playRadio(radioDataSource[0].id);
-                else showToast("请先添加电台");
-                return;
-            }
-            if (audioPlayer.paused) {
-                audioPlayer.play().then(() => {
-                    updatePlayState(true);
-                }).catch(() => {
-                    showToast("无法播放此流");
-                    updatePlayState(false);
-                });
-            } else {
-                audioPlayer.pause();
-                updatePlayState(false);
-            }
-        }
-
-        function prevStation() {
-            if (radioDataSource.length === 0) return;
-            if (!currentPlayingId) { playRadio(radioDataSource[0].id); return; }
-            const idx = radioDataSource.findIndex(r => r.id === currentPlayingId);
-            if (idx === -1) { playRadio(radioDataSource[0].id); return; }
-            let newIdx = idx - 1;
-            if (newIdx < 0) newIdx = radioDataSource.length - 1;
-            playRadio(radioDataSource[newIdx].id);
-        }
-
-        function nextStation() {
-            if (radioDataSource.length === 0) return;
-            if (!currentPlayingId) { playRadio(radioDataSource[0].id); return; }
-            const idx = radioDataSource.findIndex(r => r.id === currentPlayingId);
-            if (idx === -1) { playRadio(radioDataSource[0].id); return; }
-            let newIdx = idx + 1;
-            if (newIdx >= radioDataSource.length) newIdx = 0;
-            playRadio(radioDataSource[newIdx].id);
-        }
-
-        function toggleFav(id) {
-            const idx = favList.indexOf(id);
-            if (idx > -1) favList.splice(idx, 1);
-            else favList.push(id);
-            Storage.save("ansonradio_fav", favList);
-            renderStationList();
-        }
-
-        // ============================================================
-        // 管理功能
-        // ============================================================
-        function openManageModal() {
-            document.getElementById("manageSearchInput").value = "";
-            renderManageList("");
-            document.getElementById("manageModal").classList.add("open");
-            setTimeout(() => document.getElementById("manageSearchInput").focus(), 100);
-        }
-
-        function renderManageList(keyword) {
-            const list = document.getElementById("manageList");
-            let data = [...radioDataSource];
-            if (keyword && keyword.trim() !== "") {
-                const kw = keyword.trim().toLowerCase();
-                data = data.filter(item => item.name.toLowerCase().includes(kw));
-            }
-            list.innerHTML = "";
-            if (data.length === 0) {
-                list.innerHTML = '<div style="text-align:center;color:var(--text-weak);padding:30px 0;">暂无电台</div>';
-                return;
-            }
-            data.forEach(radio => {
-                const div = document.createElement("div");
-                div.className = "manage-item";
-                div.innerHTML = `
-                    <span class="name">${radio.name} (${radio.city || '未知'})</span>
-                    <div class="actions">
-                        <button class="btn-edit" data-id="${radio.id}" title="编辑">✏️</button>
-                        <button class="btn-del" data-id="${radio.id}" title="删除">❌</button>
-                    </div>
-                `;
-                list.appendChild(div);
-            });
-            list.querySelectorAll('.btn-edit').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const id = this.dataset.id;
-                    openEditModal(id);
-                });
-            });
-            list.querySelectorAll('.btn-del').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const id = this.dataset.id;
-                    if (!confirm(`确定删除「${radioDataSource.find(r=>r.id===id).name}」吗？`)) return;
-                    deleteRadioById(id);
-                    const kw = document.getElementById("manageSearchInput").value;
-                    renderManageList(kw);
-                });
-            });
-        }
-
-        function deleteRadioById(id) {
-            const idx = radioDataSource.findIndex(r => r.id === id);
-            if (idx === -1) return;
-            radioDataSource.splice(idx, 1);
-            Storage.save("ansonradio_list", radioDataSource);
-            if (currentPlayingId === id) {
                 stopPlayback();
                 currentPlayingId = null;
                 nowPlaying.textContent = "未播放";
-            }
-            renderStationList();
-            showToast("已删除");
-        }
-
-        // ============================================================
-        // 清空功能
-        // ============================================================
-        function clearAllStations() {
-            if (radioDataSource.length === 0) {
-                showToast("列表已空，无需清空");
-                return;
-            }
-            if (!confirm("⚠️ 确定要清空全部电台吗？此操作不可撤销！")) return;
-
-            radioDataSource = [];
-            favList = [];
-            historyList = [];
-            Storage.save("ansonradio_list", radioDataSource);
-            Storage.save("ansonradio_fav", favList);
-            Storage.save("ansonradio_history", historyList);
-
-            stopPlayback();
-            currentPlayingId = null;
-            nowPlaying.textContent = "未播放";
-            hideToast();
-            document.getElementById("manageModal").classList.remove("open");
-            renderStationList();
-            showToast("已清空全部电台", 2000);
-        }
-
-        // ============================================================
-        // 编辑功能
-        // ============================================================
-        function openEditModal(id) {
-            const radio = radioDataSource.find(r => r.id === id);
-            if (!radio) { showToast("找不到电台"); return; }
-            editingRadioId = id;
-            document.getElementById("editId").value = radio.id;
-            document.getElementById("editName").value = radio.name || "";
-            document.getElementById("editCity").value = radio.city || "";
-            document.getElementById("editTag").value = radio.tag || "";
-            document.getElementById("editStream").value = radio.stream || "";
-            document.getElementById("editLogo").value = radio.logo || "";
-            document.getElementById("editModal").classList.add("open");
-        }
-
-        function saveEditRadio() {
-            if (!editingRadioId) { showToast("没有选中要编辑的电台"); return; }
-            const name = document.getElementById("editName").value.trim();
-            const stream = document.getElementById("editStream").value.trim();
-            if (!name || !stream) { showToast("名称和地址不能为空"); return; }
-            const radio = radioDataSource.find(r => r.id === editingRadioId);
-            if (!radio) { showToast("电台不存在"); return; }
-            radio.name = name;
-            radio.city = document.getElementById("editCity").value.trim() || "未知";
-            radio.tag = document.getElementById("editTag").value.trim() || "自定义";
-            radio.stream = stream;
-            radio.logo = document.getElementById("editLogo").value.trim() || "";
-            Storage.save("ansonradio_list", radioDataSource);
-            document.getElementById("editModal").classList.remove("open");
-            if (currentPlayingId === editingRadioId) {
-                nowPlaying.textContent = radio.name;
-            }
-            renderStationList();
-            const kw = document.getElementById("manageSearchInput").value;
-            renderManageList(kw);
-            showToast("修改已保存");
-        }
-
-        // ============================================================
-        // 导入功能
-        // ============================================================
-        let importMode = null;
-
-        function openImportModal() {
-            importMode = null;
-            document.getElementById("importModal").classList.add("open");
-        }
-
-        function closeImportModal() {
-            document.getElementById("importModal").classList.remove("open");
-            document.getElementById("fileSelector").value = "";
-        }
-
-        function performImport(file) {
-            if (!importMode) {
-                showToast("请选择导入方式");
-                return;
-            }
-            const reader = new FileReader();
-            reader.onload = async function(e) {
-                try {
-                    const text = e.target.result;
-                    const arr = JSON.parse(text);
-                    if (!Array.isArray(arr)) throw new Error("格式错误");
-                    let count = 0;
-                    if (importMode === "overwrite") {
-                        radioDataSource = [];
-                    }
-                    arr.forEach(item => {
-                        if (!item.id || !item.name || !item.stream) return;
-                        if (importMode === "append") {
-                            if (radioDataSource.find(r => r.id === item.id)) return;
-                        }
-                        radioDataSource.push({
-                            id: item.id,
-                            name: item.name || "",
-                            area: item.area || "",
-                            city: item.city || "",
-                            tag: item.tag || "",
-                            stream: item.stream || "",
-                            logo: item.logo || "",
-                            desc: item.desc || ""
-                        });
-                        count++;
-                    });
-                    Storage.save("ansonradio_list", radioDataSource);
-                    renderStationList();
-                    closeImportModal();
-                    showToast(`${importMode === "overwrite" ? "覆盖" : "追加"}导入成功共导入 ${count} 个电台`);
-                } catch (err) {
-                    showToast("JSON 文件格式不正确");
-                    console.error(err);
-                }
-            };
-            reader.readAsText(file);
-        }
-
-        // ============================================================
-        // 导出功能
-        // ============================================================
-        function exportJson() {
-            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(radioDataSource, null, 2));
-            const a = document.createElement("a");
-            a.href = dataStr;
-            a.download = "AnsonRadio_备份.json";
-            a.click();
-            showToast("导出成功");
-        }
-
-        // ============================================================
-        // 新增电台
-        // ============================================================
-        function saveNewRadio() {
-            const name = document.getElementById("formName").value.trim();
-            const city = document.getElementById("formCity").value.trim();
-            const stream = document.getElementById("formStream").value.trim();
-            const logo = document.getElementById("formLogo").value.trim();
-            const tag = document.getElementById("formTag").value.trim();
-            if (!name || !stream) { showToast("名称和地址不能为空"); return; }
-            const newId = "auto_" + Date.now();
-            radioDataSource.push({
-                id: newId,
-                name,
-                city: city || "未知",
-                area: tag || "自定义",
-                tag: tag || "自定义",
-                stream,
-                logo,
-                desc: "手动添加"
-            });
-            Storage.save("ansonradio_list", radioDataSource);
-            document.getElementById("addRadioModal").classList.remove("open");
-            document.getElementById("formName").value = "";
-            document.getElementById("formCity").value = "";
-            document.getElementById("formStream").value = "";
-            document.getElementById("formLogo").value = "";
-            document.getElementById("formTag").value = "";
-            renderStationList();
-            showToast("添加成功");
-        }
-
-        // ============================================================
-        // 主题
-        // ============================================================
-        function setThemeColor(color) {
-            const root = document.documentElement;
-            const r = parseInt(color.slice(1,3),16), g = parseInt(color.slice(3,5),16), b = parseInt(color.slice(5,7),16);
-            root.style.setProperty('--primary', color);
-            root.style.setProperty('--primary-light', color);
-            root.style.setProperty('--primary-dark', color);
-            root.style.setProperty('--primary-glow', `rgba(${r},${g},${b},0.35)`);
-            root.style.setProperty('--primary-soft', `rgba(${r},${g},${b},0.12)`);
-            root.style.setProperty('--primary-border', `rgba(${r},${g},${b},0.25)`);
-            document.querySelectorAll('.color-dot').forEach(d => d.classList.remove('active'));
-            document.querySelector(`.color-dot[data-color="${color}"]`)?.classList.add('active');
-            localStorage.setItem('radioThemeColor', color);
-        }
-
-        function loadThemeColor() {
-            const saved = localStorage.getItem('radioThemeColor');
-            if (saved) setThemeColor(saved);
-        }
-
-        // ============================================================
-        // 事件绑定
-        // ============================================================
-        function bindEvents() {
-            document.querySelectorAll('.category-tab').forEach(tab => {
-                tab.addEventListener('click', function() {
-                    document.querySelectorAll('.category-tab').forEach(t => t.classList.remove('active'));
-                    this.classList.add('active');
-                    currentFilter = this.dataset.filter;
-                    renderStationList();
-                });
-            });
-
-            document.getElementById('searchInput').addEventListener('input', renderStationList);
-
-            discWrapper.addEventListener('click', togglePlay);
-            document.getElementById('prevBtn').addEventListener('click', prevStation);
-            document.getElementById('nextBtn').addEventListener('click', nextStation);
-
-            document.getElementById('btnFav').addEventListener('click', function() {
-                document.querySelectorAll('.category-tab').forEach(t => t.classList.remove('active'));
-                currentFilter = "fav";
+                hideToast();
+                document.getElementById("manageModal").classList.remove("open");
                 renderStationList();
-            });
+                showToast("已清空全部电台", 2000);
+            }
 
-            document.getElementById('themeToggle').addEventListener('click', (e) => {
-                e.stopPropagation();
-                document.getElementById('themePicker').classList.toggle('open');
-            });
-            document.addEventListener('click', () => {
-                document.getElementById('themePicker').classList.remove('open');
-            });
-            document.querySelectorAll('.color-dot').forEach(dot => {
-                dot.addEventListener('click', (e) => {
+            // ============================================================
+            // 编辑功能
+            // ============================================================
+            function openEditModal(id) {
+                const radio = radioDataSource.find(r => r.id === id);
+                if (!radio) { showToast("找不到电台"); return; }
+                editingRadioId = id;
+                document.getElementById("editId").value = radio.id;
+                document.getElementById("editName").value = radio.name || "";
+                document.getElementById("editCity").value = radio.city || "";
+                document.getElementById("editTag").value = radio.tag || "";
+                document.getElementById("editStream").value = radio.stream || "";
+                document.getElementById("editLogo").value = radio.logo || "";
+                document.getElementById("editModal").classList.add("open");
+            }
+
+            function saveEditRadio() {
+                if (!editingRadioId) { showToast("没有选中要编辑的电台"); return; }
+                const name = document.getElementById("editName").value.trim();
+                const stream = document.getElementById("editStream").value.trim();
+                if (!name || !stream) { showToast("名称和地址不能为空"); return; }
+                const radio = radioDataSource.find(r => r.id === editingRadioId);
+                if (!radio) { showToast("电台不存在"); return; }
+                radio.name = name;
+                radio.city = document.getElementById("editCity").value.trim() || "未知";
+                radio.tag = document.getElementById("editTag").value.trim() || "自定义";
+                radio.stream = stream;
+                radio.logo = document.getElementById("editLogo").value.trim() || "";
+                Storage.save("ansonradio_list", radioDataSource);
+                document.getElementById("editModal").classList.remove("open");
+                if (currentPlayingId === editingRadioId) {
+                    nowPlaying.textContent = radio.name;
+                }
+                renderStationList();
+                const kw = document.getElementById("manageSearchInput").value;
+                renderManageList(kw);
+                showToast("修改已保存");
+            }
+
+            // ============================================================
+            // 导入功能
+            // ============================================================
+            let importMode = null;
+
+            function openImportModal() {
+                importMode = null;
+                document.getElementById("importModal").classList.add("open");
+            }
+
+            function closeImportModal() {
+                document.getElementById("importModal").classList.remove("open");
+                document.getElementById("fileSelector").value = "";
+            }
+
+            function performImport(file) {
+                if (!importMode) {
+                    showToast("请选择导入方式");
+                    return;
+                }
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    try {
+                        const text = e.target.result;
+                        const arr = JSON.parse(text);
+                        if (!Array.isArray(arr)) throw new Error("格式错误");
+                        let count = 0;
+                        if (importMode === "overwrite") {
+                            radioDataSource = [];
+                        }
+                        arr.forEach(item => {
+                            if (!item.id || !item.name || !item.stream) return;
+                            if (importMode === "append") {
+                                if (radioDataSource.find(r => r.id === item.id)) return;
+                            }
+                            radioDataSource.push({
+                                id: item.id,
+                                name: item.name || "",
+                                area: item.area || "",
+                                city: item.city || "",
+                                tag: item.tag || "",
+                                stream: item.stream || "",
+                                logo: item.logo || "",
+                                desc: item.desc || ""
+                            });
+                            count++;
+                        });
+                        Storage.save("ansonradio_list", radioDataSource);
+                        renderStationList();
+                        closeImportModal();
+                        showToast(`${importMode === "overwrite" ? "覆盖" : "追加"}导入成功共导入 ${count} 个电台`);
+                    } catch (err) {
+                        showToast("JSON 文件格式不正确");
+                        console.error(err);
+                    }
+                };
+                reader.readAsText(file);
+            }
+
+            // ============================================================
+            // 导出功能
+            // ============================================================
+            function exportJson() {
+                const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(radioDataSource, null,
+                2));
+                const a = document.createElement("a");
+                a.href = dataStr;
+                a.download = "AnsonRadio_备份.json";
+                a.click();
+                showToast("导出成功");
+            }
+
+            // ============================================================
+            // 新增电台
+            // ============================================================
+            function saveNewRadio() {
+                const name = document.getElementById("formName").value.trim();
+                const city = document.getElementById("formCity").value.trim();
+                const stream = document.getElementById("formStream").value.trim();
+                const logo = document.getElementById("formLogo").value.trim();
+                const tag = document.getElementById("formTag").value.trim();
+                if (!name || !stream) { showToast("名称和地址不能为空"); return; }
+                const newId = "auto_" + Date.now();
+                radioDataSource.push({
+                    id: newId,
+                    name,
+                    city: city || "未知",
+                    area: tag || "自定义",
+                    tag: tag || "自定义",
+                    stream,
+                    logo,
+                    desc: "手动添加"
+                });
+                Storage.save("ansonradio_list", radioDataSource);
+                document.getElementById("addRadioModal").classList.remove("open");
+                document.getElementById("formName").value = "";
+                document.getElementById("formCity").value = "";
+                document.getElementById("formStream").value = "";
+                document.getElementById("formLogo").value = "";
+                document.getElementById("formTag").value = "";
+                renderStationList();
+                showToast("添加成功");
+            }
+
+            // ============================================================
+            // 主题
+            // ============================================================
+            function setThemeColor(color) {
+                const root = document.documentElement;
+                const r = parseInt(color.slice(1, 3), 16),
+                    g = parseInt(color.slice(3, 5), 16),
+                    b = parseInt(color.slice(5, 7), 16);
+                root.style.setProperty('--primary', color);
+                root.style.setProperty('--primary-light', color);
+                root.style.setProperty('--primary-dark', color);
+                root.style.setProperty('--primary-glow', `rgba(${r},${g},${b},0.35)`);
+                root.style.setProperty('--primary-soft', `rgba(${r},${g},${b},0.12)`);
+                root.style.setProperty('--primary-border', `rgba(${r},${g},${b},0.25)`);
+                document.querySelectorAll('.color-dot').forEach(d => d.classList.remove('active'));
+                document.querySelector(`.color-dot[data-color="${color}"]`)?.classList.add('active');
+                localStorage.setItem('radioThemeColor', color);
+            }
+
+            function loadThemeColor() {
+                const saved = localStorage.getItem('radioThemeColor');
+                if (saved) setThemeColor(saved);
+            }
+
+            // ============================================================
+            // 事件绑定
+            // ============================================================
+            function bindEvents() {
+                // 分类点击
+                document.querySelectorAll('.category-tab').forEach(tab => {
+                    tab.addEventListener('click', function() {
+                        document.querySelectorAll('.category-tab').forEach(t => t.classList.remove('active'));
+                        this.classList.add('active');
+                        currentFilter = this.dataset.filter;
+                        renderStationList();
+                        // 更新底部收藏按钮状态
+                        updateFavButtonState();
+                    });
+                });
+
+                document.getElementById('searchInput').addEventListener('input', renderStationList);
+
+                discWrapper.addEventListener('click', togglePlay);
+                document.getElementById('prevBtn').addEventListener('click', prevStation);
+                document.getElementById('nextBtn').addEventListener('click', nextStation);
+
+                document.getElementById('btnFav').addEventListener('click', function() {
+                    document.querySelectorAll('.category-tab').forEach(t => t.classList.remove('active'));
+                    currentFilter = "fav";
+                    renderStationList();
+                    updateFavButtonState();
+                });
+
+                document.getElementById('themeToggle').addEventListener('click', (e) => {
                     e.stopPropagation();
-                    setThemeColor(dot.dataset.color);
+                    document.getElementById('themePicker').classList.toggle('open');
+                });
+                document.addEventListener('click', () => {
                     document.getElementById('themePicker').classList.remove('open');
                 });
-            });
-
-            document.getElementById('darkModeToggle').addEventListener('click', function() {
-                document.body.classList.toggle('light-mode');
-                const mode = document.body.classList.contains('light-mode') ? 'light' : 'dark';
-                Storage.save("ansonradio_theme", mode);
-            });
-
-            document.getElementById('btnAddRadio').addEventListener('click', () => {
-                document.getElementById('addRadioModal').classList.add('open');
-            });
-            document.querySelectorAll('.closeModal').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    document.getElementById('addRadioModal').classList.remove('open');
+                document.querySelectorAll('.color-dot').forEach(dot => {
+                    dot.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        setThemeColor(dot.dataset.color);
+                        document.getElementById('themePicker').classList.remove('open');
+                    });
                 });
-            });
-            document.getElementById('saveRadio').addEventListener('click', saveNewRadio);
-            document.getElementById('addRadioModal').addEventListener('click', (e) => {
-                if (e.target === e.currentTarget) {
-                    document.getElementById('addRadioModal').classList.remove('open');
-                }
-            });
 
-            document.getElementById('btnImport').addEventListener('click', openImportModal);
-            document.getElementById('importCancel').addEventListener('click', closeImportModal);
-            document.getElementById('importModal').addEventListener('click', (e) => {
-                if (e.target === e.currentTarget) closeImportModal();
-            });
+                document.getElementById('darkModeToggle').addEventListener('click', function() {
+                    document.body.classList.toggle('light-mode');
+                    const mode = document.body.classList.contains('light-mode') ? 'light' : 'dark';
+                    Storage.save("ansonradio_theme", mode);
+                });
 
-            document.getElementById('importOverwrite').addEventListener('click', function() {
-                importMode = "overwrite";
-                document.getElementById('fileSelector').click();
-            });
-            document.getElementById('importAppend').addEventListener('click', function() {
-                importMode = "append";
-                document.getElementById('fileSelector').click();
-            });
+                document.getElementById('btnAddRadio').addEventListener('click', () => {
+                    document.getElementById('addRadioModal').classList.add('open');
+                });
+                document.querySelectorAll('.closeModal').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        document.getElementById('addRadioModal').classList.remove('open');
+                    });
+                });
+                document.getElementById('saveRadio').addEventListener('click', saveNewRadio);
+                document.getElementById('addRadioModal').addEventListener('click', (e) => {
+                    if (e.target === e.currentTarget) {
+                        document.getElementById('addRadioModal').classList.remove('open');
+                    }
+                });
 
-            document.getElementById('fileSelector').addEventListener('change', function(e) {
-                const file = e.target.files[0];
-                if (file && importMode) {
-                    performImport(file);
-                } else if (file && !importMode) {
-                    showToast("请先选择导入方式");
-                    this.value = "";
-                }
-            });
+                document.getElementById('btnImport').addEventListener('click', openImportModal);
+                document.getElementById('importCancel').addEventListener('click', closeImportModal);
+                document.getElementById('importModal').addEventListener('click', (e) => {
+                    if (e.target === e.currentTarget) closeImportModal();
+                });
 
-            document.getElementById('btnExport').addEventListener('click', exportJson);
+                document.getElementById('importOverwrite').addEventListener('click', function() {
+                    importMode = "overwrite";
+                    document.getElementById('fileSelector').click();
+                });
+                document.getElementById('importAppend').addEventListener('click', function() {
+                    importMode = "append";
+                    document.getElementById('fileSelector').click();
+                });
 
-            document.getElementById('btnManage').addEventListener('click', openManageModal);
-            document.getElementById('closeManageModal').addEventListener('click', () => {
-                document.getElementById('manageModal').classList.remove('open');
-            });
-            document.getElementById('manageModal').addEventListener('click', (e) => {
-                if (e.target === e.currentTarget) {
+                document.getElementById('fileSelector').addEventListener('change', function(e) {
+                    const file = e.target.files[0];
+                    if (file && importMode) {
+                        performImport(file);
+                    } else if (file && !importMode) {
+                        showToast("请先选择导入方式");
+                        this.value = "";
+                    }
+                });
+
+                document.getElementById('btnExport').addEventListener('click', exportJson);
+
+                document.getElementById('btnManage').addEventListener('click', openManageModal);
+                document.getElementById('closeManageModal').addEventListener('click', () => {
                     document.getElementById('manageModal').classList.remove('open');
-                }
-            });
-            document.getElementById('manageSearchInput').addEventListener('input', function() {
-                renderManageList(this.value);
-            });
+                });
+                document.getElementById('manageModal').addEventListener('click', (e) => {
+                    if (e.target === e.currentTarget) {
+                        document.getElementById('manageModal').classList.remove('open');
+                    }
+                });
+                document.getElementById('manageSearchInput').addEventListener('input', function() {
+                    renderManageList(this.value);
+                });
 
-            document.getElementById('clearAllBtn').addEventListener('click', clearAllStations);
+                document.getElementById('clearAllBtn').addEventListener('click', clearAllStations);
 
-            document.getElementById('closeEditModal').addEventListener('click', () => {
-                document.getElementById('editModal').classList.remove('open');
-            });
-            document.getElementById('editModal').addEventListener('click', (e) => {
-                if (e.target === e.currentTarget) {
+                document.getElementById('closeEditModal').addEventListener('click', () => {
                     document.getElementById('editModal').classList.remove('open');
+                });
+                document.getElementById('editModal').addEventListener('click', (e) => {
+                    if (e.target === e.currentTarget) {
+                        document.getElementById('editModal').classList.remove('open');
+                    }
+                });
+                document.getElementById('saveEditRadio').addEventListener('click', saveEditRadio);
+
+                document.addEventListener('keydown', (e) => {
+                    if (e.target.tagName === 'INPUT') return;
+                    if (e.key === ' ' || e.key === 'Space') {
+                        e.preventDefault();
+                        togglePlay();
+                    }
+                });
+            }
+
+            // 辅助：更新收藏按钮的图标状态
+            function updateFavButtonState() {
+                const favBtn = document.getElementById('btnFav');
+                if (currentFilter === 'fav') {
+                    favBtn.classList.add('active-fav');
+                    favBtn.innerHTML = '<i class="fa-solid fa-heart"></i> 收藏';
+                } else {
+                    favBtn.classList.remove('active-fav');
+                    favBtn.innerHTML = '<i class="fa-regular fa-heart"></i> 收藏';
                 }
+            }
+
+            // ============================================================
+            // 启动
+            // ============================================================
+            function init() {
+                initData();
+                loadThemeColor();
+
+                currentFilter = "gd";
+                document.querySelectorAll('.category-tab').forEach(t => t.classList.remove('active'));
+                const gdTab = document.querySelector('.category-tab[data-filter="gd"]');
+                if (gdTab) gdTab.classList.add('active');
+
+                renderStationList();
+                bindEvents();
+                nowPlaying.textContent = "未播放";
+                updateFavButtonState();
+            }
+
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', init);
+            } else {
+                init();
+            }
+
+            window.addEventListener('beforeunload', () => {
+                if (hlsInstance) { hlsInstance.destroy();
+                    hlsInstance = null; }
+                audioPlayer.pause();
             });
-            document.getElementById('saveEditRadio').addEventListener('click', saveEditRadio);
 
-            document.addEventListener('keydown', (e) => {
-                if (e.target.tagName === 'INPUT') return;
-                if (e.key === ' ' || e.key === 'Space') {
-                    e.preventDefault();
-                    togglePlay();
-                }
-            });
-        }
-
-        // ============================================================
-        // 启动
-        // ============================================================
-        function init() {
-            initData();
-            loadThemeColor();
-            renderStationList();
-            bindEvents();
-            nowPlaying.textContent = "未播放";
-        }
-
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', init);
-        } else {
-            init();
-        }
-
-        window.addEventListener('beforeunload', () => {
-            if (hlsInstance) { hlsInstance.destroy(); hlsInstance = null; }
-            audioPlayer.pause();
-        });
-
-    })();
+        })();
     </script>
 </body>
 </html>
