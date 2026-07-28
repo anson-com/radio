@@ -883,29 +883,28 @@
         }
 
 /* ============================================================
-   平板端适配（768px ~ 1024px）
+   平板端适配（兼容旧系统）
    ============================================================ */
 @media (min-width: 641px) and (max-width: 1024px) {
     body {
         padding: 20px;
         overflow: hidden;
-        touch-action: manipulation;  /* 改为 manipulation，保留点击响应 */
-        align-items: center;         /* 改为居中，更舒适 */
+        /* 删除 touch-action: pan-y;  ← 这是卡顿的元凶！ */
+        align-items: center;
         justify-content: center;
     }
     .radio-app {
         max-width: 560px;
         width: 100%;
-        height: 90vh;               /* 平板用 90vh，留出上下边距 */
+        height: 90vh;          /* ← 用 vh 替代 dvh（兼容旧系统） */
         max-height: 90vh;
         border-radius: var(--radius-lg);
         padding: 24px 22px 28px;
         box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.06);
         border: 1px solid var(--border-line);
-        justify-content: flex-start; /* 从顶部开始，不居中 */
+        justify-content: flex-start;  /* ← 从顶部开始，不要居中 */
         background: var(--bg-card);
     }
-    /* 列表区域确保可滚动 */
     .station-list-wrapper {
         flex: 1 1 0;
         overflow-y: auto;
@@ -914,33 +913,6 @@
     }
     .bottom-actions {
         margin-top: 16px;
-    }
-    /* 平板下适当加大字体和间距 */
-    .player-row {
-        gap: 24px;
-    }
-    .btn-skip-disc {
-        width: 44px;
-        height: 44px;
-    }
-    .btn-skip-disc svg {
-        width: 20px;
-        height: 20px;
-    }
-    .disc-wrapper {
-        width: 150px;
-        height: 150px;
-    }
-    .now-playing {
-        font-size: 19px;
-    }
-    .category-tab {
-        font-size: 12px;
-        padding: 5px 2px;
-    }
-    .bottom-actions .btn-action {
-        font-size: 12px;
-        padding: 6px 14px;
     }
 }
     </style>
