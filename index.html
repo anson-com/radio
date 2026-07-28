@@ -449,10 +449,10 @@
     background: transparent;        /* 悬停时也透明 */
     border-color: var(--primary-border);
 }
-        .station-item.active {
-    background: transparent;        /* 背景完全透明 */
+       .station-item.active {
+    background: transparent;
     border-color: var(--primary);
-    box-shadow: 0 0 20px var(--primary-glow);
+    box-shadow: 0 0 12px 4px var(--primary-glow);  /* 模糊12px，扩散4px，更紧凑 */
 }
         .station-item .info {
             display: flex;
@@ -524,12 +524,23 @@
             color: var(--primary);
             background: var(--primary-soft);
         }
-       /* 播放按钮发光效果（纯光晕，无背景阴影） */
+      /* 播放按钮发光效果 - 使用 text-shadow 紧贴图标 */
 .station-item .actions .play-btn.playing-glow {
-    box-shadow: 0 0 20px var(--primary-glow);
     color: var(--primary);
+    box-shadow: none !important;
     background: transparent !important;
-    border-radius: 50%;   /* 确保光晕也是圆形扩散 */
+    border-radius: 0 !important;
+}
+
+/* 让图标本身发光（紧贴三角形边缘） */
+.station-item .actions .play-btn.playing-glow i {
+    text-shadow: 0 0 20px var(--primary-glow), 0 0 40px var(--primary-glow);
+}
+
+/* 播放状态下禁用 hover 和 active 的背景 */
+.station-item .actions .play-btn.playing-glow:hover,
+.station-item .actions .play-btn.playing-glow:active {
+    background: transparent !important;
 }
         /* 删除按钮（仅全部分类） */
         .station-item .actions .del-btn {
