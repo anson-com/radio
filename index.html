@@ -7,8 +7,16 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <title>AnsonFM</title>
     <link href="https://fonts.googleapis.com/css2?family=Lobster&family=Pacifico&display=swap" rel="stylesheet">
-    <!-- 降级 HLS.js 以兼容 iOS 12.5.8 -->
-    <script src="https://cdn.jsdelivr.net/npm/hls.js@0.14.17/dist/hls.min.js"></script>
+   <script>
+// 检测是否支持新版 HLS.js 所需的特性
+if (typeof Promise !== 'undefined' && typeof Symbol !== 'undefined') {
+    // 新设备加载最新版本
+    document.write('<script src="https://cdn.jsdelivr.net/npm/hls.js@latest"><\/script>');
+} else {
+    // 旧设备加载 0.14.17
+    document.write('<script src="https://cdn.jsdelivr.net/npm/hls.js@0.14.17/dist/hls.min.js"><\/script>');
+}
+</script>
     <style>
         /* ===== 全局 ===== */
         * {
@@ -1649,7 +1657,7 @@
                     Storage.save("ansonradio_list", radioDataSource);
                     renderStationList();
                     closeImportModal();
-                    showToast(`${importMode === "overwrite" ? "覆盖" : "追加"}导入成功，共导入 ${count} 个电台`);
+                    showToast(`${importMode === "overwrite" ? "覆盖" : "追加"}导入成功共导入 ${count} 个电台`);
                 } catch (err) {
                     showToast("JSON 文件格式不正确");
                     console.error(err);
