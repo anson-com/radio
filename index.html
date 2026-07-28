@@ -7,7 +7,8 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <title>AnsonFM</title>
     <link href="https://fonts.googleapis.com/css2?family=Lobster&family=Pacifico&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+    <!-- 降级 HLS.js 以兼容 iOS 12.5.8 -->
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@0.14.17/dist/hls.min.js"></script>
     <style>
         /* ===== 全局 ===== */
         * {
@@ -46,7 +47,7 @@
             --text-primary: #181c2c;
             --text-secondary: #444860;
             --text-weak: #868aa0;
-            --border-line: rgba(0, 0, 0, 0.08);
+            --border-line: rgba(0,  0, 0, 0.08);
         }
 
         body {
@@ -59,6 +60,7 @@
             padding: 20px;
             transition: background 0.4s ease;
             overscroll-behavior: none;
+            /* iOS 12.5.8 兼容：不用 position: fixed，用 flex 居中 */
         }
 
         ::-webkit-scrollbar { width: 4px; }
@@ -290,11 +292,11 @@
             padding: 0 4px;
         }
 
-        /* ===== Toast（错误提示用，随主题变色） ===== */
+        /* ===== Toast ===== */
         .toast {
             position: fixed;
             left: 50%;
-            top: 40px; /* ← 控制与顶部的距离 */
+            top: 40px;
             transform: translateX(-50%);
             background: var(--bg-card);
             backdrop-filter: blur(12px);
@@ -312,16 +314,14 @@
             text-align: center;
             max-width: 90%;
         }
-        /* Toast 错误状态（系统跟随） */
         .toast.error {
-    color: var(--primary);
-    border-color: var(--primary-border);
-    box-shadow: 0 8px 24px var(--primary-glow), 
-                inset 0 0 30px var(--primary-soft);  /* ← 新增：内发光 */
-    text-shadow: 0 0 10px rgba(255,255,255,0.05);    /* 可选：微弱文字光 */
-}
+            color: var(--primary);
+            border-color: var(--primary-border);
+            box-shadow: 0 8px 24px var(--primary-glow), inset 0 0 30px var(--primary-soft);
+            text-shadow: 0 0 10px rgba(255,255,255,0.05);
+        }
 
-        /* ===== 功能栏：分类标签 + 搜索 ===== */
+        /* ===== 功能栏 ===== */
         .function-bar {
             display: flex;
             flex-direction: column;
@@ -524,7 +524,7 @@
             color: var(--primary);
         }
 
-        /* ===== 管理弹窗 ===== */
+        /* ===== 弹窗 ===== */
         .modal-mask {
             position: fixed;
             inset: 0;
@@ -761,12 +761,12 @@
             .radio-app {
                 width: 100%;
                 max-width: 100%;
-                height: 100dvh;
-                max-height: 100dvh;
+                height: 100vh;        /* 兼容旧系统：用 vh 替代 dvh */
+                max-height: 100vh;
                 border-radius: 32px;
                 box-shadow: none;
                 border: none;
-                padding: 50px 12px 0;   /* ← 顶部16px，左右12px，底部0 */
+                padding: 16px 12px 0;   /* 修复为 16px */
                 padding-bottom: max(16px, env(safe-area-inset-bottom));
                 padding-left: max(12px, env(safe-area-inset-left));
                 padding-right: max(12px, env(safe-area-inset-right));
@@ -820,8 +820,8 @@
             .radio-app {
                 width: 100%;
                 max-width: 100%;
-                height: 100dvh;
-                max-height: 100dvh;
+                height: 100vh;        /* 兼容旧系统：用 vh 替代 dvh */
+                max-height: 100vh;
                 border-radius: 24px;
                 box-shadow: none;
                 border: none;
@@ -882,39 +882,74 @@
             }
         }
 
-/* ============================================================
-   平板端适配（兼容旧系统）
-   ============================================================ */
-@media (min-width: 641px) and (max-width: 1024px) {
-    body {
-        padding: 20px;
-        overflow: hidden;
-        /* 删除 touch-action: pan-y;  ← 这是卡顿的元凶！ */
-        align-items: center;
-        justify-content: center;
-    }
-    .radio-app {
-        max-width: 560px;
-        width: 100%;
-        height: 90vh;          /* ← 用 vh 替代 dvh（兼容旧系统） */
-        max-height: 90vh;
-        border-radius: var(--radius-lg);
-        padding: 24px 22px 28px;
-        box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.06);
-        border: 1px solid var(--border-line);
-        justify-content: flex-start;  /* ← 从顶部开始，不要居中 */
-        background: var(--bg-card);
-    }
-    .station-list-wrapper {
-        flex: 1 1 0;
-        overflow-y: auto;
-        min-height: 0;
-        -webkit-overflow-scrolling: touch;
-    }
-    .bottom-actions {
-        margin-top: 16px;
-    }
-}
+        /* ============================================================
+           ✅ 平板端全屏沉浸式适配（iPad Air iOS 12.5.8 兼容）
+           ============================================================ */
+        @media (min-width: 641px) and (max-width: 1024px) {
+            body {
+                padding: 0 !important;
+                overflow: hidden;
+                align-items: flex-start;
+                justify-content: center;
+                background: var(--bg-body);
+                /* 移除 touch-action，避免点击卡顿 */
+            }
+            .radio-app {
+                max-width: 100% !important;
+                width: 100%;
+                height: 100vh;           /* 兼容旧系统：用 vh 替代 dvh */
+                max-height: 100vh;
+                border-radius: 0 !important;
+                padding: 20px 16px 0;
+                box-shadow: none !important;
+                border: none !important;
+                display: flex;
+                flex-direction: column;
+                justify-content: flex-start;
+                background: var(--bg-card);
+                overflow: hidden;
+                position: relative;
+            }
+            /* 列表区域占满剩余空间 */
+            .station-list-wrapper {
+                flex: 1 1 auto;         /* 用 auto 替代 0，兼容旧 WebKit */
+                overflow-y: auto;
+                min-height: 0;
+                -webkit-overflow-scrolling: touch;
+            }
+            .bottom-actions {
+                margin-top: 14px;
+                flex-shrink: 0;
+                padding-bottom: env(safe-area-inset-bottom, 12px);
+            }
+            /* 平板适度调整尺寸，让内容不显得过于拥挤 */
+            .player-row {
+                gap: 24px;
+            }
+            .disc-wrapper {
+                width: 150px;
+                height: 150px;
+            }
+            .btn-skip-disc {
+                width: 44px;
+                height: 44px;
+            }
+            .btn-skip-disc svg {
+                width: 20px;
+                height: 20px;
+            }
+            .now-playing {
+                font-size: 19px;
+            }
+            .category-tab {
+                font-size: 12px;
+                padding: 5px 2px;
+            }
+            .bottom-actions .btn-action {
+                font-size: 12px;
+                padding: 6px 14px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -960,7 +995,7 @@
             </div>
         </div>
 
-        <!-- ===== 功能栏：分类标签 + 搜索 ===== -->
+        <!-- ===== 功能栏 ===== -->
         <div class="function-bar">
             <div class="category-tabs" id="categoryTabs">
                 <span class="category-tab active" data-filter="all">全部</span>
@@ -991,7 +1026,7 @@
         </div>
     </div>
 
-    <!-- ===== 新增电台弹窗 ===== -->
+    <!-- ===== 弹窗 ===== -->
     <div class="modal-mask" id="addRadioModal">
         <div class="modal-box">
             <h3>📻 添加新电台</h3>
@@ -1022,7 +1057,6 @@
         </div>
     </div>
 
-    <!-- ===== 导入选择弹窗 ===== -->
     <div class="modal-mask" id="importModal">
         <div class="modal-box">
             <h3 style="text-align:center;">📥 导入电台</h3>
@@ -1048,7 +1082,6 @@
         </div>
     </div>
 
-    <!-- ===== 管理弹窗（含搜索 + 编辑功能） ===== -->
     <div class="modal-mask" id="manageModal">
         <div class="modal-box">
             <h3>⚙️ 管理电台</h3>
@@ -1062,7 +1095,6 @@
         </div>
     </div>
 
-    <!-- ===== 编辑电台弹窗 ===== -->
     <div class="modal-mask" id="editModal">
         <div class="modal-box">
             <h3>✏️ 编辑电台</h3>
@@ -1099,7 +1131,7 @@
         </div>
     </div>
 
-    <!-- Toast（错误提示用） -->
+    <!-- Toast -->
     <div class="toast" id="toast"></div>
 
     <!-- 隐藏文件选择 -->
@@ -1120,7 +1152,7 @@
         let currentFilter = "all";
         let volumeValue = 80;
         let editingRadioId = null;
-        let errorTimer = null;   // 保留防抖定时器
+        let errorTimer = null;
 
         const initRadioList = [
             { "id":"test001","name":"羊城交通广播","area":"广东","city":"广州","tag":"交通","stream":"http://live.xmcdn.com/live/248/64.m3u8","logo":"","desc":"广东羊城交通广播" },
@@ -1150,16 +1182,14 @@
             document.getElementById("audioPlayer").volume = volumeValue / 100;
         }
 
-        // ---- Toast 提示（用于错误和其他非播放状态提示） ----
         function showToast(msg, time = 2000) {
             const t = document.getElementById("toast");
-            // 清除之前的定时器
             if (t._timer) {
                 clearTimeout(t._timer);
                 t._timer = null;
             }
             t.textContent = msg;
-            t.className = 'toast error';  // 错误样式（红色文字）
+            t.className = 'toast error';
             t.style.display = 'block';
             t._timer = setTimeout(function() {
                 t.style.display = 'none';
@@ -1168,7 +1198,6 @@
             }, time);
         }
 
-        // ---- 隐藏 Toast（用于播放成功时主动消除） ----
         function hideToast() {
             const t = document.getElementById("toast");
             if (t._timer) {
@@ -1259,7 +1288,7 @@
         }
 
         // ============================================================
-        // 播放引擎
+        // 播放引擎（兼容 iOS 12.5.8：Safari 原生 HLS 优先）
         // ============================================================
         let hlsInstance = null;
         const audioPlayer = document.getElementById("audioPlayer");
@@ -1269,9 +1298,7 @@
         function updatePlayState(state) {
             if (state) {
                 discWrapper.classList.add('playing');
-                // 播放成功后，如果有错误提示（Toast）正在显示，立即隐藏
                 hideToast();
-                // 清除防抖定时器
                 if (errorTimer) {
                     clearTimeout(errorTimer);
                     errorTimer = null;
@@ -1286,7 +1313,6 @@
             audioPlayer.pause();
             audioPlayer.src = '';
             updatePlayState(false);
-            // 清除防抖定时器
             if (errorTimer) {
                 clearTimeout(errorTimer);
                 errorTimer = null;
@@ -1321,10 +1347,6 @@
             audioPlayer.addEventListener('playing', () => updatePlayState(true));
             audioPlayer.addEventListener('pause', () => { if (!audioPlayer.ended) updatePlayState(false); });
             audioPlayer.addEventListener('ended', () => updatePlayState(false));
-             /* =====audioPlayer.addEventListener('error', () => {
-                showToast("播放错误");
-                updatePlayState(false);
-            });===== */
         }
 
         // ---------- 主播放函数 ----------
@@ -1335,7 +1357,6 @@
             stopPlayback();
             currentPlayingId = radioId;
             nowPlaying.textContent = radio.name;
-            // 清除任何待处理的错误提示
             hideToast();
             if (errorTimer) {
                 clearTimeout(errorTimer);
@@ -1360,8 +1381,12 @@
             const nativeHlsSupport = audioPlayer.canPlayType('application/vnd.apple.mpegurl') ||
                                      audioPlayer.canPlayType('audio/mpegurl');
 
+            // ---- 检测是否为 iOS（含 iPad） ----
+            const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+
             // ---------- 播放策略 ----------
-            if (isM3U8 && nativeHlsSupport) {
+            if (isM3U8 && (nativeHlsSupport || isIOS)) {
+                // iOS Safari 原生支持 HLS，直接播放（最稳定）
                 audioPlayer.src = streamUrl;
                 audioPlayer.play().then(() => {
                     updatePlayState(true);
@@ -1390,12 +1415,6 @@
                 audioPlayer.addEventListener('playing', () => updatePlayState(true));
                 audioPlayer.addEventListener('pause', () => { if (!audioPlayer.ended) updatePlayState(false); });
                 audioPlayer.addEventListener('ended', () => updatePlayState(false));
-
-
-               /* ===== audioPlayer.addEventListener('error', () => {
-                    showToast("播放错误");
-                    updatePlayState(false);
-                });===== */
             }
         }
 
@@ -1450,7 +1469,7 @@
         }
 
         // ============================================================
-        // 管理功能（含搜索 + 编辑）
+        // 管理功能
         // ============================================================
         function openManageModal() {
             document.getElementById("manageSearchInput").value = "";
@@ -1512,6 +1531,32 @@
             }
             renderStationList();
             showToast("已删除");
+        }
+
+        // ============================================================
+        // 清空功能
+        // ============================================================
+        function clearAllStations() {
+            if (radioDataSource.length === 0) {
+                showToast("列表已空，无需清空");
+                return;
+            }
+            if (!confirm("⚠️ 确定要清空全部电台吗？此操作不可撤销！")) return;
+
+            radioDataSource = [];
+            favList = [];
+            historyList = [];
+            Storage.save("ansonradio_list", radioDataSource);
+            Storage.save("ansonradio_fav", favList);
+            Storage.save("ansonradio_history", historyList);
+
+            stopPlayback();
+            currentPlayingId = null;
+            nowPlaying.textContent = "未播放";
+            hideToast();
+            document.getElementById("manageModal").classList.remove("open");
+            renderStationList();
+            showToast("已清空全部电台", 2000);
         }
 
         // ============================================================
@@ -1603,7 +1648,7 @@
                     Storage.save("ansonradio_list", radioDataSource);
                     renderStationList();
                     closeImportModal();
-                    showToast(`${importMode === "overwrite" ? "覆盖" : "追加"}导入成功共导入 ${count} 个电台`);
+                    showToast(`${importMode === "overwrite" ? "覆盖" : "追加"}导入成功，共导入 ${count} 个电台`);
                 } catch (err) {
                     showToast("JSON 文件格式不正确");
                     console.error(err);
@@ -1778,6 +1823,8 @@
             document.getElementById('manageSearchInput').addEventListener('input', function() {
                 renderManageList(this.value);
             });
+
+            document.getElementById('clearAllBtn').addEventListener('click', clearAllStations);
 
             document.getElementById('closeEditModal').addEventListener('click', () => {
                 document.getElementById('editModal').classList.remove('open');
