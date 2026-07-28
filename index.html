@@ -754,23 +754,24 @@
            移动端竖屏适配（宽度 ≤ 640px）
            ============================================================ */
         @media (max-width: 640px) {
-            body {
-                padding: 0;
-                overscroll-behavior: none;
-            }
-            .radio-app {
-                width: 100%;
-                max-width: 100%;
-                height: 100vh;        /* 兼容旧系统：用 vh 替代 dvh */
-                max-height: 100vh;
-                border-radius: 32px;
-                box-shadow: none;
-                border: none;
-                padding: 16px 12px 0;   /* 修复为 16px */
-                padding-bottom: max(16px, env(safe-area-inset-bottom));
-                padding-left: max(12px, env(safe-area-inset-left));
-                padding-right: max(12px, env(safe-area-inset-right));
-            }
+    body {
+        padding: 0;
+        overscroll-behavior: none;
+    }
+    .radio-app {
+        width: 100%;
+        max-width: 100%;
+        height: 100vh;
+        max-height: 100vh;
+        border-radius: 32px;
+        box-shadow: none;
+        border: none;
+        /* 明确设置顶部安全区 */
+        padding-top: max(16px, env(safe-area-inset-top));
+        padding-bottom: max(16px, env(safe-area-inset-bottom));
+        padding-left: max(12px, env(safe-area-inset-left));
+        padding-right: max(12px, env(safe-area-inset-right));
+    }
             .player-display {
                 min-height: 170px;
             }
