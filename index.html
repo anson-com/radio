@@ -488,17 +488,17 @@
             margin-left: 8px;
             align-items: center;
         }
-      .station-item .actions button {
-    background: none;
-    border: none;
-    color: var(--text-weak);
-    cursor: pointer;
-    font-size: 12px;
-    padding: 3px;
-    border-radius: 20px;
-    transition: all 0.2s ease;
-    line-height: 1;
-}
+        .station-item .actions button {
+            background: none;
+            border: none;
+            color: var(--text-weak);
+            cursor: pointer;
+            font-size: 12px;
+            padding: 3px;
+            border-radius: 20px;
+            transition: all 0.2s ease;
+            line-height: 1;
+        }
         /* 所有操作按钮 hover 统一为主色柔光 */
         .station-item .actions button:hover {
             color: var(--primary);
@@ -535,93 +535,161 @@
             font-size: 14px;
         }
 
-        /* ===== 底部导航栏（新样式） ===== */
-.bottom-actions {
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    background: var(--bg-card);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border: 1px solid var(--border-line);   /* 增加细边框，更清晰 */
-    border-radius: 20px;                    /* 四周圆角 */
-    margin: 0px 0px 0px;                 /* 上 8px，左右 6px，下 12px */
-    padding: 6px 0px 6px; /* 椭圆上 8px，左右 6px，下 12px */
-    flex-shrink: 0;
-    gap: 0;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-}
+        /* ============================================================
+           底部导航栏 - 全新设计：主题色溢光 + 扁平按钮
+           ============================================================ */
+        .bottom-actions {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.04);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--primary-border);
+            border-radius: 20px;
+            margin: 0px 0px 0px;
+            padding: 6px 4px 8px;
+            flex-shrink: 0;
+            gap: 0;
+            /* 主题色溢光效果 - 类似播放器唱片 */
+            box-shadow:
+                0 0 30px var(--primary-glow),
+                0 0 60px rgba(124, 141, 255, 0.06),
+                inset 0 1px 0 rgba(255, 255, 255, 0.06);
+            transition: box-shadow 0.4s ease, border-color 0.4s ease;
+            position: relative;
+        }
+        /* 溢光外发光层 - 模拟播放器效果 */
+        .bottom-actions::before {
+            content: '';
+            position: absolute;
+            inset: -2px;
+            border-radius: 22px;
+            background: linear-gradient(135deg, var(--primary-glow), transparent 50%, var(--primary-glow));
+            opacity: 0.15;
+            z-index: -1;
+            filter: blur(12px);
+            transition: opacity 0.4s ease;
+        }
+        body.light-mode .bottom-actions::before {
+            opacity: 0.08;
+        }
 
-.bottom-actions .btn-action {
-    background: transparent;
-    border: none;
-    padding: 6px 0 4px 0;
-    border-radius: 0;
-    color: var(--text-weak);
-    font-size: 11px;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    display: flex;
-    flex-direction: column;      /* 图标在上，文字在下 */
-    align-items: center;
-    gap: 2px;
-    flex: 1;
-    text-align: center;
-    position: relative;
-    min-height: 48px;
-    justify-content: center;
-}
+        .bottom-actions .btn-action {
+            background: transparent;
+            border: none;
+            padding: 4px 0 2px 0;
+            border-radius: 16px;
+            color: var(--text-weak);
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+            flex: 1;
+            text-align: center;
+            position: relative;
+            min-height: 52px;
+            justify-content: center;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+        }
 
-.bottom-actions .btn-action i {
-    font-size: 20px;            /* 图标稍大，更醒目 */
-    transition: transform 0.2s ease;
-}
+        .bottom-actions .btn-action i {
+            font-size: 20px;
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), color 0.25s ease;
+        }
 
-.bottom-actions .btn-action span {
-    font-size: 10px;
-    font-weight: 500;
-    letter-spacing: 0.3px;
-    opacity: 0.8;
-}
+        .bottom-actions .btn-action span {
+            font-size: 11px;
+            font-weight: 500;
+            letter-spacing: 0.3px;
+            opacity: 0.75;
+            transition: opacity 0.25s ease, color 0.25s ease;
+        }
 
-/* hover 效果 (桌面) */
-.bottom-actions .btn-action:hover {
-    color: var(--text-secondary);
-    background: transparent;
-    transform: translateY(-1px);
-}
-.bottom-actions .btn-action:hover i {
-    transform: scale(1.05);
-}
+        /* 悬停效果 (桌面) */
+        .bottom-actions .btn-action:hover {
+            color: var(--text-secondary);
+            background: rgba(255, 255, 255, 0.03);
+        }
+        .bottom-actions .btn-action:hover i {
+            transform: scale(1.08);
+        }
 
-/* 激活/选中状态 */
-.bottom-actions .btn-action.active-fav,
-.bottom-actions .btn-action:active {
-    color: var(--primary);
-}
-.bottom-actions .btn-action.active-fav i,
-.bottom-actions .btn-action:active i {
-    transform: scale(1.1);
-}
+        /* ---- 点击反馈（非按压，是点击瞬间动画） ---- */
+        .bottom-actions .btn-action.clicked {
+            animation: btnTapPop 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+        .bottom-actions .btn-action.clicked i {
+            animation: iconPop 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+        .bottom-actions .btn-action.clicked span {
+            animation: textPop 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
 
-/* 小圆点指示器（选中时显示） */
-.bottom-actions .btn-action.active-fav::after {
-    content: '';
-    position: absolute;
-    bottom: 0px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 16px;
-    height: 3px;
-    background: var(--primary);
-    border-radius: 3px;
-    box-shadow: 0 0 8px var(--primary-glow);
-}
+        @keyframes btnTapPop {
+            0% { transform: scale(1); }
+            30% { transform: scale(0.92); background: var(--primary-soft); }
+            70% { transform: scale(1.05); }
+            100% { transform: scale(1); background: transparent; }
+        }
+        @keyframes iconPop {
+            0% { transform: scale(1); }
+            30% { transform: scale(0.85); color: var(--primary); }
+            70% { transform: scale(1.15); color: var(--primary); }
+            100% { transform: scale(1); color: var(--text-weak); }
+        }
+        @keyframes textPop {
+            0% { opacity: 0.75; }
+            30% { opacity: 0.4; }
+            70% { opacity: 1; color: var(--primary); }
+            100% { opacity: 0.75; color: var(--text-weak); }
+        }
 
-/* 针对收藏按钮特殊处理（因为会动态切换 active-fav） */
-.bottom-actions .btn-action#btnFav.active-fav {
-    color: var(--primary);
-}
+        /* 激活/选中状态 - 收藏按钮 */
+        .bottom-actions .btn-action.active-fav {
+            color: var(--primary);
+        }
+        .bottom-actions .btn-action.active-fav i {
+            transform: scale(1.1);
+            color: var(--primary);
+        }
+        .bottom-actions .btn-action.active-fav span {
+            color: var(--primary);
+            opacity: 1;
+        }
+
+        /* 小圆点指示器（收藏激活时显示） */
+        .bottom-actions .btn-action.active-fav::after {
+            content: '';
+            position: absolute;
+            bottom: 1px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 16px;
+            height: 3px;
+            background: var(--primary);
+            border-radius: 3px;
+            box-shadow: 0 0 12px var(--primary-glow);
+            transition: all 0.3s ease;
+        }
+
+        /* 新增按钮特殊高亮（居中突出） */
+        .bottom-actions .btn-action#btnAddRadio i {
+            font-size: 22px;
+            color: var(--text-secondary);
+            transition: all 0.3s ease;
+        }
+        .bottom-actions .btn-action#btnAddRadio:hover i {
+            color: var(--primary);
+            transform: scale(1.12);
+        }
+        .bottom-actions .btn-action#btnAddRadio.clicked i {
+            color: var(--primary);
+        }
 
         /* ===== 弹窗 ===== */
         .modal-mask {
@@ -663,7 +731,7 @@
         .modal-search-box input {
             width: 100%;
             padding: 8px 14px;
-            border-radius: 30px;   /* 与搜索框一致 */
+            border-radius: 30px;
             background: rgba(0, 0, 0, 0.15);
             border: 1px solid var(--border-line);
             color: var(--text-primary);
@@ -747,7 +815,7 @@
         }
         .btn-line {
             padding: 8px 18px;
-            border-radius: 30px;   /* 与搜索框圆角一致 */
+            border-radius: 30px;
             background: transparent;
             border: 1px solid var(--border-line);
             color: var(--text-secondary);
@@ -774,6 +842,31 @@
             background: rgba(255, 0, 0, 0.12);
             border-color: #ff6b6b;
             color: #ff4757;
+        }
+
+        /* ---- 统一保存按钮样式 ---- */
+        .btn-save {
+            padding: 8px 24px;
+            border-radius: 30px;
+            border: 1px solid var(--primary-border);
+            background: var(--primary);
+            color: #fff;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            box-shadow: 0 4px 16px var(--primary-glow);
+        }
+        .btn-save:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 28px var(--primary-glow);
+            background: var(--primary-dark);
+        }
+        .btn-save:active {
+            transform: scale(0.96);
         }
 
         /* ---- 编辑弹窗 ---- */
@@ -826,21 +919,6 @@
         .modal-box .form-row input:focus {
             border-color: var(--primary);
             box-shadow: 0 0 0 3px var(--primary-soft);
-        }
-        .btn-fill {
-            padding: 8px 20px;
-            border-radius: var(--radius-sm);
-            border: none;
-            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-            color: #fff;
-            font-weight: 600;
-            cursor: pointer;
-            box-shadow: 0 4px 12px var(--primary-glow);
-            transition: 0.2s;
-        }
-        .btn-fill:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px var(--primary-glow);
         }
 
         /* 导入选择弹窗 (无标题) */
@@ -931,23 +1009,39 @@
                 font-size: 11px;
                 padding: 4px 12px;
             }
-            .bottom-actions .btn-action {
-                font-size: 12px;
-                padding: 4px 10px;
-                height: 32px;
-            }
-            .bottom-actions .btn-action i {
-                font-size: 13px;
-            }
             .station-item .actions button {
                 font-size: 13px;
                 padding: 4px;
-              
             }
-    .bottom-actions {
-        margin-bottom: -8px;   /* 调整这个值来控制与手机底部的距离 */
+
+            /* 底部菜单手机适配 - 更紧凑 */
+            .bottom-actions {
+                padding: 4px 2px 6px;
+                border-radius: 16px;
+                margin: 0px 0px -4px;
+                box-shadow: 0 0 20px var(--primary-glow), 0 0 40px rgba(124, 141, 255, 0.04);
+            }
+            .bottom-actions .btn-action {
+                font-size: 12px;
+                min-height: 44px;
+                padding: 2px 0 0 0;
+            }
+            .bottom-actions .btn-action i {
+                font-size: 17px;
+            }
+            .bottom-actions .btn-action span {
+                font-size: 9px;
+            }
+            .bottom-actions .btn-action#btnAddRadio i {
+                font-size: 19px;
+            }
+            .bottom-actions .btn-action.active-fav::after {
+                width: 12px;
+                height: 2px;
+                bottom: 0px;
+            }
         }
-}
+
         /* ============================================================
            手机横屏适配
            ============================================================ */
@@ -1139,13 +1233,14 @@
             <div class="station-list" id="stationList"></div>
         </div>
 
-        <!-- ===== 底部操作栏（统一使用 Font Awesome） ===== -->
+        <!-- ===== 底部操作栏（按钮顺序：导入、导出、新增、收藏、管理） ===== -->
         <div class="bottom-actions">
-            <button class="btn-action" id="btnAddRadio"><i class="fa-solid fa-plus"></i> 新增</button>
-            <button class="btn-action" id="btnImport"><i class="fa-solid fa-file-import"></i> 导入</button>
-            <button class="btn-action" id="btnExport"><i class="fa-solid fa-file-export"></i> 导出</button>
-            <button class="btn-action" id="btnFav"><i class="fa-regular fa-heart"></i> 收藏</button>
-            <button class="btn-action" id="btnManage"><i class="fa-solid fa-sliders"></i> 管理</button>
+            <button class="btn-action" id="btnImport"><i class="fa-solid fa-file-import"></i> <span>导入</span></button>
+            <button class="btn-action" id="btnExport"><i class="fa-solid fa-file-export"></i> <span>导出</span></button>
+            <!-- 新增按钮居中（视觉突出） -->
+            <button class="btn-action" id="btnAddRadio"><i class="fa-solid fa-plus-circle"></i> <span>新增</span></button>
+            <button class="btn-action" id="btnFav"><i class="fa-regular fa-heart"></i> <span>收藏</span></button>
+            <button class="btn-action" id="btnManage"><i class="fa-solid fa-sliders"></i> <span>管理</span></button>
         </div>
     </div>
 
@@ -1176,7 +1271,7 @@
             </div>
             <div class="modal-footer">
                 <button class="btn-line closeModal"><i class="fa-regular fa-circle-xmark"></i> 取消</button>
-                <button class="btn-fill" id="saveRadio"><i class="fa-regular fa-floppy-disk"></i> 保存</button>
+                <button class="btn-save" id="saveRadio"><i class="fa-regular fa-floppy-disk"></i> 保存</button>
             </div>
         </div>
     </div>
@@ -1253,7 +1348,7 @@
             </div>
             <div class="modal-footer">
                 <button class="btn-line" id="closeEditModal"><i class="fa-regular fa-circle-xmark"></i> 取消</button>
-                <button class="btn-fill" id="saveEditRadio"><i class="fa-regular fa-floppy-disk"></i> 保存修改</button>
+                <button class="btn-save" id="saveEditRadio"><i class="fa-regular fa-floppy-disk"></i> 保存修改</button>
             </div>
         </div>
     </div>
@@ -1283,13 +1378,13 @@
 
             const initRadioList = [
                 { "id": "test001", "name": "羊城交通广播", "area": "广东", "city": "广州", "tag": "交通",
-                "stream": "http://live.xmcdn.com/live/248/64.m3u8", "logo": "", "desc": "广东羊城交通广播" },
+                    "stream": "http://live.xmcdn.com/live/248/64.m3u8", "logo": "", "desc": "广东羊城交通广播" },
                 { "id": "cnr1", "name": "中国之声", "area": "全国", "city": "北京", "tag": "全国",
                     "stream": "http://satellitepull.cnr.cn/live/wxzgzs/playlist.m3u8", "logo": "",
-                "desc": "中央人民广播电台中国之声" },
+                    "desc": "中央人民广播电台中国之声" },
                 { "id": "cnr3", "name": "音乐之声", "area": "全国", "city": "北京", "tag": "音乐",
                     "stream": "http://satellitepull.cnr.cn/live/wxyyzs/playlist.m3u8", "logo": "",
-                "desc": "中央人民广播电台音乐之声" },
+                    "desc": "中央人民广播电台音乐之声" },
                 { "id": "hitfm", "name": "HIT FM", "area": "国际", "city": "北京", "tag": "国际",
                     "stream": "http://sk.cri.cn/887.m3u8", "logo": "", "desc": "中国国际广播电台HIT FM" }
             ];
@@ -1389,7 +1484,6 @@
                     item.className = `station-item ${isPlaying ? 'active' : ''}`;
                     item.dataset.id = radio.id;
 
-                    // 构建 actions
                     let actionsHtml = `
                         <button class="fav-btn ${isFav ? 'active' : ''}" data-id="${radio.id}" title="收藏">
                             <i class="${isFav ? 'fa-solid' : 'fa-regular'} fa-heart"></i>
@@ -1399,7 +1493,8 @@
                         </button>
                     `;
                     if (isAllCategory) {
-                        actionsHtml += `<button class="del-btn" data-id="${radio.id}" title="删除"><i class="fa-regular fa-trash-can"></i></button>`;
+                        actionsHtml +=
+                            `<button class="del-btn" data-id="${radio.id}" title="删除"><i class="fa-regular fa-trash-can"></i></button>`;
                     }
 
                     item.innerHTML = `
@@ -1421,7 +1516,6 @@
                     container.appendChild(item);
                 });
 
-                // 事件绑定
                 container.querySelectorAll('.fav-btn').forEach(btn => {
                     btn.addEventListener('click', (e) => {
                         e.stopPropagation();
@@ -1449,10 +1543,10 @@
                 const favBtn = document.getElementById('btnFav');
                 if (currentFilter === 'fav') {
                     favBtn.classList.add('active-fav');
-                    favBtn.innerHTML = '<i class="fa-solid fa-heart"></i> 收藏'; // 实心表示激活
+                    favBtn.innerHTML = '<i class="fa-solid fa-heart"></i> <span>收藏</span>';
                 } else {
                     favBtn.classList.remove('active-fav');
-                    favBtn.innerHTML = '<i class="fa-regular fa-heart"></i> 收藏';
+                    favBtn.innerHTML = '<i class="fa-regular fa-heart"></i> <span>收藏</span>';
                 }
             }
 
@@ -1831,7 +1925,7 @@
             // ============================================================
             function exportJson() {
                 const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(radioDataSource, null,
-                2));
+                    2));
                 const a = document.createElement("a");
                 a.href = dataStr;
                 a.download = "AnsonRadio_备份.json";
@@ -1882,7 +1976,7 @@
                 root.style.setProperty('--primary', color);
                 root.style.setProperty('--primary-light', color);
                 root.style.setProperty('--primary-dark', color);
-                root.style.setProperty('--primary-glow', `rgba(${r},${g},${b},0.35)`);
+                root.style.setProperty('--primary-glow', `rgba(${r},${g},${b},0.5)`);
                 root.style.setProperty('--primary-soft', `rgba(${r},${g},${b},0.12)`);
                 root.style.setProperty('--primary-border', `rgba(${r},${g},${b},0.25)`);
                 document.querySelectorAll('.color-dot').forEach(d => d.classList.remove('active'));
@@ -1896,6 +1990,20 @@
             }
 
             // ============================================================
+            // 底部按钮点击反馈（点击动画，非按压）
+            // ============================================================
+            function addClickFeedback(btn) {
+                btn.classList.remove('clicked');
+                // 强制重绘
+                void btn.offsetWidth;
+                btn.classList.add('clicked');
+                // 动画结束后移除类
+                setTimeout(() => {
+                    btn.classList.remove('clicked');
+                }, 400);
+            }
+
+            // ============================================================
             // 事件绑定
             // ============================================================
             function bindEvents() {
@@ -1906,7 +2014,6 @@
                         this.classList.add('active');
                         currentFilter = this.dataset.filter;
                         renderStationList();
-                        // 更新底部收藏按钮状态
                         updateFavButtonState();
                     });
                 });
@@ -1917,13 +2024,41 @@
                 document.getElementById('prevBtn').addEventListener('click', prevStation);
                 document.getElementById('nextBtn').addEventListener('click', nextStation);
 
-                document.getElementById('btnFav').addEventListener('click', function() {
+                // ---- 底部按钮：点击反馈 + 功能 ----
+                const btnAdd = document.getElementById('btnAddRadio');
+                btnAdd.addEventListener('click', function(e) {
+                    addClickFeedback(this);
+                    document.getElementById('addRadioModal').classList.add('open');
+                });
+
+                const btnImport = document.getElementById('btnImport');
+                btnImport.addEventListener('click', function(e) {
+                    addClickFeedback(this);
+                    openImportModal();
+                });
+
+                const btnExport = document.getElementById('btnExport');
+                btnExport.addEventListener('click', function(e) {
+                    addClickFeedback(this);
+                    exportJson();
+                });
+
+                const btnFav = document.getElementById('btnFav');
+                btnFav.addEventListener('click', function(e) {
+                    addClickFeedback(this);
                     document.querySelectorAll('.category-tab').forEach(t => t.classList.remove('active'));
                     currentFilter = "fav";
                     renderStationList();
                     updateFavButtonState();
                 });
 
+                const btnManage = document.getElementById('btnManage');
+                btnManage.addEventListener('click', function(e) {
+                    addClickFeedback(this);
+                    openManageModal();
+                });
+
+                // 主题切换
                 document.getElementById('themeToggle').addEventListener('click', (e) => {
                     e.stopPropagation();
                     document.getElementById('themePicker').classList.toggle('open');
@@ -1945,9 +2080,7 @@
                     Storage.save("ansonradio_theme", mode);
                 });
 
-                document.getElementById('btnAddRadio').addEventListener('click', () => {
-                    document.getElementById('addRadioModal').classList.add('open');
-                });
+                // 新增弹窗
                 document.querySelectorAll('.closeModal').forEach(btn => {
                     btn.addEventListener('click', () => {
                         document.getElementById('addRadioModal').classList.remove('open');
@@ -1960,12 +2093,11 @@
                     }
                 });
 
-                document.getElementById('btnImport').addEventListener('click', openImportModal);
+                // 导入弹窗
                 document.getElementById('importCancel').addEventListener('click', closeImportModal);
                 document.getElementById('importModal').addEventListener('click', (e) => {
                     if (e.target === e.currentTarget) closeImportModal();
                 });
-
                 document.getElementById('importOverwrite').addEventListener('click', function() {
                     importMode = "overwrite";
                     document.getElementById('fileSelector').click();
@@ -1974,7 +2106,6 @@
                     importMode = "append";
                     document.getElementById('fileSelector').click();
                 });
-
                 document.getElementById('fileSelector').addEventListener('change', function(e) {
                     const file = e.target.files[0];
                     if (file && importMode) {
@@ -1985,9 +2116,7 @@
                     }
                 });
 
-                document.getElementById('btnExport').addEventListener('click', exportJson);
-
-                document.getElementById('btnManage').addEventListener('click', openManageModal);
+                // 管理弹窗
                 document.getElementById('closeManageModal').addEventListener('click', () => {
                     document.getElementById('manageModal').classList.remove('open');
                 });
@@ -1999,9 +2128,9 @@
                 document.getElementById('manageSearchInput').addEventListener('input', function() {
                     renderManageList(this.value);
                 });
-
                 document.getElementById('clearAllBtn').addEventListener('click', clearAllStations);
 
+                // 编辑弹窗
                 document.getElementById('closeEditModal').addEventListener('click', () => {
                     document.getElementById('editModal').classList.remove('open');
                 });
@@ -2021,15 +2150,15 @@
                 });
             }
 
-            // 辅助：更新收藏按钮的图标状态
+            // 辅助：更新收藏按钮的状态
             function updateFavButtonState() {
                 const favBtn = document.getElementById('btnFav');
                 if (currentFilter === 'fav') {
                     favBtn.classList.add('active-fav');
-                    favBtn.innerHTML = '<i class="fa-solid fa-heart"></i> 收藏';
+                    favBtn.innerHTML = '<i class="fa-solid fa-heart"></i> <span>收藏</span>';
                 } else {
                     favBtn.classList.remove('active-fav');
-                    favBtn.innerHTML = '<i class="fa-regular fa-heart"></i> 收藏';
+                    favBtn.innerHTML = '<i class="fa-regular fa-heart"></i> <span>收藏</span>';
                 }
             }
 
