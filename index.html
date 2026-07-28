@@ -101,7 +101,7 @@
            ============================================================ */
         .search-header {
             flex-shrink: 0;
-            margin-bottom: 16px;
+            margin-bottom: 31px;
             width: 100%;
             position: relative;
         }
@@ -1001,7 +1001,7 @@
             }
 
             .search-header {
-                margin-bottom: 12px;
+                margin-bottom: 31px;
             }
             .search-container {
                 padding: 2px 4px 2px 12px;
@@ -1175,27 +1175,30 @@
                 padding: 6px 16px;
                 top: 20px;
             }
-            .search-header {
-                margin-bottom: 16px;
-            }
-            .search-container {
-                min-height: 36px;
-                padding: 2px 4px 2px 12px;
-            }
-            .brand {
-                font-size: 14px;
-            }
-            .search-container .search-input {
-                font-size: 12px;
-                height: 28px;
-            }
-            .header-actions .icon-btn {
-                width: 28px;
-                height: 28px;
-                font-size: 14px;
-            }
-        }
-
+           .search-header {
+        margin-bottom: 12px;  /* 稍微减少上边距 */
+    }
+    .search-container {
+        background: transparent !important;
+        border: none !important;
+        border-radius: 0 !important;
+        padding: 4px 0;
+        min-height: auto;
+        justify-content: space-between;
+        box-shadow: none !important;
+    }
+    .brand {
+        font-size: 16px;
+    }
+    .search-container .search-input {
+        display: none !important;
+    }
+    .header-actions .icon-btn {
+        width: 32px;
+        height: 32px;
+        font-size: 16px;
+    }
+}
         /* ============================================================
            平板端全屏沉浸式适配
            ============================================================ */
