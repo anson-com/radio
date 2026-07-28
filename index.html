@@ -446,15 +446,14 @@
             cursor: pointer;
         }
         .station-item:hover {
-            background: rgba(255, 255, 255, 0.06);
-            border-color: var(--primary-border);
-        }
-        /* 选中状态：空心发光 */
+    background: transparent;        /* 悬停时也透明 */
+    border-color: var(--primary-border);
+}
         .station-item.active {
-            background: transparent;
-            border-color: var(--primary);
-            box-shadow: 0 0 20px var(--primary-glow);
-        }
+    background: transparent;        /* 背景完全透明 */
+    border-color: var(--primary);
+    box-shadow: 0 0 20px var(--primary-glow);
+}
         .station-item .info {
             display: flex;
             align-items: center;
@@ -514,18 +513,24 @@
             color: var(--primary);
             background: var(--primary-soft);
         }
-        .station-item .actions .play-btn {
-            color: var(--text-secondary);
-        }
+
+/* 播放按钮 - 无背景，仅透明 */
+.station-item .actions .play-btn {
+    color: var(--text-secondary);
+    background: transparent !important;
+}
+       
         .station-item .actions .play-btn:hover {
             color: var(--primary);
             background: var(--primary-soft);
         }
-        /* 播放按钮发光效果（当前播放） */
-        .station-item .actions .play-btn.playing-glow {
-            box-shadow: 0 0 20px var(--primary-glow);
-            color: var(--primary);
-        }
+       /* 播放按钮发光效果（纯光晕，无背景阴影） */
+.station-item .actions .play-btn.playing-glow {
+    box-shadow: 0 0 20px var(--primary-glow);
+    color: var(--primary);
+    background: transparent !important;
+    border-radius: 50%;   /* 确保光晕也是圆形扩散 */
+}
         /* 删除按钮（仅全部分类） */
         .station-item .actions .del-btn {
             color: var(--text-weak);
@@ -1034,8 +1039,19 @@
                 width: 12px;
                 height: 2px;
                 bottom: 0px;
-            }
-        }
+          
+}
+/* 隐藏电台列表滚动条 - 所有手机端生效 */
+    .station-list-wrapper {
+        scrollbar-width: none !important;
+        -ms-overflow-style: none !important;
+    }
+    .station-list-wrapper::-webkit-scrollbar {
+        display: none !important;
+        width: 0 !important;
+        height: 0 !important;
+    }
+}
 
         /* ============================================================
            手机横屏适配
