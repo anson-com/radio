@@ -889,6 +889,8 @@
     body {
         padding: 0;
         align-items: flex-start;
+        overflow: hidden;
+        touch-action: pan-y;   /* 仅允许垂直触摸滑动，减少干扰 */
     }
     .radio-app {
         max-width: 100%;
