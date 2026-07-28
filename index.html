@@ -277,13 +277,15 @@ if (typeof Promise !== 'undefined' && typeof Symbol !== 'undefined') {
             display: block;
         }
 
-        .now-playing-wrapper {
-            position: relative;
-            display: inline-block;
-            margin-top: 16px;
-            width: auto;
-            max-width: 100%;
-        }
+       .now-playing-wrapper {
+    position: relative;
+    display: flex;          /* 改为 flex，配合 margin 居中 */
+    align-items: center;
+    justify-content: center;
+    margin: auto 0;         /* 上下自动平分空间，左右保持原样 */
+    width: auto;
+    max-width: 100%;
+}
 
         .now-playing {
             font-size: 20px;
@@ -818,6 +820,7 @@ if (typeof Promise !== 'undefined' && typeof Symbol !== 'undefined') {
             }
         }
 
+    
         /* ============================================================
            手机横屏适配
            ============================================================ */
@@ -829,8 +832,8 @@ if (typeof Promise !== 'undefined' && typeof Symbol !== 'undefined') {
             .radio-app {
                 width: 100%;
                 max-width: 100%;
-                height: 100vh;        /* 兼容旧系统：用 vh 替代 dvh */
-                max-height: 100vh;
+                height: 100dvh;
+                max-height: 100dvh;
                 border-radius: 24px;
                 box-shadow: none;
                 border: none;
@@ -853,19 +856,19 @@ if (typeof Promise !== 'undefined' && typeof Symbol !== 'undefined') {
                 justify-content: center;
             }
             .player-row {
-                gap: 41px;
+                gap: 80px;
             }
             .disc-wrapper {
-                width: 220px;
-                height: 220px;
+                width: 280px;
+                height: 280px;
             }
             .btn-skip-disc {
-                width: 44px;
-                height: 44px;
+                width: 60px;
+                height: 60px;
             }
             .btn-skip-disc svg {
-                width: 20px;
-                height: 20px;
+                width: 26px;
+                height: 26px;
             }
             .now-playing-wrapper {
                 margin-top: 12px;
@@ -889,9 +892,7 @@ if (typeof Promise !== 'undefined' && typeof Symbol !== 'undefined') {
                 height: 32px;
                 font-size: 16px;
             }
-        }
-
-        /* ============================================================
+        }============================================================
            ✅ 平板端全屏沉浸式适配（iPad Air iOS 12.5.8 兼容）
            ============================================================ */
         @media (min-width: 641px) and (max-width: 1024px) {
@@ -931,22 +932,7 @@ if (typeof Promise !== 'undefined' && typeof Symbol !== 'undefined') {
                 flex-shrink: 0;
                 padding-bottom: env(safe-area-inset-bottom, 12px);
             }
-            /* 平板适度调整尺寸，让内容不显得过于拥挤 */
-            .player-row {
-                gap: 24px;
-            }
-            .disc-wrapper {
-                width: 150px;
-                height: 150px;
-            }
-            .btn-skip-disc {
-                width: 44px;
-                height: 44px;
-            }
-            .btn-skip-disc svg {
-                width: 20px;
-                height: 20px;
-            }
+           
             .now-playing {
                 font-size: 19px;
             }
