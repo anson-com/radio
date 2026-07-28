@@ -543,13 +543,13 @@
     background: var(--bg-card);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
-    border-top: 1px solid var(--border-line);
-    border-radius: 20px 20px 0 0;        /* 顶部圆角，更柔和 */
-    margin-top: 12px;
-    padding: 6px 4px 10px;
+    border: 1px solid var(--border-line);   /* 增加细边框，更清晰 */
+    border-radius: 20px;                    /* 四周圆角 */
+    margin: 0px 8px 0px;                 /* 上 8px，左右 6px，下 12px */
+    padding: 6px 4px 0px;
     flex-shrink: 0;
     gap: 0;
-    /* 去掉之前的 flex-wrap 和 gap，改为 space-around */
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
 }
 
 .bottom-actions .btn-action {
