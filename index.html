@@ -10,7 +10,6 @@
     <!-- Font Awesome 6 (免费) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script>
-        // 检测是否支持新版 HLS.js 所需的特性
         if (typeof Promise !== 'undefined' && typeof Symbol !== 'undefined') {
             document.write('<script src="https://cdn.jsdelivr.net/npm/hls.js@latest"><\/script>');
         } else {
@@ -48,7 +47,6 @@
             --gap-lg: 24px;
         }
 
-        /* 亮色模式 */
         body.light-mode {
             --bg-body: #f4f6fc;
             --bg-card: rgba(255, 255, 255, 0.7);
@@ -98,35 +96,80 @@
             overflow: hidden;
         }
 
-        /* ===== 头部 ===== */
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
+        /* ============================================================
+           顶部搜索栏（整合品牌 + 搜索 + 主题切换）
+           ============================================================ */
+        .search-header {
             flex-shrink: 0;
+            margin-bottom: 16px;
+            width: 100%;
+            position: relative;
         }
-        .header h1 {
-            font-size: 22px;   /* 修改为22px */
-            font-weight: 600;
-            letter-spacing: 0.3px;
-            color: var(--primary);
-            text-shadow: 0 0 10px var(--primary-glow), 0 0 60px var(--primary-soft);
-        }
-        .header h1 span {
-            margin-right: 6px;
-        }
-        .header-actions {
+
+        .search-container {
             display: flex;
-            gap: 8px;
             align-items: center;
-        }
-        .icon-btn {
-            background: rgba(255, 255, 255, 0.04);
+            background: rgba(255, 255, 255, 0.05);
             border: 1px solid var(--border-line);
             border-radius: 30px;
-            width: 36px;
+            padding: 4px 6px 4px 16px;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+            gap: 4px;
+            min-height: 44px;
+        }
+        .search-container:focus-within {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px var(--primary-soft);
+        }
+
+        /* 品牌标识 */
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-shrink: 0;
+            color: var(--primary);
+            font-size: 17px;
+            font-weight: 600;
+            letter-spacing: 0.3px;
+            white-space: nowrap;
+            text-shadow: 0 0 10px var(--primary-glow), 0 0 60px var(--primary-soft);
+            user-select: none;
+        }
+        .brand .brand-icon {
+            font-size: 18px;
+        }
+
+        /* 搜索输入框 */
+        .search-container .search-input {
+            flex: 1;
+            min-width: 60px;
+            border: none;
+            background: transparent;
+            color: var(--text-primary);
+            font-size: 14px;
+            padding: 6px 4px;
+            outline: none;
             height: 36px;
+        }
+        .search-container .search-input::placeholder {
+            color: var(--text-weak);
+            font-weight: 400;
+        }
+
+        /* 右侧按钮组 */
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 2px;
+            flex-shrink: 0;
+        }
+        .header-actions .icon-btn {
+            background: transparent !important;
+            border: none !important;
+            border-radius: 0;
+            width: 34px;
+            height: 34px;
             font-size: 18px;
             cursor: pointer;
             transition: all 0.2s ease;
@@ -135,26 +178,27 @@
             justify-content: center;
             color: var(--text-secondary);
             line-height: 1;
+            padding: 0;
         }
-        .icon-btn:hover {
-            background: var(--primary-soft);
-            border-color: var(--primary);
+        .header-actions .icon-btn:hover {
             color: var(--primary);
-            transform: scale(1.05);
+            transform: scale(1.1);
+            background: transparent !important;
+            border-color: transparent !important;
         }
-        .icon-btn.active-mode {
-            background: var(--primary-soft);
+        .header-actions .icon-btn.active-mode {
             color: var(--primary);
         }
 
-        /* 主题色选择器浮窗 */
+        /* 主题色选择器浮窗（定位在🎨按钮下方） */
         .theme-picker {
             display: none;
             position: absolute;
-            right: 10px;
-            top: 70px;
+            right: 0;
+            top: 54px;
             background: var(--bg-card);
             backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
             padding: 12px 16px;
             border-radius: 24px;
             border: 1px solid var(--border-line);
@@ -252,12 +296,8 @@
             text-shadow: 0 0 20px var(--primary);
         }
         @keyframes spin {
-            from {
-                transform: rotate(0deg);
-            }
-            to {
-                transform: rotate(360deg);
-            }
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
         }
 
         .btn-skip-disc {
@@ -344,7 +384,7 @@
             text-shadow: 0 0 10px rgba(255, 255, 255, 0.05);
         }
 
-        /* ===== 功能栏 ===== */
+        /* ===== 功能栏（仅分类菜单） ===== */
         .function-bar {
             display: flex;
             flex-direction: column;
@@ -401,25 +441,6 @@
             color: var(--text-primary);
         }
 
-        .search-box input {
-            width: 100%;
-            padding: 6px 16px;
-            border-radius: 30px;
-            background: rgba(255, 255, 255, 0.04);
-            border: 1px solid var(--border-line);
-            color: var(--text-primary);
-            font-size: 14px;
-            outline: none;
-            transition: 0.2s;
-        }
-        .search-box input:focus {
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px var(--primary-soft);
-        }
-        .search-box input::placeholder {
-            color: var(--text-weak);
-        }
-
         /* ===== 电台列表 ===== */
         .station-list-wrapper {
             flex: 1 1 0;
@@ -446,15 +467,14 @@
             cursor: pointer;
         }
         .station-item:hover {
-    background: transparent;        /* 悬停时也透明 */
-    border-color: var(--primary-border);
-}
-/*调整电台卡片溢光范围 */
-       .station-item.active {
-    background: transparent;
-    border-color: var(--primary);
-    box-shadow: 0 8px 16px -6px var(--primary-glow);
-}
+            background: transparent;
+            border-color: var(--primary-border);
+        }
+        .station-item.active {
+            background: transparent;
+            border-color: var(--primary);
+            box-shadow: 0 8px 16px -6px var(--primary-glow);
+        }
         .station-item .info {
             display: flex;
             align-items: center;
@@ -500,13 +520,11 @@
             transition: all 0.2s ease;
             line-height: 1;
         }
-        /* 所有操作按钮 hover 统一为主色柔光 */
         .station-item .actions button:hover {
             color: var(--primary);
             background: var(--primary-soft);
             transform: scale(1.05);
         }
-        /* 收藏按钮 - 主题色 */
         .station-item .actions .fav-btn.active {
             color: var(--primary);
         }
@@ -514,36 +532,27 @@
             color: var(--primary);
             background: var(--primary-soft);
         }
-
-/* 播放按钮 - 无背景，仅透明 */
-.station-item .actions .play-btn {
-    color: var(--text-secondary);
-    background: transparent !important;
-}
-       
+        .station-item .actions .play-btn {
+            color: var(--text-secondary);
+            background: transparent !important;
+        }
         .station-item .actions .play-btn:hover {
             color: var(--primary);
             background: var(--primary-soft);
         }
-      /* 播放按钮发光效果 - 使用 text-shadow 紧贴图标 */
-.station-item .actions .play-btn.playing-glow {
-    color: var(--primary);
-    box-shadow: none !important;
-    background: transparent !important;
-    border-radius: 0 !important;
-}
-
-/* 让图标本身发光（紧贴三角形边缘） */
-.station-item .actions .play-btn.playing-glow i {
-    text-shadow: 0 0 20px var(--primary-glow), 0 0 40px var(--primary-glow);
-}
-
-/* 播放状态下禁用 hover 和 active 的背景 */
-.station-item .actions .play-btn.playing-glow:hover,
-.station-item .actions .play-btn.playing-glow:active {
-    background: transparent !important;
-}
-        /* 删除按钮（仅全部分类） */
+        .station-item .actions .play-btn.playing-glow {
+            color: var(--primary);
+            box-shadow: none !important;
+            background: transparent !important;
+            border-radius: 0 !important;
+        }
+        .station-item .actions .play-btn.playing-glow i {
+            text-shadow: 0 0 20px var(--primary-glow), 0 0 40px var(--primary-glow);
+        }
+        .station-item .actions .play-btn.playing-glow:hover,
+        .station-item .actions .play-btn.playing-glow:active {
+            background: transparent !important;
+        }
         .station-item .actions .del-btn {
             color: var(--text-weak);
         }
@@ -560,7 +569,7 @@
         }
 
         /* ============================================================
-           底部导航栏 - 两侧和底部溢光
+           底部导航栏
            ============================================================ */
         .bottom-actions {
             display: flex;
@@ -576,11 +585,9 @@
             flex-shrink: 0;
             gap: 0;
             position: relative;
-            /* 底部和两侧溢光（顶部无光） */
             box-shadow: 0 12px 40px -10px var(--primary-glow);
             transition: box-shadow 0.4s ease, border-color 0.4s ease;
         }
-        /* 溢光增强层（底部和两侧） */
         .bottom-actions::after {
             content: '';
             position: absolute;
@@ -630,8 +637,6 @@
             opacity: 0.75;
             transition: opacity 0.25s ease, color 0.25s ease;
         }
-
-        /* 悬停效果：主题色变色 + 上浮 */
         .bottom-actions .btn-action:hover {
             color: var(--primary);
             background: transparent;
@@ -644,8 +649,6 @@
         .bottom-actions .btn-action:hover i {
             transform: scale(1.08);
         }
-
-        /* ---- 点击反馈（非按压，是点击瞬间动画） ---- */
         .bottom-actions .btn-action.clicked {
             animation: btnTapPop 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
         }
@@ -675,7 +678,6 @@
             100% { opacity: 0.75; color: var(--text-weak); }
         }
 
-        /* 激活/选中状态 - 收藏按钮 */
         .bottom-actions .btn-action.active-fav {
             color: var(--primary);
         }
@@ -687,8 +689,6 @@
             color: var(--primary);
             opacity: 1;
         }
-
-        /* 小圆点指示器（收藏激活时显示） */
         .bottom-actions .btn-action.active-fav::after {
             content: '';
             position: absolute;
@@ -702,8 +702,6 @@
             box-shadow: 0 0 12px var(--primary-glow);
             transition: all 0.3s ease;
         }
-
-        /* 新增按钮特殊高亮（居中突出） */
         .bottom-actions .btn-action#btnAddRadio i {
             font-size: 22px;
             color: var(--text-secondary);
@@ -744,7 +742,6 @@
             display: flex;
             flex-direction: column;
         }
-        /* 删除标题 */
         .modal-box h3 {
             display: none;
         }
@@ -857,7 +854,6 @@
             background: var(--primary-soft);
         }
 
-        /* 清空按钮特殊样式（警示色） */
         .btn-line.btn-clear {
             color: #ff6b6b;
             border-color: rgba(255, 107, 107, 0.3);
@@ -868,37 +864,35 @@
             border-color: #ff6b6b;
             color: #ff4757;
         }
-/* 主题色边框按钮（与清空按钮风格一致，颜色跟随主题） */
-.btn-outline-theme {
-    padding: 8px 18px;
-    border-radius: 30px;
-    background: var(--primary-soft);
-    border: 1px solid var(--primary-border);
-    color: var(--primary);
-    cursor: pointer;
-    transition: all 0.25s ease;
-    font-size: 14px;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-}
-.btn-outline-theme:hover {
-    background: var(--primary);
-    color: #fff;
-    border-color: var(--primary);
-    transform: translateY(-1px);
-}
-.btn-outline-theme:active {
-    transform: scale(0.96);
-}
 
-        /* ---- 统一输入框圆角（与搜索框一致） ---- */
+        .btn-outline-theme {
+            padding: 8px 18px;
+            border-radius: 30px;
+            background: var(--primary-soft);
+            border: 1px solid var(--primary-border);
+            color: var(--primary);
+            cursor: pointer;
+            transition: all 0.25s ease;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .btn-outline-theme:hover {
+            background: var(--primary);
+            color: #fff;
+            border-color: var(--primary);
+            transform: translateY(-1px);
+        }
+        .btn-outline-theme:active {
+            transform: scale(0.96);
+        }
+
         .modal-box .form-row input,
         .edit-form .form-row input {
             border-radius: 30px;
         }
 
-        /* ---- 编辑弹窗 ---- */
         .edit-form .form-row {
             margin-bottom: 12px;
         }
@@ -923,7 +917,6 @@
             box-shadow: 0 0 0 3px var(--primary-soft);
         }
 
-        /* ===== 新增电台弹窗 ===== */
         .modal-box .form-row {
             margin-bottom: 12px;
         }
@@ -948,7 +941,6 @@
             box-shadow: 0 0 0 3px var(--primary-soft);
         }
 
-        /* 导入选择弹窗 (无标题) */
         .import-options {
             display: flex;
             flex-direction: column;
@@ -987,7 +979,7 @@
         }
 
         /* ============================================================
-           移动端竖屏适配（宽度 ≤ 640px）
+           移动端竖屏适配
            ============================================================ */
         @media (max-width: 640px) {
             body {
@@ -1007,6 +999,43 @@
                 padding-left: max(12px, env(safe-area-inset-left));
                 padding-right: max(12px, env(safe-area-inset-right));
             }
+
+            .search-header {
+                margin-bottom: 12px;
+            }
+            .search-container {
+                padding: 2px 4px 2px 12px;
+                min-height: 38px;
+                border-radius: 24px;
+            }
+            .brand {
+                font-size: 14px;
+                gap: 4px;
+            }
+            .brand .brand-icon {
+                font-size: 15px;
+            }
+            .search-container .search-input {
+                font-size: 13px;
+                height: 32px;
+                padding: 4px 2px;
+            }
+            .header-actions .icon-btn {
+                width: 30px;
+                height: 30px;
+                font-size: 16px;
+            }
+            .theme-picker {
+                right: -4px;
+                top: 46px;
+                width: 156px;
+                padding: 10px 12px;
+            }
+            .color-dot {
+                width: 28px;
+                height: 28px;
+            }
+
             .player-display {
                 min-height: 170px;
             }
@@ -1041,7 +1070,6 @@
                 padding: 4px;
             }
 
-            /* 底部菜单手机适配 - 更紧凑 */
             .bottom-actions {
                 padding: 4px 2px 6px;
                 border-radius: 16px;
@@ -1074,19 +1102,18 @@
                 width: 12px;
                 height: 2px;
                 bottom: 0px;
-          
-}
-/* 隐藏电台列表滚动条 - 所有手机端生效 */
-    .station-list-wrapper {
-        scrollbar-width: none !important;
-        -ms-overflow-style: none !important;
-    }
-    .station-list-wrapper::-webkit-scrollbar {
-        display: none !important;
-        width: 0 !important;
-        height: 0 !important;
-    }
-}
+            }
+
+            .station-list-wrapper {
+                scrollbar-width: none !important;
+                -ms-overflow-style: none !important;
+            }
+            .station-list-wrapper::-webkit-scrollbar {
+                display: none !important;
+                width: 0 !important;
+                height: 0 !important;
+            }
+        }
 
         /* ============================================================
            手机横屏适配
@@ -1148,21 +1175,29 @@
                 padding: 6px 16px;
                 top: 20px;
             }
-            .header {
-                margin-bottom: 30px;
+            .search-header {
+                margin-bottom: 16px;
             }
-            .header h1 {
-                font-size: 20px;
+            .search-container {
+                min-height: 36px;
+                padding: 2px 4px 2px 12px;
             }
-            .icon-btn {
-                width: 32px;
-                height: 32px;
-                font-size: 16px;
+            .brand {
+                font-size: 14px;
+            }
+            .search-container .search-input {
+                font-size: 12px;
+                height: 28px;
+            }
+            .header-actions .icon-btn {
+                width: 28px;
+                height: 28px;
+                font-size: 14px;
             }
         }
 
         /* ============================================================
-           ✅ 平板端全屏沉浸式适配
+           平板端全屏沉浸式适配
            ============================================================ */
         @media (min-width: 641px) and (max-width: 1024px) {
             body {
@@ -1210,6 +1245,9 @@
                 font-size: 12px;
                 padding: 6px 14px;
             }
+            .search-container {
+                min-height: 44px;
+            }
         }
     </style>
 </head>
@@ -1218,31 +1256,57 @@
     <!-- ===== 主卡片 ===== -->
     <div class="radio-app" id="app">
 
-        <!-- ===== 功能栏 ===== -->
-        <div class="function-bar"> 
-            <div class="search-box">
-                <input id="searchInput" placeholder="🔍 搜索电台名称或城市...">
-            </div>
-        </div>
+        <!-- ============================================================
+            顶部搜索栏（整合品牌 + 搜索 + 主题切换）
+            位置：页面最顶部
+        ============================================================ -->
+        <div class="search-header">
+            <div class="search-container">
+                <!-- 品牌标识：左对齐 -->
+                <span class="brand">
+                    <span class="brand-icon">📡</span>
+                    <span class="brand-name">AnsonFM</span>
+                </span>
 
-        <!-- 头部 -->
-        <div class="header">
-            <h1><span>📡</span>AnsonFM</h1>
-            <div class="header-actions">
-                <button class="icon-btn" id="themeToggle" title="切换主题色">🎨</button>
-                <button class="icon-btn" id="darkModeToggle" title="切换明暗">🌓</button>
-                <div class="theme-picker" id="themePicker">
-                    <div class="color-dot active" style="background:#7c8dff;" data-color="#7c8dff"></div>
-                    <div class="color-dot" style="background:#ff6b6b;" data-color="#ff6b6b"></div>
-                    <div class="color-dot" style="background:#4ecdc4;" data-color="#4ecdc4"></div>
-                    <div class="color-dot" style="background:#ffb347;" data-color="#ffb347"></div>
-                    <div class="color-dot" style="background:#ff6b9d;" data-color="#ff6b9d"></div>
-                    <div class="color-dot" style="background:#4dabf7;" data-color="#4dabf7"></div>
+                <!-- 搜索输入框：中间 -->
+                <input type="text" class="search-input" id="searchInput" placeholder="搜索电台名称或城市...">
+
+                <!-- 右侧按钮组 -->
+                <div class="header-actions">
+                    <button class="icon-btn" id="themeToggle" title="切换主题色">🎨</button>
+                    <button class="icon-btn" id="darkModeToggle" title="切换明暗">🌓</button>
+                    <!-- 主题色选择器浮窗 -->
+                    <div class="theme-picker" id="themePicker">
+                        <div class="color-dot active" style="background:#7c8dff;" data-color="#7c8dff"></div>
+                        <div class="color-dot" style="background:#ff6b6b;" data-color="#ff6b6b"></div>
+                        <div class="color-dot" style="background:#4ecdc4;" data-color="#4ecdc4"></div>
+                        <div class="color-dot" style="background:#ffb347;" data-color="#ffb347"></div>
+                        <div class="color-dot" style="background:#ff6b9d;" data-color="#ff6b9d"></div>
+                        <div class="color-dot" style="background:#4dabf7;" data-color="#4dabf7"></div>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <!-- ===== 播放器展示 ===== -->
+        <!-- ============================================================
+           功能栏（仅分类菜单）
+        ============================================================ -->
+        <div class="function-bar">
+            <div class="category-tabs" id="categoryTabs">
+                <span class="category-tab active" data-filter="gd">广东</span>
+                <span class="category-tab" data-filter="traffic">交通</span>
+                <span class="category-tab" data-filter="music">音乐</span>
+                <span class="category-tab" data-filter="news">新闻</span>
+                <span class="category-tab" data-filter="china">全国</span>
+                <span class="category-tab" data-filter="international">国际</span>
+                <span class="category-tab" data-filter="history"><i class="fa-regular fa-clock"></i> 历史</span>
+                <span class="category-tab" data-filter="all">全部</span>
+            </div>
+        </div>
+
+        <!-- ============================================================
+           播放器展示区
+        ============================================================ -->
         <div class="player-display">
             <div class="player-row">
                 <button class="btn-skip-disc" id="prevBtn" title="上一曲">
@@ -1258,44 +1322,36 @@
                 </button>
             </div>
 
-            <!-- 播放状态标签 -->
             <div class="now-playing-wrapper">
                 <span class="now-playing" id="nowPlaying">未播放</span>
             </div>
         </div>
 
- <!-- 分类菜单 - 顺序：广东、交通、音乐、新闻、全国、国际、历史、全部 -->
-            <div class="category-tabs" id="categoryTabs">
-                <span class="category-tab active" data-filter="gd">广东</span>
-                <span class="category-tab" data-filter="traffic">交通</span>
-                <span class="category-tab" data-filter="music">音乐</span>
-                <span class="category-tab" data-filter="news">新闻</span>
-                <span class="category-tab" data-filter="china">全国</span>
-                <span class="category-tab" data-filter="international">国际</span>
-                <span class="category-tab" data-filter="history"><i class="fa-regular fa-clock"></i> 历史</span>
-                <span class="category-tab" data-filter="all">全部</span>
-            </div>
-        <!-- 电台列表 -->
+        <!-- ============================================================
+           电台列表
+        ============================================================ -->
         <div class="station-list-wrapper">
             <div class="station-list" id="stationList"></div>
         </div>
 
-        <!-- ===== 底部操作栏（按钮顺序：导入、导出、新增、收藏、管理） ===== -->
+        <!-- ============================================================
+           底部操作栏
+        ============================================================ -->
         <div class="bottom-actions">
             <button class="btn-action" id="btnImport"><i class="fa-solid fa-file-import"></i> <span>导入</span></button>
             <button class="btn-action" id="btnExport"><i class="fa-solid fa-file-export"></i> <span>导出</span></button>
-            <!-- 新增按钮居中（视觉突出） -->
             <button class="btn-action" id="btnAddRadio"><i class="fa-solid fa-plus-circle"></i> <span>新增</span></button>
             <button class="btn-action" id="btnFav"><i class="fa-regular fa-heart"></i> <span>收藏</span></button>
             <button class="btn-action" id="btnManage"><i class="fa-solid fa-sliders"></i> <span>管理</span></button>
         </div>
     </div>
 
-    <!-- ===== 弹窗 ===== -->
-    <!-- 新增电台（无标题） -->
+    <!-- ============================================================
+       弹窗
+    ============================================================ -->
+    <!-- 新增电台 -->
     <div class="modal-mask" id="addRadioModal">
         <div class="modal-box">
-            <!-- 标题已移除 -->
             <div class="form-row">
                 <label>电台名称 *</label>
                 <input type="text" id="formName" placeholder="例如：广东新闻广播">
@@ -1318,12 +1374,12 @@
             </div>
             <div class="modal-footer">
                 <button class="btn-outline-theme closeModal"><i class="fa-regular fa-circle-xmark"></i> 取消</button>
-<button class="btn-outline-theme" id="saveRadio"><i class="fa-regular fa-floppy-disk"></i> 保存</button>
+                <button class="btn-outline-theme" id="saveRadio"><i class="fa-regular fa-floppy-disk"></i> 保存</button>
             </div>
         </div>
     </div>
 
-    <!-- 导入弹窗（无标题） -->
+    <!-- 导入弹窗 -->
     <div class="modal-mask" id="importModal">
         <div class="modal-box">
             <div class="import-options">
@@ -1348,10 +1404,9 @@
         </div>
     </div>
 
-    <!-- 管理弹窗（无标题） -->
+    <!-- 管理弹窗 -->
     <div class="modal-mask" id="manageModal">
         <div class="modal-box">
-            <!-- 标题已移除 -->
             <div class="modal-search-box">
                 <input id="manageSearchInput" placeholder="🔍 搜索电台名称...">
             </div>
@@ -1394,8 +1449,8 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button class="btn-line" id="closeEditModal"><i class="fa-regular fa-circle-xmark"></i> 取消</button>
-                <button class="btn-line" id="saveEditRadio"><i class="fa-regular fa-floppy-disk"></i> 保存修改</button>
+                <button class="btn-outline-theme" id="closeEditModal"><i class="fa-regular fa-circle-xmark"></i> 取消</button>
+                <button class="btn-outline-theme" id="saveEditRadio"><i class="fa-regular fa-floppy-disk"></i> 保存修改</button>
             </div>
         </div>
     </div>
@@ -1842,9 +1897,6 @@
                 showToast("已删除");
             }
 
-            // ============================================================
-            // 清空功能（二次确认）
-            // ============================================================
             function clearAllStations() {
                 if (radioDataSource.length === 0) {
                     showToast("列表已空，无需清空");
@@ -1869,9 +1921,6 @@
                 showToast("已清空全部电台", 2000);
             }
 
-            // ============================================================
-            // 编辑功能
-            // ============================================================
             function openEditModal(id) {
                 const radio = radioDataSource.find(r => r.id === id);
                 if (!radio) { showToast("找不到电台"); return; }
@@ -1967,9 +2016,6 @@
                 reader.readAsText(file);
             }
 
-            // ============================================================
-            // 导出功能
-            // ============================================================
             function exportJson() {
                 const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(radioDataSource, null,
                     2));
@@ -1980,9 +2026,6 @@
                 showToast("导出成功");
             }
 
-            // ============================================================
-            // 新增电台
-            // ============================================================
             function saveNewRadio() {
                 const name = document.getElementById("formName").value.trim();
                 const city = document.getElementById("formCity").value.trim();
@@ -2037,14 +2080,12 @@
             }
 
             // ============================================================
-            // 底部按钮点击反馈（点击动画，非按压）
+            // 底部按钮点击反馈
             // ============================================================
             function addClickFeedback(btn) {
                 btn.classList.remove('clicked');
-                // 强制重绘
                 void btn.offsetWidth;
                 btn.classList.add('clicked');
-                // 动画结束后移除类
                 setTimeout(() => {
                     btn.classList.remove('clicked');
                 }, 400);
@@ -2054,7 +2095,6 @@
             // 事件绑定
             // ============================================================
             function bindEvents() {
-                // 分类点击
                 document.querySelectorAll('.category-tab').forEach(tab => {
                     tab.addEventListener('click', function() {
                         document.querySelectorAll('.category-tab').forEach(t => t.classList.remove('active'));
@@ -2071,7 +2111,6 @@
                 document.getElementById('prevBtn').addEventListener('click', prevStation);
                 document.getElementById('nextBtn').addEventListener('click', nextStation);
 
-                // ---- 底部按钮：点击反馈 + 功能 ----
                 const btnAdd = document.getElementById('btnAddRadio');
                 btnAdd.addEventListener('click', function(e) {
                     addClickFeedback(this);
@@ -2105,7 +2144,6 @@
                     openManageModal();
                 });
 
-                // 主题切换
                 document.getElementById('themeToggle').addEventListener('click', (e) => {
                     e.stopPropagation();
                     document.getElementById('themePicker').classList.toggle('open');
@@ -2127,7 +2165,6 @@
                     Storage.save("ansonradio_theme", mode);
                 });
 
-                // 新增弹窗
                 document.querySelectorAll('.closeModal').forEach(btn => {
                     btn.addEventListener('click', () => {
                         document.getElementById('addRadioModal').classList.remove('open');
@@ -2140,7 +2177,6 @@
                     }
                 });
 
-                // 导入弹窗
                 document.getElementById('importCancel').addEventListener('click', closeImportModal);
                 document.getElementById('importModal').addEventListener('click', (e) => {
                     if (e.target === e.currentTarget) closeImportModal();
@@ -2163,7 +2199,6 @@
                     }
                 });
 
-                // 管理弹窗
                 document.getElementById('closeManageModal').addEventListener('click', () => {
                     document.getElementById('manageModal').classList.remove('open');
                 });
@@ -2177,7 +2212,6 @@
                 });
                 document.getElementById('clearAllBtn').addEventListener('click', clearAllStations);
 
-                // 编辑弹窗
                 document.getElementById('closeEditModal').addEventListener('click', () => {
                     document.getElementById('editModal').classList.remove('open');
                 });
@@ -2197,7 +2231,6 @@
                 });
             }
 
-            // 辅助：更新收藏按钮的状态
             function updateFavButtonState() {
                 const favBtn = document.getElementById('btnFav');
                 if (currentFilter === 'fav') {
@@ -2209,9 +2242,6 @@
                 }
             }
 
-            // ============================================================
-            // 启动
-            // ============================================================
             function init() {
                 initData();
                 loadThemeColor();
