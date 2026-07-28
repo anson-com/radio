@@ -1274,35 +1274,31 @@
             <div class="search-container">
                 <!-- 品牌标识：左对齐 -->
                 <span class="brand">
-                    <svg viewBox="0 0 64 64" width="32" height="32" style="display:block;">
-    <!-- 天线1 - 从左上方出发 -->
-    <line x1="24" y1="20" x2="14" y2="4" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
-    <circle cx="14" cy="4" r="3" fill="currentColor"/>
-    <!-- 天线2 - 从右上方出发 -->
-    <line x1="40" y1="20" x2="50" y2="4" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
-    <circle cx="50" cy="4" r="3" fill="currentColor"/>
-    <!-- 机身 -->
-    <rect x="10" y="22" width="44" height="30" rx="6" fill="none" stroke="currentColor" stroke-width="2.5"/>
-    <!-- 扬声器网格 -->
-    <rect x="34" y="28" width="14" height="18" rx="3" fill="none" stroke="currentColor" stroke-width="2"/>
-    <circle cx="41" cy="37" r="4" fill="none" stroke="currentColor" stroke-width="1.5"/>
-    <!-- 网格装饰线 -->
-    <line x1="34" y1="32" x2="48" y2="32" stroke="currentColor" stroke-width="0.8" opacity="0.3"/>
-    <line x1="34" y1="37" x2="48" y2="37" stroke="currentColor" stroke-width="0.8" opacity="0.3"/>
-    <line x1="34" y1="42" x2="48" y2="42" stroke="currentColor" stroke-width="0.8" opacity="0.3"/>
-    <!-- 旋钮1 -->
-    <circle cx="20" cy="32" r="5" fill="none" stroke="currentColor" stroke-width="2"/>
-    <circle cx="20" cy="32" r="2" fill="currentColor" opacity="0.4"/>
-    <!-- 旋钮2 -->
-    <circle cx="20" cy="44" r="4" fill="none" stroke="currentColor" stroke-width="1.8"/>
-    <circle cx="20" cy="44" r="1.5" fill="currentColor" opacity="0.3"/>
-    <!-- 指示灯 -->
-    <circle cx="28" cy="50" r="2.5" fill="currentColor" opacity="0.5"/>
-    <!-- 频率刻度 -->
-    <line x1="34" y1="50" x2="48" y2="50" stroke="currentColor" stroke-width="1" opacity="0.4"/>
-    <line x1="36" y1="50" x2="36" y2="52" stroke="currentColor" stroke-width="1" opacity="0.3"/>
-    <line x1="40" y1="50" x2="40" y2="52" stroke="currentColor" stroke-width="1" opacity="0.3"/>
-    <line x1="44" y1="50" x2="44" y2="52" stroke="currentColor" stroke-width="1" opacity="0.3"/>
+                   <svg width="32" height="32" viewBox="0 -40 256 296" xmlns="http://www.w3.org/2000/svg" style="display:block;">
+    <!-- 头部轮廓（随主题色变化） -->
+    <path d="M 128 220 C 60 190, 30 120, 30 80 C 30 30, 70 10, 128 10 C 186 10, 226 30, 226 80 C 226 120, 196 190, 128 220 Z" 
+          fill="var(--primary, #7c8dff)" stroke="var(--primary, #7c8dff)" stroke-width="4"/>
+    <!-- 左天线 -->
+    <path d="M100 40 L 40 -32" stroke="var(--primary, #7c8dff)" stroke-width="6" stroke-linecap="round"/>
+    <!-- 右天线 -->
+    <path d="M156 40 L 216 -32" stroke="var(--primary, #7c8dff)" stroke-width="6" stroke-linecap="round"/>
+    <!-- 天线顶球 -->
+    <circle cx="40" cy="-32" r="8" fill="var(--primary, #7c8dff)"/>
+    <circle cx="216" cy="-32" r="8" fill="var(--primary, #7c8dff)"/>
+    <!-- 左眼白 -->
+    <ellipse cx="80" cy="124" rx="28" ry="34" fill="#ffffff" transform="rotate(-12 80 124)"/>
+    <!-- 左瞳孔 -->
+    <circle cx="84" cy="128" r="14" fill="#1a1a2e" transform="rotate(-12 84 128)"/>
+    <!-- 左眼高光 -->
+    <circle cx="78" cy="120" r="5" fill="#ffffff" transform="rotate(-12 78 120)"/>
+    <!-- 右眼白 -->
+    <ellipse cx="176" cy="124" rx="28" ry="34" fill="#ffffff" transform="rotate(12 176 124)"/>
+    <!-- 右瞳孔 -->
+    <circle cx="172" cy="128" r="14" fill="#1a1a2e" transform="rotate(12 172 128)"/>
+    <!-- 右眼高光 -->
+    <circle cx="166" cy="120" r="5" fill="#ffffff" transform="rotate(12 166 120)"/>
+    <!-- 嘴巴（弧度降低） -->
+    <path d="M100 176 Q 141 188 156 180" stroke="#1a1a2e" stroke-width="8" stroke-linecap="round" fill="none"/>
 </svg>
                     <span class="brand-name">AnsonFM</span>
                 </span>
