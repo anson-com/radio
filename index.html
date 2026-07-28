@@ -449,10 +449,11 @@
     background: transparent;        /* 悬停时也透明 */
     border-color: var(--primary-border);
 }
+/*调整电台卡片溢光范围 */
        .station-item.active {
     background: transparent;
     border-color: var(--primary);
-    filter: drop-shadow(0 0 12px var(--primary-glow));
+    box-shadow: 0 8px 16px -6px var(--primary-glow);
 }
         .station-item .info {
             display: flex;
@@ -867,6 +868,29 @@
             border-color: #ff6b6b;
             color: #ff4757;
         }
+/* 主题色边框按钮（与清空按钮风格一致，颜色跟随主题） */
+.btn-outline-theme {
+    padding: 8px 18px;
+    border-radius: 30px;
+    background: var(--primary-soft);
+    border: 1px solid var(--primary-border);
+    color: var(--primary);
+    cursor: pointer;
+    transition: all 0.25s ease;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+.btn-outline-theme:hover {
+    background: var(--primary);
+    color: #fff;
+    border-color: var(--primary);
+    transform: translateY(-1px);
+}
+.btn-outline-theme:active {
+    transform: scale(0.96);
+}
 
         /* ---- 统一输入框圆角（与搜索框一致） ---- */
         .modal-box .form-row input,
@@ -1193,6 +1217,14 @@
 
     <!-- ===== 主卡片 ===== -->
     <div class="radio-app" id="app">
+
+        <!-- ===== 功能栏 ===== -->
+        <div class="function-bar"> 
+            <div class="search-box">
+                <input id="searchInput" placeholder="🔍 搜索电台名称或城市...">
+            </div>
+        </div>
+
         <!-- 头部 -->
         <div class="header">
             <h1><span>📡</span>AnsonFM</h1>
@@ -1232,9 +1264,7 @@
             </div>
         </div>
 
-        <!-- ===== 功能栏 ===== -->
-        <div class="function-bar">
-            <!-- 分类菜单 - 顺序：广东、交通、音乐、新闻、全国、国际、历史、全部 -->
+ <!-- 分类菜单 - 顺序：广东、交通、音乐、新闻、全国、国际、历史、全部 -->
             <div class="category-tabs" id="categoryTabs">
                 <span class="category-tab active" data-filter="gd">广东</span>
                 <span class="category-tab" data-filter="traffic">交通</span>
@@ -1245,11 +1275,6 @@
                 <span class="category-tab" data-filter="history"><i class="fa-regular fa-clock"></i> 历史</span>
                 <span class="category-tab" data-filter="all">全部</span>
             </div>
-            <div class="search-box">
-                <input id="searchInput" placeholder="🔍 搜索电台名称或城市...">
-            </div>
-        </div>
-
         <!-- 电台列表 -->
         <div class="station-list-wrapper">
             <div class="station-list" id="stationList"></div>
@@ -1292,8 +1317,8 @@
                 <input type="text" id="formTag" placeholder="例如：广东 / 交通 / 音乐 / 新闻 / 国际">
             </div>
             <div class="modal-footer">
-                <button class="btn-line closeModal"><i class="fa-regular fa-circle-xmark"></i> 取消</button>
-                <button class="btn-line" id="saveRadio"><i class="fa-regular fa-floppy-disk"></i> 保存</button>
+                <button class="btn-outline-theme closeModal"><i class="fa-regular fa-circle-xmark"></i> 取消</button>
+<button class="btn-outline-theme" id="saveRadio"><i class="fa-regular fa-floppy-disk"></i> 保存</button>
             </div>
         </div>
     </div>
@@ -1306,19 +1331,19 @@
                     <span class="icon">📄</span>
                     <div class="text">
                         <div class="title">覆盖导入</div>
-                        <div class="desc">清空现有电台列表，用新数据完全替换</div>
+                        <div class="desc">清空电台列表，用新数据完全替换</div>
                     </div>
                 </div>
                 <div class="import-btn-option" id="importAppend">
                     <span class="icon">📋</span>
                     <div class="text">
                         <div class="title">追加导入</div>
-                        <div class="desc">将新电台追加到现有列表末尾（重复ID自动跳过）</div>
+                        <div class="desc">追加到列表末尾，重复ID自动跳过</div>
                     </div>
                 </div>
             </div>
             <div class="modal-footer">
-                <button class="btn-line" id="importCancel"><i class="fa-regular fa-circle-xmark"></i> 取消</button>
+                <button class="btn-outline-theme" id="importCancel"><i class="fa-regular fa-circle-xmark"></i> 取消</button>
             </div>
         </div>
     </div>
@@ -1333,7 +1358,7 @@
             <div class="modal-list" id="manageList"></div>
             <div class="modal-footer">
                 <button class="btn-line btn-clear" id="clearAllBtn"><i class="fa-regular fa-trash-can"></i> 清空</button>
-                <button class="btn-line" id="closeManageModal"><i class="fa-regular fa-circle-xmark"></i> 关闭</button>
+                <button class="btn-outline-theme" id="closeManageModal"><i class="fa-regular fa-circle-xmark"></i> 关闭</button>
             </div>
         </div>
     </div>
@@ -1933,7 +1958,7 @@
                         Storage.save("ansonradio_list", radioDataSource);
                         renderStationList();
                         closeImportModal();
-                        showToast(`${importMode === "overwrite" ? "覆盖" : "追加"}导入成功共导入 ${count} 个电台`);
+                        showToast(`${importMode === "overwrite" ? "覆盖" : "追加"}共成功导入 ${count} 个电台`);
                     } catch (err) {
                         showToast("JSON 文件格式不正确");
                         console.error(err);
