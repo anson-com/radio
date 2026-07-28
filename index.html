@@ -253,7 +253,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 30px;
+            gap: 41px;
             width: 100%;
         }
 
@@ -334,8 +334,8 @@
             transform: scale(0.92);
         }
         .btn-skip-disc svg {
-            width: 22px;
-            height: 22px;
+            width: 24px;
+            height: 24px;
             fill: currentColor;
             display: block;
         }
@@ -1030,9 +1030,9 @@
                 padding: 4px 2px;
             }
             .header-actions .icon-btn {
-                width: 30px;
-                height: 30px;
-                font-size: 16px;
+                width: 24px;
+                height: 24px;
+                font-size: 18px;
             }
             .theme-picker {
                 right: -4px;
@@ -1057,7 +1057,7 @@
                 height: 18px;
             }
             .player-row {
-                gap: 16px;
+                gap: 22px;
             }
             .now-playing-wrapper {
                 margin-top: 14px;
@@ -1197,7 +1197,7 @@
         box-shadow: none !important;
     }
     .brand {
-        font-size: 16px;
+        font-size: 20px;
     }
     .search-container .search-input {
         display: none !important;
@@ -1205,7 +1205,7 @@
     .header-actions .icon-btn {
         width: 32px;
         height: 32px;
-        font-size: 16px;
+        font-size: 22px;
     }
 }
         /* ============================================================
@@ -1307,17 +1307,25 @@
         ============================================================ -->
         <div class="player-display">
             <div class="player-row">
-                <button class="btn-skip-disc" id="prevBtn" title="上一曲">
-                    <svg viewBox="0 0 24 24"><path d="M4 4v16M16 4l-8 8 8 8"/></svg>
-                </button>
+                <!-- 下一曲按钮 -->
+<button class="btn-skip-disc" id="nextBtn" title="下一曲">
+    <svg viewBox="0 0 24 24" width="24" height="24" style="display:block;">
+        <path d="M18 4L6 12L18 20V4Z" fill="currentColor"/>
+        <rect x="2" y="4" width="2" height="16" fill="currentColor"/>
+    </svg>
+</button>
                 <div class="disc-wrapper" id="discWrapper" role="button" tabindex="0" aria-label="播放/暂停">
                     <div class="disc">
                         <div class="disc-inner" id="discInner">♪</div>
                     </div>
                 </div>
-                <button class="btn-skip-disc" id="nextBtn" title="下一曲">
-                    <svg viewBox="0 0 24 24"><path d="M8 4l8 8-8 8V4z M20 4v16"/></svg>
-                </button>
+                <!-- 上一曲按钮 -->
+<button class="btn-skip-disc" id="prevBtn" title="上一曲">
+    <svg viewBox="0 0 24 24" width="24" height="24" style="display:block;">
+        <path d="M6 4L18 12L6 20V4Z" fill="currentColor"/>
+        <rect x="20" y="4" width="2" height="16" fill="currentColor"/>
+    </svg>
+</button>
             </div>
 
             <div class="now-playing-wrapper">
