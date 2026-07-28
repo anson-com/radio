@@ -161,16 +161,16 @@
 .header-actions {
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 4px;
     flex-shrink: 0;
 }
 .header-actions .icon-btn {
-    background: transparent !important;
-    border: none !important;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);  /* 更淡的边框 */
     border-radius: 50%;
-    width: 32px;
-    height: 32px;
-    font-size: 22px;
+    width: 34px;
+    height: 34px;
+    font-size: 20px;
     cursor: pointer;
     transition: all 0.2s ease;
     display: flex;
@@ -184,18 +184,16 @@
 }
 .header-actions .icon-btn:hover {
     background: var(--primary-soft);
-    border: 1px solid var(--primary-border) !important;
+    border-color: var(--primary);
     color: var(--primary);
     transform: scale(1.05);
 }
 .header-actions .icon-btn:active {
     background: var(--primary-soft);
-    border: 1px solid var(--primary-border) !important;
     transform: scale(0.92);
 }
 .header-actions .icon-btn.active-mode {
     background: var(--primary-soft);
-    border: 1px solid var(--primary-border) !important;
     color: var(--primary);
 }
 
@@ -1030,9 +1028,9 @@
                 padding: 4px 2px;
             }
             .header-actions .icon-btn {
-                width: 24px;
-                height: 24px;
-                font-size: 18px;
+                width: 26px;
+                height: 26px;
+                font-size: 22px;
             }
             .theme-picker {
                 right: -4px;
