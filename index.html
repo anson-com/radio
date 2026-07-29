@@ -55,6 +55,18 @@
             --border-line: rgba(0, 0, 0, 0.08);
         }
 
+/* 🆕 浅色模式下播放器两侧按钮 - 保持可见 */
+body.light-mode .btn-skip-disc {
+    background: rgba(0, 0, 0, 0.06);
+    border-color: rgba(0, 0, 0, 0.12);
+    color: var(--text-primary);
+}
+body.light-mode .btn-skip-disc:hover {
+    background: rgba(0, 0, 0, 0.10);
+    color: var(--primary);
+    border-color: var(--primary-border);
+}
+
         body {
             background: var(--bg-body);
             color: var(--text-primary);
@@ -323,9 +335,14 @@
             background: rgba(255, 255, 255, 0.08);
             border-color: var(--primary-border);
         }
-        .btn-skip-disc:active {
-            transform: scale(0.92);
-        }
+
+        /* 🆕 点击时图标也跟随主题色 */
+.btn-skip-disc:active {
+    transform: scale(0.92);
+    color: var(--primary);              /* 图标变主题色 */
+    border-color: var(--primary-border);
+    background: rgba(255, 255, 255, 0.08);
+}
         .btn-skip-disc svg {
             width: 24px;
             height: 24px;
