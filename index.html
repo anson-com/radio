@@ -55,29 +55,26 @@
             --border-line: rgba(0, 0, 0, 0.08);
         }
 
-/* 🆕 浅色模式下播放器两侧按钮 - 保持可见 */
-body.light-mode .btn-skip-disc {
-    background: rgba(0, 0, 0, 0.06);
-    border-color: rgba(0, 0, 0, 0.12);
-    color: var(--text-primary);
-}
+        body.light-mode .btn-skip-disc {
+            background: rgba(0, 0, 0, 0.06);
+            border-color: rgba(0, 0, 0, 0.12);
+            color: var(--text-primary);
+        }
 
-/* 仅在支持悬停的设备（桌面）上生效，触摸设备忽略 */
-@media (hover: hover) {
-    body.light-mode .btn-skip-disc:hover {
-        background: rgba(0, 0, 0, 0.10);
-        color: var(--primary);
-        border-color: var(--primary-border);
-    }
-}
+        @media (hover: hover) {
+            body.light-mode .btn-skip-disc:hover {
+                background: rgba(0, 0, 0, 0.10);
+                color: var(--primary);
+                border-color: var(--primary-border);
+            }
+        }
 
-/* 点击时效果（所有设备） */
-body.light-mode .btn-skip-disc:active {
-    transform: scale(0.92);
-    color: var(--primary);
-    border-color: var(--primary-border);
-    background: rgba(0, 0, 0, 0.15);
-}
+        body.light-mode .btn-skip-disc:active {
+            transform: scale(0.92);
+            color: var(--primary);
+            border-color: var(--primary-border);
+            background: rgba(0, 0, 0, 0.15);
+        }
 
         body {
             background: var(--bg-body);
@@ -120,7 +117,7 @@ body.light-mode .btn-skip-disc:active {
         }
 
         /* ============================================================
-           顶部搜索栏（整合品牌 + 搜索 + 主题切换）
+           顶部搜索栏
            ============================================================ */
         .search-header {
             flex-shrink: 0;
@@ -347,14 +344,12 @@ body.light-mode .btn-skip-disc:active {
             background: rgba(255, 255, 255, 0.08);
             border-color: var(--primary-border);
         }
-
-        /* 🆕 点击时图标也跟随主题色 */
-.btn-skip-disc:active {
-    transform: scale(0.92);
-    color: var(--primary);              /* 图标变主题色 */
-    border-color: var(--primary-border);
-    background: rgba(255, 255, 255, 0.08);
-}
+        .btn-skip-disc:active {
+            transform: scale(0.92);
+            color: var(--primary);
+            border-color: var(--primary-border);
+            background: rgba(255, 255, 255, 0.08);
+        }
         .btn-skip-disc svg {
             width: 24px;
             height: 24px;
@@ -474,8 +469,7 @@ body.light-mode .btn-skip-disc:active {
         /* ============================================================
            电台列表 - 卡片网格
            ============================================================ */
-             /* ======菜单和底部间距margin-top:======= */
-   .station-list-wrapper {
+        .station-list-wrapper {
             flex: 1 1 0;
             overflow-y: auto;
             margin-top: 4px;
@@ -495,227 +489,272 @@ body.light-mode .btn-skip-disc:active {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 8px 8px;
-            padding: 4px 0px 0px 0px; /* 上12px，其余保持2px */
+            padding: 4px 0px 0px 0px;
         }
 
-                       /* ===== 电台卡片 ===== */
-.station-item {
-    display: flex;
-    flex-direction: column;
-    background: var(--bg-card);             /* 卡片底色（半透明毛玻璃效果） */
-    backdrop-filter: blur(16px);            /* 模糊强度（数值越大背景越模糊） */
-    -webkit-backdrop-filter: blur(16px);    /* 同上，兼容 Safari */
-    border-radius: 16px;                    /* 卡片圆角大小 */
-    border: 1px solid var(--border-line);   /* 卡片边框粗细+颜色（极淡，几乎隐形） */
-    overflow: hidden;                       /* 裁剪溢出内容，保持圆角 */
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);  /* 所有属性过渡动画：时长0.3s */
-    cursor: pointer;                        /* 鼠标悬停变为手型 */
-    position: relative;                     /* 为内部绝对定位提供参考 */
-    aspect-ratio: 3 / 2.38;                 /* PC端卡片宽高比（宽度:高度 = 3:2.38） */
-}
+        /* ============================================================
+           电台卡片
+           ============================================================ */
+        .station-item {
+            border-radius: 14px;
+            overflow: hidden;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            position: relative;
+            background: var(--bg-card);
+            border: 1px solid var(--border-line);
+            aspect-ratio: 3 / 2.38;
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+        }
 
-.station-item:hover {
-    transform: translateY(-4px);            /* 悬停时上浮距离（4px） */
-    border-color: var(--primary-border);    /* 悬停时边框颜色（主题色边框） */
-    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);  /* 悬停阴影：横向偏移0 纵向12px 模糊40px 透明度0.3 */
-}
+        .station-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+            border-color: var(--primary-border);
+            z-index: 2;
+        }
 
-/* 当前播放卡片 - 发光效果（保留） */
-.station-item.active {
-    border-color: var(--primary);           /* 激活时边框颜色（主题色） */
-    box-shadow: 
-        0 0 30px var(--primary-glow),       /* 外发光：横向0 纵向0 模糊30px */
-        inset 0 0 30px var(--primary-soft); /* 内发光：向内发光30px */
-    transform: translateY(-2px);            /* 激活时上浮距离（2px） */
-}
+        .station-item.active {
+            border-color: var(--primary);
+            box-shadow: 0 0 30px var(--primary-glow), inset 0 0 30px var(--primary-soft);
+            transform: translateY(-2px);
+        }
 
-/* ===== 卡片封面图区域（颜色卡片） ===== */
-.station-item .cover {
-    position: relative;                     /* 为内部绝对定位提供参考 */
-    flex: 1;                                /* 占据剩余空间比例 */
-    min-height: 0;                          /* 最小高度0（配合flex布局） */
-    background: linear-gradient(135deg, var(--primary), var(--primary-dark));  /* 封面渐变色：135度角，从主色到深色 */
-    overflow: hidden;                       /* 裁剪溢出内容 */
-    display: flex;                          /* 弹性布局 */
-    flex-direction: column;                 /* 子元素纵向排列 */
-    align-items: flex-start;                /* 水平方向：左对齐 */
-    justify-content: center;                /* 垂直方向：居中 */
-    padding: 12px;                          /* 封面内边距（上下左右12px） */
-}
+        /* ===== 卡片封面 ===== */
+        .station-item .cover {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            padding: 12px;
+            background-size: cover;
+            background-position: center;
+            background-color: var(--primary-soft);
+            transition: all 0.3s ease;
+        }
 
-/* 🆕 沉浸式渐变遮罩：从上到下的黑色渐变 */
-.station-item .cover .gradient-mask {
-    position: absolute;                     /* 绝对定位，覆盖整个封面 */
-    inset: 0;                               /* 等同于 top:0; right:0; bottom:0; left:0; */
-    background: linear-gradient(
-        to bottom,                          /* 从上到下渐变 */
-        rgba(0, 0, 0, 0.65) 0%,            /* 顶部：黑色 65% 透明度 */
-        rgba(0, 0, 0, 0.15) 55%,            /* 55%处：黑色 15% 透明度 */
-        transparent 80%                     /* 80%处：完全透明 */
-    );
-    z-index: 1;                             /* 层级1（在背景之上） */
-    pointer-events: none;                   /* 鼠标穿透，不阻挡点击 */
-    border-radius: 0;                       /* 无圆角 */
-}
+        /* ===== 渐变遮罩 ===== */
+        .station-item .cover .gradient-mask {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to bottom, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0.1) 60%, transparent 100%);
+            z-index: 1;
+            pointer-events: none;
+            border-radius: 0;
+        }
 
-/* 🆕 播放状态小圆点：右上角发光圆点 */
-.station-item .cover .playing-dot {
-    position: absolute;                     /* 绝对定位 */
-    top: 10px;                              /* 距顶部10px */
-    right: 10px;                            /* 距右侧10px */
-    width: 10px;                            /* 小圆点宽度10px */
-    height: 10px;                           /* 小圆点高度10px */
-    border-radius: 50%;                     /* 圆形 */
-    background: var(--primary);             /* 颜色=主题色 */
-    box-shadow: 
-        0 0 20px var(--primary-glow),       /* 外发光：模糊20px */
-        0 0 60px var(--primary-glow);       /* 外发光：模糊60px */
-    opacity: 0;                             /* 默认不可见 */
-    transition: opacity 0.3s ease;          /* 显示/隐藏渐变动画0.3s */
-    z-index: 3;                             /* 层级3（在文字之上） */
-    pointer-events: none;                   /* 鼠标穿透 */
-}
-.station-item.active .cover .playing-dot {
-    opacity: 1;                             /* 激活时可见 */
-}
+        /* ===== 播放小圆点 ===== */
+        .station-item .cover .playing-dot {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--primary);
+            box-shadow: 0 0 20px var(--primary-glow);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: 3;
+            pointer-events: none;
+        }
+        .station-item.active .cover .playing-dot {
+            opacity: 1;
+        }
 
-/* ===== 封面内的信息区域（电台信息文字，左对齐从上往下） ===== */
-.station-item .cover .cover-info {
-    position: relative;                     /* 相对定位，用于z-index */
-    z-index: 2;                             /* 层级2（在遮罩之上） */
-    display: flex;                          /* 弹性布局 */
-    flex-direction: column;                 /* 子元素纵向排列 */
-    align-items: flex-start;                /* 水平左对齐 */
-    justify-content: flex-start;            /* 垂直顶部对齐 */
-    gap: 3px;                               /* 子元素间距3px（电台名与城市标签之间） */
-    width: 100%;                            /* 宽度100%撑满 */
-    padding: 8px 10px;                      /* 内边距：上下8px 左右10px */
-    background: rgba(0, 0, 0, 0.1);         /* 背景色：黑色10%透明度（毛玻璃底色） */
-    backdrop-filter: blur(8px);             /* 模糊强度8px */
-    -webkit-backdrop-filter: blur(8px);     /* 同上，兼容Safari */
-    border-radius: 12px;                    /* 信息区域圆角12px */
-    border: 1px solid rgba(255, 255, 255, 0.08);  /* 边框：白色8%透明度 */
-    pointer-events: none;                   /* 鼠标穿透，不阻挡点击 */
-    transition: background 0.3s ease;       /* 背景色变化动画0.3s */
-}
-.station-item .cover .cover-info .name {
-    font-weight: 600;                       /* 字重：半粗体 */
-    font-size: 14px;                        /* 电台名称字号14px */
-    color: #fff;                            /* 文字颜色白色 */
-    line-height: 1.3;                       /* 行高1.3倍 */
-    display: -webkit-box;                   /* 多行截断（配合line-clamp） */
-    -webkit-line-clamp: 1;                  /* 最多显示1行（超出…显示） */
-    -webkit-box-orient: vertical;           /* 纵向排列 */
-    overflow: hidden;                       /* 超出隐藏 */
-    width: 100%;                            /* 宽度100% */
-    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);  /* 文字阴影：向下1px 模糊4px 黑色30%透明度 */
-}
-.station-item .cover .cover-info .city-tag {
-    display: flex;                          /* 弹性布局 */
-    align-items: center;                    /* 垂直居中 */
-    gap: 6px;                               /* 子元素间距6px（城市名和分类标签之间） */
-    flex-wrap: wrap;                        /* 允许换行 */
-    width: 100%;                            /* 宽度100% */
-}
-.station-item .cover .cover-info .city {
-    font-size: 11px;                        /* 城市名字号11px */
-    color: rgba(255, 255, 255, 0.85);       /* 城市名颜色：白色85%透明度 */
-    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);  /* 文字阴影：向下1px 模糊3px 黑色30%透明度 */
-}
-.station-item .cover .cover-info .tag {
-    font-size: 10px;                        /* 分类标签字号10px */
-    color: #fff;                            /* 文字颜色白色 */
-    background: rgba(255, 255, 255, 0.15);  /* 标签背景：白色15%透明度 */
-    backdrop-filter: blur(6px);             /* 模糊强度6px */
-    -webkit-backdrop-filter: blur(6px);     /* 同上，兼容Safari */
-    padding: 1px 10px;                      /* 标签内边距：上下1px 左右10px */
-    border-radius: 20px;                    /* 标签圆角20px（胶囊形状） */
-    border: 1px solid rgba(255, 255, 255, 0.10);  /* 标签边框：白色10%透明度 */
-    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);   /* 文字阴影：向下1px 模糊3px 黑色20%透明度 */
-}
+        /* ===== 卡片内容区 ===== */
+        .station-item .cover .card-content {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            margin: -12px -12px 0 -12px;
+            padding: 12px 12px 12px 12px;
+            border-radius: 14px;
+            flex: 1;
+            justify-content: flex-start;
+            position: relative;
+            z-index: 2;
+        }
 
-/* ============================================================
-   【重点修改】卡片底部操作栏 - 继承上层渐变背景，消除色差分割
-   ============================================================ */
-.station-item .actions {
-    display: flex;                          /* 弹性布局 */
-    align-items: center;                    /* 垂直居中 */
-    justify-content: space-between;         /* 水平两端对齐 */
-    padding: 4px 12px 10px;                /* 内边距：上4px 左右12px 下10px */
-    flex-shrink: 0;                         /* flex收缩为0，不压缩 */
-    border-top: none !important;            /* 强制去掉上边框（分割线） */
-    border: none !important;                /* 强制去掉所有边框 */
-    gap: 4px;                               /* 子元素间距4px */
-    opacity: 1 !important;                  /* 强制完全不透明 */
-    /* 核心改动：继承父卡片背景 + 向上延伸上层渐变 */
-    background: inherit;                    /* 继承父级背景渲染上下文 */
-    background-image: linear-gradient(135deg, var(--primary), var(--primary-dark));  /* 覆盖渐变色（与封面一致） */
-    margin-top: -1px;                       /* 向上延伸1px（消除像素缝隙） */
-}
+        /* ===== 卡片信息 ===== */
+        .station-item .cover .info {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
 
-.station-item .actions button {
-    position: relative;                     /* 相对定位，用于z-index */
-    z-index: 1;                             /* 层级1（在父背景之上） */
-    background: none;                       /* 无背景（透明） */
-    border: none;                           /* 无边框 */
-    color: rgba(255, 255, 255, 0.9);        /* 按钮图标颜色：白色90%透明度 */
-    cursor: pointer;                        /* 鼠标悬停变手型 */
-    font-size: 18px;                        /* 按钮图标大小（桌面端） */
-    padding: 0;                             /* 无内边距 */
-    border-radius: 50%;                     /* 圆形 */
-    transition: all 0.2s ease;              /* 所有属性过渡动画0.2s */
-    line-height: 1;                         /* 行高1 */
-    display: flex;                          /* 弹性布局 */
-    align-items: center;                    /* 垂直居中 */
-    justify-content: center;                /* 水平居中 */
-    width: 36px;                            /* 按钮宽度36px（桌面端） */
-    height: 36px;                           /* 按钮高度36px（桌面端） */
-}
+        .station-item .cover .info .name {
+            font-weight: 600;
+            font-size: 13px;
+            color: #ffffff;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.7);
+            display: -webkit-box;
+            -webkit-line-clamp: 1;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            line-height: 1.3;
+        }
 
-.station-item .actions button:hover {
-    color: #fff;                            /* 悬停时颜色：白色 */
-    background: rgba(255, 255, 255, 0.15);  /* 悬停时背景：白色15%透明度 */
-    transform: scale(1.05);                 /* 悬停时放大5% */
-}
+        .station-item .cover .info .city-tag {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            flex-wrap: wrap;
+        }
 
-.station-item .actions .fav-btn.active {
-    color: #fff;                            /* 收藏激活时颜色：白色 */
-    text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);  /* 收藏激活时发光：模糊20px 白色50%透明度 */
-}
+        .station-item .cover .info .city {
+            font-size: 10px;
+            color: rgba(255, 255, 255, 0.85);
+            text-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
+        }
 
-.station-item .actions .del-btn {
-    color: rgba(255, 255, 255, 0.6);        /* 删除按钮颜色：白色60%透明度 */
-    font-size: 13px;                        /* 删除按钮图标大小13px */
-}
-.station-item .actions .del-btn:hover {
-    color: #ff6b6b;                         /* 删除按钮悬停颜色：红色 */
-    background: rgba(255, 0, 0, 0.2);       /* 删除按钮悬停背景：红色20%透明度 */
-}
+        .station-item .cover .info .tag {
+            font-size: 8px;
+            color: #ffffff;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            padding: 0 8px;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+        }
 
-/* ===== 浅色模式适配 ===== */
-body.light-mode .station-item .actions {
-    border-top: none !important;            /* 强制去掉上边框 */
-    border: none !important;                /* 强制去掉所有边框 */
-    opacity: 1 !important;                  /* 强制完全不透明 */
-    background-image: linear-gradient(135deg, var(--primary), var(--primary-dark));  /* 浅色模式渐变色（主色-深色） */
-}
-body.light-mode .station-item .actions button {
-    color: rgba(255, 255, 255, 0.9);        /* 浅色模式按钮颜色：白色90%透明度 */
-}
-body.light-mode .station-item .actions button:hover {
-    color: #fff;                            /* 浅色模式悬停颜色：白色 */
-    background: rgba(255, 255, 255, 0.2);   /* 浅色模式悬停背景：白色20%透明度 */
-}
-body.light-mode .station-item .actions .fav-btn.active {
-    color: #fff;                            /* 浅色模式收藏激活颜色：白色 */
-}
-body.light-mode .station-item .actions .del-btn {
-    color: rgba(255, 255, 255, 0.6);        /* 浅色模式删除颜色：白色60%透明度 */
-}
-body.light-mode .station-item .actions .del-btn:hover {
-    color: #ff6b6b;                         /* 浅色模式删除悬停颜色：红色 */
-    background: rgba(255, 0, 0, 0.15);      /* 浅色模式删除悬停背景：红色15%透明度 */
-}
+        /* ===== 卡片底部操作栏 ===== */
+        .station-item .cover .actions {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding-top: 8px;
+            padding-bottom: 0px;
+            position: relative;
+            z-index: 2;
+            margin-top: auto;
+        }
+
+        .station-item.all-view .cover .actions {
+            justify-content: space-between;
+            gap: 0;
+        }
+
+        .station-item:not(.all-view) .cover .actions {
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        .station-item .cover .actions button {
+            color: rgba(255, 255, 255, 0.9);
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            border: none;
+            border-radius: 50%;
+            width: 34px;
+            height: 34px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .station-item .cover .actions .play-btn {
+            background: transparent !important;
+            backdrop-filter: none;
+            border: 2px solid rgba(255, 255, 255, 0.8);
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 14px;
+            box-shadow: none;
+            transition: all 0.25s ease;
+            width: 34px;
+            height: 34px;
+        }
+        .station-item .cover .actions .play-btn:hover {
+            transform: scale(1.08);
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+        .station-item.active .cover .actions .play-btn {
+            background: var(--primary) !important;
+            border-color: var(--primary);
+            color: #fff;
+            box-shadow: 0 0 20px var(--primary-glow);
+        }
+
+        .station-item .cover .actions .fav-btn {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 14px;
+            background: rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(4px);
+        }
+        .station-item .cover .actions .fav-btn.active {
+            color: var(--primary);
+            background: rgba(0, 0, 0, 0.4);
+        }
+        .station-item .cover .actions .fav-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .station-item .cover .actions .del-btn {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 14px;
+            background: rgba(0, 0, 0, 0.2);
+            width: 34px;
+            height: 34px;
+        }
+        .station-item .cover .actions .del-btn:hover {
+            background: rgba(255, 0, 0, 0.5);
+            color: #fff;
+        }
+
+        /* ============================================================
+           🆕 错误遮罩 - 半透明遮罩层 + Toast 样式文字容器
+           ============================================================ */
+        /* 遮罩层 - 覆盖卡片 */
+        .station-item .cover .error-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 20;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            background: rgba(0, 0, 0, 0.55);
+            border-radius: 14px;
+        }
+        .station-item .cover .error-overlay.show {
+            opacity: 1;
+        }
+
+        /* 错误文字容器 - 完整复用 Toast 样式 */
+        .station-item .cover .error-overlay .error-toast {
+            background: var(--bg-card);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            padding: 10px 24px;
+            border-radius: 99px;
+            border: 1px solid var(--primary-border);
+            box-shadow: 0 8px 24px var(--primary-glow), inset 0 0 30px var(--primary-soft);
+            color: var(--primary);
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.05);
+            font-size: 14px;
+            font-weight: 500;
+            text-align: center;
+            max-width: 85%;
+            line-height: 1.5;
+        }
 
         /* ===== 空状态 ===== */
         .empty-state {
@@ -873,7 +912,9 @@ body.light-mode .station-item .actions .del-btn:hover {
             color: var(--primary);
         }
 
-        /* ===== 弹窗 ===== */
+        /* ============================================================
+           弹窗
+           ============================================================ */
         .modal-mask {
             position: fixed;
             inset: 0;
@@ -1011,7 +1052,6 @@ body.light-mode .station-item .actions .del-btn:hover {
             color: var(--primary);
             background: var(--primary-soft);
         }
-
         .btn-line.btn-clear {
             color: #ff6b6b;
             border-color: rgba(255, 107, 107, 0.3);
@@ -1137,7 +1177,7 @@ body.light-mode .station-item .actions .del-btn:hover {
         }
 
         /* ============================================================
-           移动端竖屏适配 - 一行三张卡片
+           移动端竖屏适配
            ============================================================ */
         @media (max-width: 640px) {
             body {
@@ -1220,7 +1260,7 @@ body.light-mode .station-item .actions .del-btn:hover {
                 top: 30px;
             }
             .category-tab {
-                font-size: 12px; /* ← 分类菜单大小 */
+                font-size: 12px;
                 padding: 4px 12px;
             }
 
@@ -1231,52 +1271,71 @@ body.light-mode .station-item .actions .del-btn:hover {
             }
             .station-item {
                 border-radius: 10px;
-                aspect-ratio: 3 / 2.38; /* ← 手机电台卡片大小 */
+                aspect-ratio: 3 / 2.4;
             }
             .station-item .cover {
-                padding: 6px;
+                padding: 8px;
             }
-            .station-item .cover .cover-info {
-                padding: 4px 6px;
-                gap: 1px;
-                border-radius: 4px;
+            .station-item .cover .card-content {
+                margin: -8px -8px 0 -8px;
+                padding: 8px 8px 8px 8px;
+                border-radius: 10px;
             }
-                .station-item .cover .cover-info .name {
-        font-size: 12px;           /* ← 电台名称大小 */
-        line-height: 1.2;
-        -webkit-line-clamp: 1;
-    }
-    .station-item .cover .cover-info .city {
-        font-size: 10px;            /* ← 城市名称大小 */
-    }
-    .station-item .cover .cover-info .tag {
-        font-size: 9px;            /* ← 分类标签大小 */
-        padding: 0 6px;
-        border-radius: 12px;
-    }
+            .station-item .cover .info .name {
+                font-size: 11px;
+            }
+            .station-item .cover .info .city {
+                font-size: 9px;
+            }
+            .station-item .cover .info .tag {
+                font-size: 7px;
+                padding: 0 6px;
+            }
             .station-item .cover .playing-dot {
-                width: 7px;
-                height: 7px;
+                width: 6px;
+                height: 6px;
                 top: 6px;
                 right: 6px;
             }
 
-            /* 移动端底部操作栏 */
-            .station-item .actions {
-                padding: 2px 6px 6px;
-                gap: 2px;
+            .station-item .cover .actions button {
+                width: 28px;
+                height: 28px;
+                font-size: 11px;
             }
-            .station-item .actions button {
-    font-size: 14px;
-    padding: 0;
-    width: 30px;
-    height: 30px;
-}
-            .station-item .actions button i {
-                font-size: 14px; /* ← 手机端搜藏播放图标大小更精准 */
+            .station-item .cover .actions .play-btn {
+                width: 28px;
+                height: 28px;
+                font-size: 12px;
+                border-width: 1.5px;
             }
-            .station-item .actions .del-btn {
-                font-size: 10px;
+            .station-item .cover .actions .del-btn {
+                width: 28px;
+                height: 28px;
+                font-size: 11px;
+            }
+            .station-item .cover .actions .fav-btn {
+                width: 28px;
+                height: 28px;
+                font-size: 11px;
+            }
+
+            .station-item .cover .actions {
+                gap: 8px;
+                padding-top: 6px;
+            }
+            .station-item:not(.all-view) .cover .actions {
+                gap: 8px;
+            }
+
+            /* 🆕 移动端错误遮罩圆角匹配卡片 */
+            .station-item .cover .error-overlay {
+                border-radius: 10px;
+            }
+            .station-item .cover .error-overlay .error-toast {
+                font-size: 12px;
+                padding: 6px 16px;
+                max-width: 90%;
             }
 
             .bottom-actions {
@@ -1294,15 +1353,15 @@ body.light-mode .station-item .actions .del-btn:hover {
                 opacity: 0.5;
             }
             .bottom-actions .btn-action {
-                font-size: 12px;/* ← 底部菜单字号（图标下文字） */
+                font-size: 12px;
                 min-height: 44px;
                 padding: 2px 0 0 0;
             }
             .bottom-actions .btn-action i {
-                font-size: 14px;/* ← 底部菜单图标大小 */
+                font-size: 14px;
             }
             .bottom-actions .btn-action span {
-                font-size: 12px;/* ← 底部菜单文字大小 */
+                font-size: 12px;
             }
             .bottom-actions .btn-action#btnAddRadio i {
                 font-size: 19px;
@@ -1325,7 +1384,7 @@ body.light-mode .station-item .actions .del-btn:hover {
         }
 
         /* ============================================================
-           手机横屏适配（保持不变 - 隐藏列表只显示播放器）
+           手机横屏适配
            ============================================================ */
         @media (orientation: landscape) and (max-height: 500px) {
             body {
@@ -1415,7 +1474,7 @@ body.light-mode .station-item .actions .del-btn:hover {
         }
 
         /* ============================================================
-           平板端全屏沉浸式适配（保持3列）
+           平板端全屏沉浸式适配
            ============================================================ */
         @media (min-width: 641px) and (max-width: 1024px) {
             body {
@@ -1473,7 +1532,7 @@ body.light-mode .station-item .actions .del-btn:hover {
         }
 
         /* ============================================================
-           桌面端适配 - 3列卡片（保持不变）
+           桌面端适配 - 3列卡片
            ============================================================ */
         @media (min-width: 1025px) {
             .station-list {
@@ -1489,7 +1548,7 @@ body.light-mode .station-item .actions .del-btn:hover {
     <div class="radio-app" id="app">
 
         <!-- ============================================================
-            顶部搜索栏
+           顶部搜索栏
         ============================================================ -->
         <div class="search-header">
             <div class="search-container">
@@ -1540,7 +1599,6 @@ body.light-mode .station-item .actions .del-btn:hover {
         ============================================================ -->
         <div class="player-display">
             <div class="player-row">
-                <!-- 下一曲按钮 -->
                 <button class="btn-skip-disc" id="nextBtn" title="下一曲">
                     <svg viewBox="0 0 24 24" width="24" height="24" style="display:block;">
                         <path d="M18 4L6 12L18 20V4Z" fill="currentColor"/>
@@ -1552,7 +1610,6 @@ body.light-mode .station-item .actions .del-btn:hover {
                         <div class="disc-inner" id="discInner">♪</div>
                     </div>
                 </div>
-                <!-- 上一曲按钮 -->
                 <button class="btn-skip-disc" id="prevBtn" title="上一曲">
                     <svg viewBox="0 0 24 24" width="24" height="24" style="display:block;">
                         <path d="M6 4L18 12L6 20V4Z" fill="currentColor"/>
@@ -1604,7 +1661,6 @@ body.light-mode .station-item .actions .del-btn:hover {
     <!-- ============================================================
        弹窗
     ============================================================ -->
-    <!-- 新增电台 -->
     <div class="modal-mask" id="addRadioModal">
         <div class="modal-box">
             <div class="form-row">
@@ -1634,7 +1690,6 @@ body.light-mode .station-item .actions .del-btn:hover {
         </div>
     </div>
 
-    <!-- 导入弹窗 -->
     <div class="modal-mask" id="importModal">
         <div class="modal-box">
             <div class="import-options">
@@ -1659,7 +1714,6 @@ body.light-mode .station-item .actions .del-btn:hover {
         </div>
     </div>
 
-    <!-- 管理弹窗 -->
     <div class="modal-mask" id="manageModal">
         <div class="modal-box">
             <div class="modal-search-box">
@@ -1673,7 +1727,6 @@ body.light-mode .station-item .actions .del-btn:hover {
         </div>
     </div>
 
-    <!-- 编辑弹窗 -->
     <div class="modal-mask" id="editModal">
         <div class="modal-box">
             <h3>✏️ 编辑电台</h3>
@@ -1733,6 +1786,10 @@ body.light-mode .station-item .actions .del-btn:hover {
             let editingRadioId = null;
             let errorTimer = null;
 
+            // 🆕 卡片错误状态
+            let cardError = null; // { id: 'xxx', message: '错误信息' }
+            let cardErrorTimer = null; // 🆕 自动消失定时器
+
             const initRadioList = [
                 { "id": "test001", "name": "羊城交通广播", "area": "广东", "city": "广州", "tag": "交通",
                     "stream": "http://live.xmcdn.com/live/248/64.m3u8", "logo": "", "desc": "广东羊城交通广播" },
@@ -1742,10 +1799,8 @@ body.light-mode .station-item .actions .del-btn:hover {
                 { "id": "cnr3", "name": "音乐之声", "area": "全国", "city": "北京", "tag": "音乐",
                     "stream": "http://satellitepull.cnr.cn/live/wxyyzs/playlist.m3u8", "logo": "",
                     "desc": "中央人民广播电台音乐之声" },
-                 
             ];
-  /* =====  { "id": "hitfm", "name": "HIT FM", "area": "国际", "city": "北京", "tag": "国际",
-                    "stream": "", "logo": "", "desc": "中国国际广播电台HIT FM" } ===== */
+
             const Storage = {
                 save(key, data) { localStorage.setItem(key, JSON.stringify(data)); },
                 load(key) { const s = localStorage.getItem(key); return s ? JSON.parse(s) : null; }
@@ -1767,6 +1822,7 @@ body.light-mode .station-item .actions .del-btn:hover {
                 document.getElementById("audioPlayer").volume = volumeValue / 100;
             }
 
+            // Toast 保留备用，播放错误不再使用
             function showToast(msg, time = 2000) {
                 const t = document.getElementById("toast");
                 if (t._timer) {
@@ -1793,8 +1849,37 @@ body.light-mode .station-item .actions .del-btn:hover {
                 t.className = 'toast';
             }
 
+            // 🆕 清除卡片错误
+            function clearCardError() {
+                if (cardErrorTimer) {
+                    clearTimeout(cardErrorTimer);
+                    cardErrorTimer = null;
+                }
+                cardError = null;
+                renderStationList();
+            }
+
+            // 🆕 设置卡片错误（2秒后自动消失）
+            function setCardError(id, message) {
+    if (cardErrorTimer) {
+        clearTimeout(cardErrorTimer);
+        cardErrorTimer = null;
+    }
+    // 🆕 错误时立即熄灭小圆点
+    updatePlayState(false);
+    cardError = { id: id, message: message };
+    renderStationList();
+
+    cardErrorTimer = setTimeout(function() {
+    cardError = null;
+    cardErrorTimer = null;
+    currentPlayingId = null;  // 🆕 清除播放状态，小圆点保持熄灭
+    renderStationList();
+}, 2000);
+}
+
             // ============================================================
-            // 渲染 - 卡片网格（已移除 play-overlay）
+            // 渲染 - 卡片网格
             // ============================================================
             function renderStationList() {
                 const container = document.getElementById("stationList");
@@ -1833,54 +1918,84 @@ body.light-mode .station-item .actions .del-btn:hover {
 
                 const isAllCategory = (currentFilter === 'all');
 
-                renderData.forEach((radio, idx) => {
-                    const isPlaying = radio.id === currentPlayingId;
+                renderData.forEach((radio) => {
+                    const isPlaying = radio.id === currentPlayingId && !(cardError && cardError.id === radio.id);
                     const isFav = favList.includes(radio.id);
+                    const hasError = cardError && cardError.id === radio.id;
 
                     const item = document.createElement("div");
-                    item.className = `station-item ${isPlaying ? 'active' : ''}`;
+                    let itemClass = `station-item ${isPlaying ? 'active' : ''}`;
+                    if (isAllCategory) itemClass += ' all-view';
+                    item.className = itemClass;
                     item.dataset.id = radio.id;
 
                     const coverBg = radio.logo ?
                         `url(${radio.logo}) center/cover no-repeat` :
                         `linear-gradient(135deg, var(--primary), var(--primary-dark))`;
-
                     const tag = radio.tag || "电台";
 
-                    item.innerHTML = `
-    <div class="cover" style="background: ${coverBg}; background-size: cover; background-position: center;">
-        <div class="gradient-mask"></div>
-        <div class="playing-dot"></div>
-        <div class="cover-info">
-            <div class="name">${radio.name}</div>
-            <div class="city-tag">
-                <span class="city">${radio.city || '未知'}</span>
-                <span class="tag">${tag}</span>
-            </div>
-        </div>
-    </div>
-                        <div class="actions">
+                    let actionsHtml = '';
+                    if (isAllCategory) {
+                        actionsHtml = `
                             <button class="fav-btn ${isFav ? 'active' : ''}" data-id="${radio.id}">
                                 <i class="${isFav ? 'fa-solid' : 'fa-regular'} fa-heart"></i>
                             </button>
-                            <button class="play-btn" data-id="${radio.id}" title="播放">
+                            <button class="play-btn" data-id="${radio.id}">
                                 <i class="fa-solid fa-play"></i>
                             </button>
-                            ${isAllCategory ? `<button class="del-btn" data-id="${radio.id}"><i class="fa-regular fa-trash-can"></i></button>` : ''}
+                            <button class="del-btn" data-id="${radio.id}"><i class="fa-regular fa-trash-can"></i></button>
+                        `;
+                    } else {
+                        actionsHtml = `
+                            <button class="fav-btn ${isFav ? 'active' : ''}" data-id="${radio.id}">
+                                <i class="${isFav ? 'fa-solid' : 'fa-regular'} fa-heart"></i>
+                            </button>
+                            <button class="play-btn" data-id="${radio.id}">
+                                <i class="fa-solid fa-play"></i>
+                            </button>
+                        `;
+                    }
+
+                    // 🆕 错误遮罩：遮罩层 + Toast 样式文字容器
+                    const errorHtml = hasError ?
+                        `<div class="error-overlay show">
+                            <div class="error-toast">${cardError.message}</div>
+                         </div>` :
+                        `<div class="error-overlay"></div>`;
+
+                    item.innerHTML = `
+                        <div class="cover" style="background: ${coverBg}; background-size: cover; background-position: center;">
+                            <div class="gradient-mask"></div>
+                            <div class="playing-dot"></div>
+                            <div class="card-content">
+                                <div class="info">
+                                    <div class="name">${radio.name}</div>
+                                    <div class="city-tag">
+                                        <span class="city">${radio.city || '未知'}</span>
+                                        <span class="tag">${tag}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="actions">
+                                ${actionsHtml}
+                            </div>
+                            ${errorHtml}
                         </div>
                     `;
 
-                    // 点击卡片播放
                     item.addEventListener('click', (e) => {
-    // 只有点击收藏按钮时才阻止播放，其他区域都可以播放
-    if (e.target.closest('.fav-btn')) return;
-    playRadio(radio.id);
-});
+                        if (e.target.closest('.fav-btn') || e.target.closest('.play-btn') || e.target.closest('.del-btn')) return;
+                        if (hasError) {
+                            clearCardError();
+                            playRadio(radio.id);
+                            return;
+                        }
+                        playRadio(radio.id);
+                    });
 
                     container.appendChild(item);
                 });
 
-                // 事件绑定
                 container.querySelectorAll('.fav-btn').forEach(btn => {
                     btn.addEventListener('click', (e) => {
                         e.stopPropagation();
@@ -1890,6 +2005,9 @@ body.light-mode .station-item .actions .del-btn:hover {
                 container.querySelectorAll('.play-btn').forEach(btn => {
                     btn.addEventListener('click', (e) => {
                         e.stopPropagation();
+                        if (cardError) {
+                            clearCardError();
+                        }
                         playRadio(btn.dataset.id);
                     });
                 });
@@ -1926,6 +2044,9 @@ body.light-mode .station-item .actions .del-btn:hover {
             function updatePlayState(state) {
                 if (state) {
                     discWrapper.classList.add('playing');
+                    if (cardError) {
+                        clearCardError();
+                    }
                     hideToast();
                     if (errorTimer) {
                         clearTimeout(errorTimer);
@@ -1968,7 +2089,9 @@ body.light-mode .station-item .actions .del-btn:hover {
                         let msg = "加载失败";
                         if (data.type === Hls.ErrorTypes.NETWORK_ERROR) msg = "网络错误跨域";
                         else if (data.type === Hls.ErrorTypes.MEDIA_ERROR) msg = "媒体解析错误";
-                        showToast(msg);
+                        if (currentPlayingId) {
+                            setCardError(currentPlayingId, msg);
+                        }
                         if (hlsInstance) { hlsInstance.destroy();
                             hlsInstance = null; }
                         updatePlayState(false);
@@ -1982,9 +2105,15 @@ body.light-mode .station-item .actions .del-btn:hover {
 
             function playRadio(radioId) {
                 const radio = radioDataSource.find(r => r.id === radioId);
-                if (!radio) { showToast("找不到电台"); return; }
+                if (!radio) {
+                    setCardError(radioId, "找不到电台");
+                    return;
+                }
 
                 stopPlayback();
+                if (cardError) {
+                    clearCardError();
+                }
                 currentPlayingId = radioId;
                 nowPlaying.textContent = radio.name;
                 hideToast();
@@ -2003,7 +2132,7 @@ body.light-mode .station-item .actions .del-btn:hover {
 
                 const streamUrl = radio.stream.trim();
                 if (!streamUrl) {
-                    showToast("直播地址为空");
+                    setCardError(radioId, "直播地址为空");
                     return;
                 }
 
@@ -2036,7 +2165,9 @@ body.light-mode .station-item .actions .del-btn:hover {
                     audioPlayer.play().then(() => {
                         updatePlayState(true);
                     }).catch(() => {
-                        showToast("无法播放此流");
+                        if (currentPlayingId) {
+                            setCardError(currentPlayingId, "无法播放此流");
+                        }
                         updatePlayState(false);
                     });
                     audioPlayer.addEventListener('playing', () => updatePlayState(true));
@@ -2058,7 +2189,9 @@ body.light-mode .station-item .actions .del-btn:hover {
                     audioPlayer.play().then(() => {
                         updatePlayState(true);
                     }).catch(() => {
-                        showToast("无法播放此流");
+                        if (currentPlayingId) {
+                            setCardError(currentPlayingId, "无法播放此流");
+                        }
                         updatePlayState(false);
                     });
                 } else {
@@ -2342,9 +2475,6 @@ body.light-mode .station-item .actions .del-btn:hover {
                 if (saved) setThemeColor(saved);
             }
 
-            // ============================================================
-            // 底部按钮点击反馈
-            // ============================================================
             function addClickFeedback(btn) {
                 btn.classList.remove('clicked');
                 void btn.offsetWidth;
@@ -2371,8 +2501,8 @@ body.light-mode .station-item .actions .del-btn:hover {
                 document.getElementById('searchInput').addEventListener('input', renderStationList);
 
                 discWrapper.addEventListener('click', togglePlay);
-                document.getElementById('prevBtn').addEventListener('click', nextStation);  // 上一曲按钮触发下一曲
-document.getElementById('nextBtn').addEventListener('click', prevStation);  // 下一曲按钮触发上一曲
+                document.getElementById('prevBtn').addEventListener('click', nextStation);
+                document.getElementById('nextBtn').addEventListener('click', prevStation);
 
                 const btnAdd = document.getElementById('btnAddRadio');
                 btnAdd.addEventListener('click', function(e) {
