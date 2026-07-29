@@ -61,10 +61,22 @@ body.light-mode .btn-skip-disc {
     border-color: rgba(0, 0, 0, 0.12);
     color: var(--text-primary);
 }
-body.light-mode .btn-skip-disc:hover {
-    background: rgba(0, 0, 0, 0.10);
+
+/* 仅在支持悬停的设备（桌面）上生效，触摸设备忽略 */
+@media (hover: hover) {
+    body.light-mode .btn-skip-disc:hover {
+        background: rgba(0, 0, 0, 0.10);
+        color: var(--primary);
+        border-color: var(--primary-border);
+    }
+}
+
+/* 点击时效果（所有设备） */
+body.light-mode .btn-skip-disc:active {
+    transform: scale(0.92);
     color: var(--primary);
     border-color: var(--primary-border);
+    background: rgba(0, 0, 0, 0.15);
 }
 
         body {
@@ -486,34 +498,36 @@ body.light-mode .btn-skip-disc:hover {
             padding: 4px 0px 0px 0px; /* 上12px，其余保持2px */
         }
 
-               /* ===== 电台卡片 ===== */
-        .station-item {
-display: flex;
-flex-direction: column;
-background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-backdrop-filter: blur(16px);
--webkit-backdrop-filter: blur(16px);
-border-radius: 16px;
-border: 1px solid var(--border-line);
-overflow: hidden;
-transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-cursor: pointer;
-position: relative;
-aspect-ratio: 3 / 3;
+              /* ===== 电台卡片 ===== */
+.station-item {
+    display: flex;
+    flex-direction: column;
+    var(--bg-card) 毛玻璃效果/*background: transparent;    或 */ 
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-radius: 16px;                  /* ✅ 保留您的值 */
+    overflow: hidden;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+    position: relative;
+    aspect-ratio: 3 / 2.38;               /* ✅ 保留您的值 */
+    /* 🆕 采纳参考代码：常态边框极淡，几乎隐形 */
+    border: 1px solid rgba(255, 255, 255, 0.04);
 }
 
         .station-item:hover {
-            transform: translateY(-4px);
-            border-color: var(--primary-border);
-            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
-        }
+    transform: translateY(-4px);          /* ✅ 保留您的值 */
+    border-color: rgba(255, 255, 255, 0.12);  /* 🆕 悬停时微微亮起 */
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
 
-        /* 当前播放卡片 - 发光效果（保留） */
-        .station-item.active {
-            border-color: var(--primary);
-            box-shadow: 0 0 30px var(--primary-glow), inset 0 0 30px var(--primary-soft);
-            transform: translateY(-2px);
-        }
+}
+
+       /* 🆕 采纳参考代码：激活时骤然高亮 + 强烈发光 */
+.station-item.active {
+    border-color: var(--primary);
+    box-shadow: 0 0 30px var(--primary-glow), inset 0 0 30px var(--primary-soft);
+    transform: translateY(-2px);
+}
 
         /* ===== 卡片封面图区域（颜色卡片） ===== */
        .station-item .cover {
@@ -527,6 +541,8 @@ flex-direction: column;
 align-items: flex-start;
 justify-content: center;
 padding: 12px;
+background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    /* 保留其他现有属性 */
 }
 
         /* 🆕 沉浸式渐变遮罩：从上到下的黑色渐变 */
@@ -626,6 +642,8 @@ border-top: none !important;
 border: none !important;
 gap: 4px;
 opacity: 1 !important;
+background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    /* 保留其他现有属性，如 padding、flex 等 */
 }
 
         .station-item .actions button {
@@ -669,9 +687,10 @@ opacity: 1 !important;
 
         /* 浅色模式 */
         body.light-mode .station-item .actions {
-border-top: none !important;
-border: none !important;
-opacity: 1 !important;
+    border-top: none !important;
+    border: none !important;
+    opacity: 1 !important;
+    background: linear-gradient(135deg, var(--primary-light), var(--primary));
 }
         body.light-mode .station-item .actions button {
             color: rgba(255, 255, 255, 0.9);
@@ -1205,7 +1224,7 @@ opacity: 1 !important;
             }
             .station-item {
                 border-radius: 10px;
-                aspect-ratio: 3 / 2.5; /* ← 手机电台卡片大小 */
+                aspect-ratio: 3 / 2.4; /* ← 手机电台卡片大小 */
             }
             .station-item .cover {
                 padding: 6px;
