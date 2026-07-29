@@ -469,7 +469,7 @@
             padding: 4px 0px 0px 0px; /* 上12px，其余保持2px */
         }
 
-        /* ===== 电台卡片 ===== */
+               /* ===== 电台卡片 ===== */
         .station-item {
 display: flex;
 flex-direction: column;
@@ -560,12 +560,6 @@ padding: 12px;
             pointer-events: none;
             transition: background 0.3s ease;
         }
-        body.light-mode .station-item .cover .cover-info {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(8px);
-            border-color: rgba(0, 0, 0, 0.06);
-        }
         .station-item .cover .cover-info .name {
             font-weight: 600;
             font-size: 14px;
@@ -577,10 +571,6 @@ padding: 12px;
             overflow: hidden;
             width: 100%;
             text-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
-        }
-        body.light-mode .station-item .cover .cover-info .name {
-            color: var(--text-primary);
-            text-shadow: none;
         }
         .station-item .cover .cover-info .city-tag {
             display: flex;
@@ -594,10 +584,6 @@ padding: 12px;
             color: rgba(255, 255, 255, 0.85);
             text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
         }
-        body.light-mode .station-item .cover .cover-info .city {
-            color: var(--text-secondary);
-            text-shadow: none;
-        }
         .station-item .cover .cover-info .tag {
             font-size: 10px;
             color: #fff;
@@ -608,12 +594,6 @@ padding: 12px;
             border-radius: 20px;
             border: 1px solid rgba(255, 255, 255, 0.10);
             text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
-        }
-        body.light-mode .station-item .cover .cover-info .tag {
-            color: var(--text-secondary);
-            background: var(--primary-soft);
-            border-color: var(--primary-border);
-            text-shadow: none;
         }
 
         /* ============================================================
@@ -632,21 +612,23 @@ opacity: 1 !important;
 }
 
         .station-item .actions button {
-            position: relative;
-            z-index: 1;
-            background: none;
-            border: none;
-            color: rgba(255, 255, 255, 0.9);
-            cursor: pointer;
-            font-size: 14px;
-            padding: 4px 8px;
-            border-radius: 20px;
-            transition: all 0.2s ease;
-            line-height: 1;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
+    position: relative;
+    z-index: 1;
+    background: none;
+    border: none;
+    color: rgba(255, 255, 255, 0.9);
+    cursor: pointer;
+    font-size: 18px;
+    padding: 0;                     /* 去掉内边距 */
+    border-radius: 50%;             /* 正圆形 */
+    transition: all 0.2s ease;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;        /* 图标居中 */
+    width: 36px;                    /* 统一宽度 */
+    height: 36px;                   /* 统一高度 */
+}
 
         .station-item .actions button:hover {
             color: #fff;
@@ -1216,19 +1198,19 @@ opacity: 1 !important;
                 gap: 1px;
                 border-radius: 4px;
             }
-            .station-item .cover .cover-info .name {
-                font-size: 10px;
-                line-height: 1.2;
-                -webkit-line-clamp: 1;
-            }
-            .station-item .cover .cover-info .city {
-                font-size: 8px;
-            }
-            .station-item .cover .cover-info .tag {
-                font-size: 7px;
-                padding: 0 6px;
-                border-radius: 12px;
-            }
+                .station-item .cover .cover-info .name {
+        font-size: 12px;           /* ← 电台名称大小 */
+        line-height: 1.2;
+        -webkit-line-clamp: 1;
+    }
+    .station-item .cover .cover-info .city {
+        font-size: 9px;            /* ← 城市名称大小 */
+    }
+    .station-item .cover .cover-info .tag {
+        font-size: 9px;            /* ← 分类标签大小 */
+        padding: 0 6px;
+        border-radius: 12px;
+    }
             .station-item .cover .playing-dot {
                 width: 7px;
                 height: 7px;
@@ -1242,11 +1224,13 @@ opacity: 1 !important;
                 gap: 2px;
             }
             .station-item .actions button {
-                font-size: 10px;
-                padding: 2px 4px;
-            }
+    font-size: 14px;
+    padding: 0;
+    width: 30px;
+    height: 30px;
+}
             .station-item .actions button i {
-                font-size: 11px;
+                font-size: 14px; /* ← 手机端图标大小更精准 */
             }
             .station-item .actions .del-btn {
                 font-size: 10px;
@@ -1715,10 +1699,10 @@ opacity: 1 !important;
                 { "id": "cnr3", "name": "音乐之声", "area": "全国", "city": "北京", "tag": "音乐",
                     "stream": "http://satellitepull.cnr.cn/live/wxyyzs/playlist.m3u8", "logo": "",
                     "desc": "中央人民广播电台音乐之声" },
-                { "id": "hitfm", "name": "HIT FM", "area": "国际", "city": "北京", "tag": "国际",
-                    "stream": "http://sk.cri.cn/887.m3u8", "logo": "", "desc": "中国国际广播电台HIT FM" }
+                 
             ];
-
+  /* =====  { "id": "hitfm", "name": "HIT FM", "area": "国际", "city": "北京", "tag": "国际",
+                    "stream": "", "logo": "", "desc": "中国国际广播电台HIT FM" } ===== */
             const Storage = {
                 save(key, data) { localStorage.setItem(key, JSON.stringify(data)); },
                 load(key) { const s = localStorage.getItem(key); return s ? JSON.parse(s) : null; }
@@ -1845,9 +1829,10 @@ opacity: 1 !important;
 
                     // 点击卡片播放
                     item.addEventListener('click', (e) => {
-                        if (e.target.closest('.actions')) return;
-                        playRadio(radio.id);
-                    });
+    // 只有点击收藏按钮时才阻止播放，其他区域都可以播放
+    if (e.target.closest('.fav-btn')) return;
+    playRadio(radio.id);
+});
 
                     container.appendChild(item);
                 });
@@ -2343,8 +2328,8 @@ opacity: 1 !important;
                 document.getElementById('searchInput').addEventListener('input', renderStationList);
 
                 discWrapper.addEventListener('click', togglePlay);
-                document.getElementById('prevBtn').addEventListener('click', prevStation);
-                document.getElementById('nextBtn').addEventListener('click', nextStation);
+                document.getElementById('prevBtn').addEventListener('click', nextStation);  // 上一曲按钮触发下一曲
+document.getElementById('nextBtn').addEventListener('click', prevStation);  // 下一曲按钮触发上一曲
 
                 const btnAdd = document.getElementById('btnAddRadio');
                 btnAdd.addEventListener('click', function(e) {
