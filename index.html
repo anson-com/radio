@@ -391,7 +391,7 @@
             display: flex;
             flex-direction: column;
             gap: 10px;
-            margin-bottom: 4px;
+            margin-bottom: 0px;
             flex-shrink: 0;
         }
 
@@ -445,10 +445,11 @@
         /* ============================================================
            电台列表 - 卡片网格
            ============================================================ */
-        .station-list-wrapper {
+             /* ======菜单和底部间距margin-top:======= */
+   .station-list-wrapper {
             flex: 1 1 0;
             overflow-y: auto;
-            margin-top: 12px;
+            margin-top: 4px;
             padding-right: 0;
             min-height: 0;
             -webkit-overflow-scrolling: touch;
@@ -464,25 +465,25 @@
         .station-list {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 14px;
-            padding: 2px;
+            gap: 8px 8px;
+            padding: 4px 0px 0px 0px; /* 上12px，其余保持2px */
         }
 
         /* ===== 电台卡片 ===== */
         .station-item {
-            display: flex;
-            flex-direction: column;
-            background: var(--bg-card);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border-radius: 16px;
-            border: 1px solid var(--border-line);
-            overflow: hidden;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            cursor: pointer;
-            position: relative;
-            aspect-ratio: 3 / 3;
-        }
+display: flex;
+flex-direction: column;
+background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+backdrop-filter: blur(16px);
+-webkit-backdrop-filter: blur(16px);
+border-radius: 16px;
+border: 1px solid var(--border-line);
+overflow: hidden;
+transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+cursor: pointer;
+position: relative;
+aspect-ratio: 3 / 3;
+}
 
         .station-item:hover {
             transform: translateY(-4px);
@@ -498,32 +499,18 @@
         }
 
         /* ===== 卡片封面图区域（颜色卡片） ===== */
-        .station-item .cover {
-    position: relative;
-    flex: 1;
-    min-height: 0;
-    background: var(--primary-soft);
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-   /*  justify-content: flex-start; */
-    justify-content: center;      /* ← 改为 center居中 */
-    padding: 12px;
+       .station-item .cover {
+position: relative;
+flex: 1;
+min-height: 0;
+/* 移除独立背景！ */
+overflow: hidden;
+display: flex;
+flex-direction: column;
+align-items: flex-start;
+justify-content: center;
+padding: 12px;
 }
-        /* 占位图 - 纯色渐变 */
-      /*    .station-item .cover .placeholder {
-            position: absolute;
-            inset: 0;
-            border-radius: 0;
-            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-            opacity: 0.3;
-            transition: opacity 0.3s ease;
-            z-index: 0;
-        }
-        .station-item.active .cover .placeholder {
-            opacity: 0.6;
-        }*/
 
         /* 🆕 沉浸式渐变遮罩：从上到下的黑色渐变 */
         .station-item .cover .gradient-mask {
@@ -565,14 +552,11 @@
             gap: 3px;
             width: 100%;
             padding: 8px 10px;
-            /* 🆕 毛玻璃效果：背景半透明 + 模糊 */
             background: rgba(0, 0, 0, 0.1);
             backdrop-filter: blur(8px);
             -webkit-backdrop-filter: blur(8px);
             border-radius: 12px;
             border: 1px solid rgba(255, 255, 255, 0.08);
-            /* margin-top: auto;← 删除这一行 */
-            /* margin-bottom: 0;← 删除这一行 */
             pointer-events: none;
             transition: background 0.3s ease;
         }
@@ -617,7 +601,6 @@
         .station-item .cover .cover-info .tag {
             font-size: 10px;
             color: #fff;
-            /* 🆕 毛玻璃效果：标签背景半透明 + 模糊 */
             background: rgba(255, 255, 255, 0.15);
             backdrop-filter: blur(6px);
             -webkit-backdrop-filter: blur(6px);
@@ -627,41 +610,33 @@
             text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
         }
         body.light-mode .station-item .cover .cover-info .tag {
-            color: var(--text-secondary)
+            color: var(--text-secondary);
             background: var(--primary-soft);
             border-color: var(--primary-border);
             text-shadow: none;
         }
 
-        /* ===== ❌ 已删除 .play-overlay 相关样式 ===== */
-
-        /* ===== 卡片底部操作栏 ===== */
-        /* ===== 卡片底部操作栏 ===== */
-.station-item .actions {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 4px 12px 10px;          /* 保持不变 */
-    flex-shrink: 0;                  /* 保持不变 */
-    border-top: 1px solid rgba(255, 255, 255, 0.06);   /* 🆕 更淡的边框 */
-    gap: 4px;                        /* 保持不变 */
-    background: rgba(0, 0, 0, 0.25); /* 🆕 半透明深色毛玻璃 */
-    backdrop-filter: blur(12px);     /* 🆕 更强模糊 */
-    -webkit-backdrop-filter: blur(12px);
-}
-
-/* 🆕 新增：浅色模式专用样式 */
-body.light-mode .station-item .actions {
-    background: rgba(255, 255, 255, 0.25);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border-top: 1px solid rgba(0, 0, 0, 0.04);
+        /* ============================================================
+           卡片底部操作栏 - 与封面颜色一致（已移除 opacity）
+           ============================================================ */
+        .station-item .actions {
+display: flex;
+align-items: center;
+justify-content: space-between;
+padding: 4px 12px 10px;
+flex-shrink: 0;
+border-top: none !important;
+border: none !important;
+gap: 4px;
+opacity: 1 !important;
 }
 
         .station-item .actions button {
+            position: relative;
+            z-index: 1;
             background: none;
             border: none;
-            color: var(--text-weak);
+            color: rgba(255, 255, 255, 0.9);
             cursor: pointer;
             font-size: 14px;
             padding: 4px 8px;
@@ -674,22 +649,47 @@ body.light-mode .station-item .actions {
         }
 
         .station-item .actions button:hover {
-            color: var(--primary);
-            background: var(--primary-soft);
+            color: #fff;
+            background: rgba(255, 255, 255, 0.15);
             transform: scale(1.05);
         }
 
         .station-item .actions .fav-btn.active {
-            color: var(--primary);
+            color: #fff;
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
         }
 
         .station-item .actions .del-btn {
-            color: var(--text-weak);
+            color: rgba(255, 255, 255, 0.6);
             font-size: 13px;
         }
         .station-item .actions .del-btn:hover {
-            color: var(--primary);
-            background: var(--primary-soft);
+            color: #ff6b6b;
+            background: rgba(255, 0, 0, 0.2);
+        }
+
+        /* 浅色模式 */
+        body.light-mode .station-item .actions {
+border-top: none !important;
+border: none !important;
+opacity: 1 !important;
+}
+        body.light-mode .station-item .actions button {
+            color: rgba(255, 255, 255, 0.9);
+        }
+        body.light-mode .station-item .actions button:hover {
+            color: #fff;
+            background: rgba(255, 255, 255, 0.2);
+        }
+        body.light-mode .station-item .actions .fav-btn.active {
+            color: #fff;
+        }
+        body.light-mode .station-item .actions .del-btn {
+            color: rgba(255, 255, 255, 0.6);
+        }
+        body.light-mode .station-item .actions .del-btn:hover {
+            color: #ff6b6b;
+            background: rgba(255, 0, 0, 0.15);
         }
 
         /* ===== 空状态 ===== */
@@ -1201,8 +1201,8 @@ body.light-mode .station-item .actions {
 
             .station-list {
                 grid-template-columns: repeat(3, 1fr);
-                gap: 8px;
-                padding: 0;
+                gap: 6px;
+                padding: 4px 0 0 0;
             }
             .station-item {
                 border-radius: 10px;
@@ -1235,9 +1235,11 @@ body.light-mode .station-item .actions {
                 top: 6px;
                 right: 6px;
             }
+
+            /* 移动端底部操作栏 */
             .station-item .actions {
                 padding: 2px 6px 6px;
-                gap: 0;
+                gap: 2px;
             }
             .station-item .actions button {
                 font-size: 10px;
@@ -1420,7 +1422,7 @@ body.light-mode .station-item .actions {
             }
             .station-list {
                 grid-template-columns: repeat(3, 1fr);
-                gap: 16px;
+                gap: 8px;
             }
             .bottom-actions {
                 margin-top: 14px;
@@ -1449,7 +1451,7 @@ body.light-mode .station-item .actions {
         @media (min-width: 1025px) {
             .station-list {
                 grid-template-columns: repeat(3, 1fr);
-                gap: 18px;
+                gap: 10px;
             }
         }
     </style>
@@ -1818,7 +1820,6 @@ body.light-mode .station-item .actions {
 
                     const tag = radio.tag || "电台";
 
-                    // ===== ❌ 已移除 play-overlay 部分 =====
                     item.innerHTML = `
     <div class="cover" style="background: ${coverBg}; background-size: cover; background-position: center;">
         <div class="gradient-mask"></div>
@@ -1842,7 +1843,7 @@ body.light-mode .station-item .actions {
                         </div>
                     `;
 
-                    // 点击卡片播放（不再判断 .play-overlay）
+                    // 点击卡片播放
                     item.addEventListener('click', (e) => {
                         if (e.target.closest('.actions')) return;
                         playRadio(radio.id);
