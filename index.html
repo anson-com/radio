@@ -7,7 +7,6 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <title>AnsonFM</title>
     <link href="https://fonts.googleapis.com/css2?family=Lobster&family=Pacifico&display=swap" rel="stylesheet">
-    <!-- Font Awesome 6 (免费) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script>
         if (typeof Promise !== 'undefined' && typeof Symbol !== 'undefined') {
@@ -122,7 +121,6 @@
             box-shadow: 0 0 0 3px var(--primary-soft);
         }
 
-        /* 品牌标识 */
         .brand {
             display: flex;
             align-items: center;
@@ -140,7 +138,6 @@
             font-size: 18px;
         }
 
-        /* 搜索输入框 */
         .search-container .search-input {
             flex: 1;
             min-width: 60px;
@@ -157,7 +154,6 @@
             font-weight: 400;
         }
 
-        /* 右侧按钮组 */
         .header-actions {
             display: flex;
             align-items: center;
@@ -197,7 +193,6 @@
             color: var(--primary);
         }
 
-        /* 主题色选择器浮窗（定位在🎨按钮下方） */
         .theme-picker {
             display: none;
             position: absolute;
@@ -400,7 +395,6 @@
             flex-shrink: 0;
         }
 
-        /* ===== 分类菜单 - 横向滚动 ===== */
         .category-tabs {
             display: flex;
             gap: 6px;
@@ -449,7 +443,7 @@
         }
 
         /* ============================================================
-           电台列表 - 卡片网格布局（全新设计）
+           电台列表 - 卡片网格
            ============================================================ */
         .station-list-wrapper {
             flex: 1 1 0;
@@ -496,7 +490,7 @@
             box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
         }
 
-        /* 当前播放卡片 - 发光效果 */
+        /* 当前播放卡片 - 发光效果（保留） */
         .station-item.active {
             border-color: var(--primary);
             box-shadow: 0 0 30px var(--primary-glow), inset 0 0 30px var(--primary-soft);
@@ -505,23 +499,20 @@
 
         /* ===== 卡片封面图区域（颜色卡片） ===== */
         .station-item .cover {
-            position: relative;
-            flex: 1;
-            min-height: 0;
-            background: var(--primary-soft);
-            overflow: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 12px;
-            /* 新增：让封面作为 flex 容器，便于内部信息定位 */
-            flex-direction: column;
-            align-items: flex-start;
-            justify-content: flex-start;
-        }
-
+    position: relative;
+    flex: 1;
+    min-height: 0;
+    background: var(--primary-soft);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+   /*  justify-content: flex-start; */
+    justify-content: center;      /* ← 改为 center居中 */
+    padding: 12px;
+}
         /* 占位图 - 纯色渐变 */
-        .station-item .cover .placeholder {
+      /*    .station-item .cover .placeholder {
             position: absolute;
             inset: 0;
             border-radius: 0;
@@ -532,12 +523,41 @@
         }
         .station-item.active .cover .placeholder {
             opacity: 0.6;
+        }*/
+
+        /* 🆕 沉浸式渐变遮罩：从上到下的黑色渐变 */
+        .station-item .cover .gradient-mask {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to bottom, rgba(0, 0, 0, 0.65) 0%, rgba(0, 0, 0, 0.15) 55%, transparent 80%);
+            z-index: 1;
+            pointer-events: none;
+            border-radius: 0;
+        }
+
+        /* 🆕 播放状态小圆点：右上角发光圆点 */
+        .station-item .cover .playing-dot {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--primary);
+            box-shadow: 0 0 20px var(--primary-glow), 0 0 60px var(--primary-glow);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: 3;
+            pointer-events: none;
+        }
+        .station-item.active .cover .playing-dot {
+            opacity: 1;
         }
 
         /* ===== 封面内的信息区域（电台信息文字，左对齐从上往下） ===== */
         .station-item .cover .cover-info {
             position: relative;
-            z-index: 1;
+            z-index: 2;
             display: flex;
             flex-direction: column;
             align-items: flex-start;
@@ -545,20 +565,21 @@
             gap: 3px;
             width: 100%;
             padding: 8px 10px;
-            background: rgba(0, 0, 0, 0.45);
-            backdrop-filter: blur(6px);
-            -webkit-backdrop-filter: blur(6px);
-            border-radius: 8px;
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            margin-top: auto;
-            margin-bottom: 0;
+            /* 🆕 毛玻璃效果：背景半透明 + 模糊 */
+            background: rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            /* margin-top: auto;← 删除这一行 */
+            /* margin-bottom: 0;← 删除这一行 */
             pointer-events: none;
             transition: background 0.3s ease;
         }
         body.light-mode .station-item .cover .cover-info {
-            background: rgba(255, 255, 255, 0.60);
-            backdrop-filter: blur(6px);
-            -webkit-backdrop-filter: blur(6px);
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(8px);
             border-color: rgba(0, 0, 0, 0.06);
         }
         .station-item .cover .cover-info .name {
@@ -586,7 +607,7 @@
         }
         .station-item .cover .cover-info .city {
             font-size: 11px;
-            color: rgba(255, 255, 255, 0.75);
+            color: rgba(255, 255, 255, 0.85);
             text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
         }
         body.light-mode .station-item .cover .cover-info .city {
@@ -596,87 +617,46 @@
         .station-item .cover .cover-info .tag {
             font-size: 10px;
             color: #fff;
-            background: rgba(124, 141, 255, 0.35);
+            /* 🆕 毛玻璃效果：标签背景半透明 + 模糊 */
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
             padding: 1px 10px;
             border-radius: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.10);
             text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
-            backdrop-filter: blur(4px);
-            -webkit-backdrop-filter: blur(4px);
         }
         body.light-mode .station-item .cover .cover-info .tag {
-            color: var(--primary);
+            color: var(--text-secondary)
             background: var(--primary-soft);
             border-color: var(--primary-border);
             text-shadow: none;
         }
 
-        /* 封面上的播放按钮（大号，居中） */
-        .station-item .cover .play-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: rgba(0, 0, 0, 0.2);
-            opacity: 0;
-            transition: opacity 0.3s ease;
-            border-radius: 0;
-            z-index: 2;
-            pointer-events: none;
-        }
-        .station-item:hover .cover .play-overlay {
-            opacity: 1;
-            pointer-events: auto;
-        }
-        .station-item .cover .play-overlay button {
-            width: 48px;
-            height: 48px;
-            border-radius: 50%;
-            border: 2px solid rgba(255, 255, 255, 0.8);
-            background: rgba(0, 0, 0, 0.4);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            color: #fff;
-            font-size: 20px;
-            cursor: pointer;
-            transition: all 0.25s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            pointer-events: auto;
-        }
-        .station-item .cover .play-overlay button:hover {
-            transform: scale(1.12);
-            background: var(--primary);
-            border-color: var(--primary);
-        }
-        .station-item.active .cover .play-overlay {
-            opacity: 1;
-            pointer-events: auto;
-        }
-        .station-item.active .cover .play-overlay button {
-            background: var(--primary);
-            border-color: var(--primary);
-            box-shadow: 0 0 30px var(--primary-glow);
-        }
+        /* ===== ❌ 已删除 .play-overlay 相关样式 ===== */
 
         /* ===== 卡片底部操作栏 ===== */
-        .station-item .actions {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 4px 12px 10px;
-            flex-shrink: 0;
-            border-top: 1px solid var(--border-line);
-            gap: 4px;
-            background: var(--bg-card);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-        }
+        /* ===== 卡片底部操作栏 ===== */
+.station-item .actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 4px 12px 10px;          /* 保持不变 */
+    flex-shrink: 0;                  /* 保持不变 */
+    border-top: 1px solid rgba(255, 255, 255, 0.06);   /* 🆕 更淡的边框 */
+    gap: 4px;                        /* 保持不变 */
+    background: rgba(0, 0, 0, 0.25); /* 🆕 半透明深色毛玻璃 */
+    backdrop-filter: blur(12px);     /* 🆕 更强模糊 */
+    -webkit-backdrop-filter: blur(12px);
+}
+
+/* 🆕 新增：浅色模式专用样式 */
+body.light-mode .station-item .actions {
+    background: rgba(255, 255, 255, 0.25);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-top: 1px solid rgba(0, 0, 0, 0.04);
+}
 
         .station-item .actions button {
             background: none;
@@ -703,7 +683,6 @@
             color: var(--primary);
         }
 
-        /* 删除按钮只在全部分类显示 */
         .station-item .actions .del-btn {
             color: var(--text-weak);
             font-size: 13px;
@@ -1220,7 +1199,6 @@
                 padding: 4px 12px;
             }
 
-            /* ===== 手机竖屏：一行三张卡片 ===== */
             .station-list {
                 grid-template-columns: repeat(3, 1fr);
                 gap: 8px;
@@ -1228,9 +1206,8 @@
             }
             .station-item {
                 border-radius: 10px;
-                aspect-ratio: 3/ 2;
+                aspect-ratio: 3 / 2;
             }
-            /* 封面内信息适配小屏 */
             .station-item .cover {
                 padding: 6px;
             }
@@ -1252,10 +1229,11 @@
                 padding: 0 6px;
                 border-radius: 12px;
             }
-            .station-item .cover .play-overlay button {
-                width: 32px;
-                height: 32px;
-                font-size: 13px;
+            .station-item .cover .playing-dot {
+                width: 7px;
+                height: 7px;
+                top: 6px;
+                right: 6px;
             }
             .station-item .actions {
                 padding: 2px 6px 6px;
@@ -1482,12 +1460,10 @@
     <div class="radio-app" id="app">
 
         <!-- ============================================================
-            顶部搜索栏（整合品牌 + 搜索 + 主题切换）
-            位置：页面最顶部
+            顶部搜索栏
         ============================================================ -->
         <div class="search-header">
             <div class="search-container">
-                <!-- 品牌标识：左对齐 -->
                 <span class="brand">
                     <svg width="32" height="32" viewBox="0 -40 256 296" xmlns="http://www.w3.org/2000/svg" style="display:block;">
                         <path d="M 128 220 C 60 190, 30 120, 30 80 C 30 30, 70 10, 128 10 C 186 10, 226 30, 226 80 C 226 120, 196 190, 128 220 Z"
@@ -1507,14 +1483,11 @@
                     <span class="brand-name">AnsonFM</span>
                 </span>
 
-                <!-- 搜索输入框：中间 -->
                 <input type="text" class="search-input" id="searchInput" placeholder="搜索电台名称或城市..">
 
-                <!-- 右侧按钮组 -->
                 <div class="header-actions">
                     <button class="icon-btn" id="themeToggle" title="切换主题色">🎨</button>
                     <button class="icon-btn" id="darkModeToggle" title="切换明暗">🌓</button>
-                    <!-- 主题色选择器浮窗 -->
                     <div class="theme-picker" id="themePicker">
                         <div class="color-dot active" style="background:#7c8dff;" data-color="#7c8dff"></div>
                         <div class="color-dot" style="background:#ff6b6b;" data-color="#ff6b6b"></div>
@@ -1792,7 +1765,7 @@
             }
 
             // ============================================================
-            // 渲染 - 卡片网格布局（信息已移到封面内，删除播放中badge）
+            // 渲染 - 卡片网格（已移除 play-overlay）
             // ============================================================
             function renderStationList() {
                 const container = document.getElementById("stationList");
@@ -1839,30 +1812,25 @@
                     item.className = `station-item ${isPlaying ? 'active' : ''}`;
                     item.dataset.id = radio.id;
 
-                    // 封面图背景（使用logo或渐变色）
                     const coverBg = radio.logo ?
                         `url(${radio.logo}) center/cover no-repeat` :
                         `linear-gradient(135deg, var(--primary), var(--primary-dark))`;
 
                     const tag = radio.tag || "电台";
 
-                    // ===== 修改点1：信息移入封面内（cover-info），删除 playing-badge =====
+                    // ===== ❌ 已移除 play-overlay 部分 =====
                     item.innerHTML = `
-                        <div class="cover">
-                            <div class="placeholder" style="background:${coverBg};"></div>
-                            <div class="cover-info">
-                                <div class="name">${radio.name}</div>
-                                <div class="city-tag">
-                                    <span class="city">${radio.city || '未知'}</span>
-                                    <span class="tag">${tag}</span>
-                                </div>
-                            </div>
-                            <div class="play-overlay">
-                                <button class="play-btn-card" data-id="${radio.id}">
-                                    <i class="fa-solid fa-play"></i>
-                                </button>
-                            </div>
-                        </div>
+    <div class="cover" style="background: ${coverBg}; background-size: cover; background-position: center;">
+        <div class="gradient-mask"></div>
+        <div class="playing-dot"></div>
+        <div class="cover-info">
+            <div class="name">${radio.name}</div>
+            <div class="city-tag">
+                <span class="city">${radio.city || '未知'}</span>
+                <span class="tag">${tag}</span>
+            </div>
+        </div>
+    </div>
                         <div class="actions">
                             <button class="fav-btn ${isFav ? 'active' : ''}" data-id="${radio.id}">
                                 <i class="${isFav ? 'fa-solid' : 'fa-regular'} fa-heart"></i>
@@ -1874,9 +1842,9 @@
                         </div>
                     `;
 
-                    // 点击卡片播放
+                    // 点击卡片播放（不再判断 .play-overlay）
                     item.addEventListener('click', (e) => {
-                        if (e.target.closest('.actions') || e.target.closest('.play-overlay')) return;
+                        if (e.target.closest('.actions')) return;
                         playRadio(radio.id);
                     });
 
@@ -1891,12 +1859,6 @@
                     });
                 });
                 container.querySelectorAll('.play-btn').forEach(btn => {
-                    btn.addEventListener('click', (e) => {
-                        e.stopPropagation();
-                        playRadio(btn.dataset.id);
-                    });
-                });
-                container.querySelectorAll('.play-btn-card').forEach(btn => {
                     btn.addEventListener('click', (e) => {
                         e.stopPropagation();
                         playRadio(btn.dataset.id);
