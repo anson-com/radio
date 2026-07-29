@@ -157,45 +157,45 @@
             font-weight: 400;
         }
 
-       /* 右侧按钮组 */
-.header-actions {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    flex-shrink: 0;
-}
-.header-actions .icon-btn {
-    background: rgba(255, 255, 255, 0.04);
-    border: 1px solid rgba(255, 255, 255, 0.08);  /* 更淡的边框 */
-    border-radius: 50%;
-    width: 34px;
-    height: 34px;
-    font-size: 20px;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--text-secondary);
-    line-height: 1;
-    padding: 0;
-    outline: none !important;
-    -webkit-tap-highlight-color: transparent !important;
-}
-.header-actions .icon-btn:hover {
-    background: var(--primary-soft);
-    border-color: var(--primary);
-    color: var(--primary);
-    transform: scale(1.05);
-}
-.header-actions .icon-btn:active {
-    background: var(--primary-soft);
-    transform: scale(0.92);
-}
-.header-actions .icon-btn.active-mode {
-    background: var(--primary-soft);
-    color: var(--primary);
-}
+        /* 右侧按钮组 */
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            flex-shrink: 0;
+        }
+        .header-actions .icon-btn {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 50%;
+            width: 34px;
+            height: 34px;
+            font-size: 20px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-secondary);
+            line-height: 1;
+            padding: 0;
+            outline: none !important;
+            -webkit-tap-highlight-color: transparent !important;
+        }
+        .header-actions .icon-btn:hover {
+            background: var(--primary-soft);
+            border-color: var(--primary);
+            color: var(--primary);
+            transform: scale(1.05);
+        }
+        .header-actions .icon-btn:active {
+            background: var(--primary-soft);
+            transform: scale(0.92);
+        }
+        .header-actions .icon-btn.active-mode {
+            background: var(--primary-soft);
+            color: var(--primary);
+        }
 
         /* 主题色选择器浮窗（定位在🎨按钮下方） */
         .theme-picker {
@@ -469,7 +469,7 @@
 
         .station-list {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
+            grid-template-columns: repeat(3, 1fr);
             gap: 14px;
             padding: 2px;
         }
@@ -487,13 +487,13 @@
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             cursor: pointer;
             position: relative;
-            aspect-ratio: 3 / 4;
+            aspect-ratio: 3 / 3;
         }
 
         .station-item:hover {
             transform: translateY(-4px);
             border-color: var(--primary-border);
-            box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
         }
 
         /* 当前播放卡片 - 发光效果 */
@@ -503,7 +503,7 @@
             transform: translateY(-2px);
         }
 
-        /* ===== 卡片封面图区域 ===== */
+        /* ===== 卡片封面图区域（颜色卡片） ===== */
         .station-item .cover {
             position: relative;
             flex: 1;
@@ -514,40 +514,101 @@
             align-items: center;
             justify-content: center;
             padding: 12px;
+            /* 新增：让封面作为 flex 容器，便于内部信息定位 */
+            flex-direction: column;
+            align-items: flex-start;
+            justify-content: flex-start;
         }
 
         /* 占位图 - 纯色渐变 */
         .station-item .cover .placeholder {
-            width: 100%;
-            height: 100%;
-            border-radius: 8px;
+            position: absolute;
+            inset: 0;
+            border-radius: 0;
             background: linear-gradient(135deg, var(--primary), var(--primary-dark));
             opacity: 0.3;
             transition: opacity 0.3s ease;
+            z-index: 0;
         }
         .station-item.active .cover .placeholder {
             opacity: 0.6;
         }
 
-        /* 封面上的播放状态指示器 */
-        .station-item .cover .playing-badge {
-            position: absolute;
-            top: 8px;
-            right: 8px;
-            background: var(--primary);
-            color: #fff;
-            font-size: 10px;
-            padding: 2px 10px;
-            border-radius: 20px;
-            opacity: 0;
-            transform: scale(0.8);
-            transition: all 0.3s ease;
-            font-weight: 600;
-            box-shadow: 0 4px 12px var(--primary-glow);
+        /* ===== 封面内的信息区域（电台信息文字，左对齐从上往下） ===== */
+        .station-item .cover .cover-info {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            justify-content: flex-start;
+            gap: 3px;
+            width: 100%;
+            padding: 8px 10px;
+            background: rgba(0, 0, 0, 0.45);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            margin-top: auto;
+            margin-bottom: 0;
+            pointer-events: none;
+            transition: background 0.3s ease;
         }
-        .station-item.active .cover .playing-badge {
-            opacity: 1;
-            transform: scale(1);
+        body.light-mode .station-item .cover .cover-info {
+            background: rgba(255, 255, 255, 0.60);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+            border-color: rgba(0, 0, 0, 0.06);
+        }
+        .station-item .cover .cover-info .name {
+            font-weight: 600;
+            font-size: 14px;
+            color: #fff;
+            line-height: 1.3;
+            display: -webkit-box;
+            -webkit-line-clamp: 1;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            width: 100%;
+            text-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+        }
+        body.light-mode .station-item .cover .cover-info .name {
+            color: var(--text-primary);
+            text-shadow: none;
+        }
+        .station-item .cover .cover-info .city-tag {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-wrap: wrap;
+            width: 100%;
+        }
+        .station-item .cover .cover-info .city {
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+        }
+        body.light-mode .station-item .cover .cover-info .city {
+            color: var(--text-secondary);
+            text-shadow: none;
+        }
+        .station-item .cover .cover-info .tag {
+            font-size: 10px;
+            color: #fff;
+            background: rgba(124, 141, 255, 0.35);
+            padding: 1px 10px;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+        }
+        body.light-mode .station-item .cover .cover-info .tag {
+            color: var(--primary);
+            background: var(--primary-soft);
+            border-color: var(--primary-border);
+            text-shadow: none;
         }
 
         /* 封面上的播放按钮（大号，居中） */
@@ -560,20 +621,23 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            background: rgba(0,0,0,0.2);
+            background: rgba(0, 0, 0, 0.2);
             opacity: 0;
             transition: opacity 0.3s ease;
-            border-radius: 8px;
+            border-radius: 0;
+            z-index: 2;
+            pointer-events: none;
         }
         .station-item:hover .cover .play-overlay {
             opacity: 1;
+            pointer-events: auto;
         }
         .station-item .cover .play-overlay button {
             width: 48px;
             height: 48px;
             border-radius: 50%;
-            border: 2px solid rgba(255,255,255,0.8);
-            background: rgba(0,0,0,0.4);
+            border: 2px solid rgba(255, 255, 255, 0.8);
+            background: rgba(0, 0, 0, 0.4);
             backdrop-filter: blur(8px);
             -webkit-backdrop-filter: blur(8px);
             color: #fff;
@@ -583,6 +647,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            pointer-events: auto;
         }
         .station-item .cover .play-overlay button:hover {
             transform: scale(1.12);
@@ -591,52 +656,12 @@
         }
         .station-item.active .cover .play-overlay {
             opacity: 1;
+            pointer-events: auto;
         }
         .station-item.active .cover .play-overlay button {
             background: var(--primary);
             border-color: var(--primary);
             box-shadow: 0 0 30px var(--primary-glow);
-        }
-
-        /* ===== 卡片底部信息 ===== */
-        .station-item .info {
-            padding: 10px 12px 12px;
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-            flex-shrink: 0;
-        }
-
-        .station-item .info .name {
-            font-weight: 600;
-            font-size: 14px;
-            color: var(--text-primary);
-            line-height: 1.3;
-            display: -webkit-box;
-            -webkit-line-clamp: 1;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-        }
-
-        .station-item .info .city-tag {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            flex-wrap: wrap;
-        }
-
-        .station-item .info .city {
-            font-size: 11px;
-            color: var(--text-weak);
-        }
-
-        .station-item .info .tag {
-            font-size: 10px;
-            color: var(--primary);
-            background: var(--primary-soft);
-            padding: 1px 10px;
-            border-radius: 20px;
-            border: 1px solid var(--primary-border);
         }
 
         /* ===== 卡片底部操作栏 ===== */
@@ -648,6 +673,9 @@
             flex-shrink: 0;
             border-top: 1px solid var(--border-line);
             gap: 4px;
+            background: var(--bg-card);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
         }
 
         .station-item .actions button {
@@ -1105,7 +1133,7 @@
         }
 
         /* ============================================================
-           移动端竖屏适配
+           移动端竖屏适配 - 一行三张卡片
            ============================================================ */
         @media (max-width: 640px) {
             body {
@@ -1192,44 +1220,56 @@
                 padding: 4px 12px;
             }
 
-            /* 卡片网格手机适配 */
+            /* ===== 手机竖屏：一行三张卡片 ===== */
             .station-list {
-                grid-template-columns: repeat(2, 1fr);
-                gap: 10px;
+                grid-template-columns: repeat(3, 1fr);
+                gap: 8px;
                 padding: 0;
             }
             .station-item {
-                border-radius: 12px;
-                aspect-ratio: 3 / 4.2;
+                border-radius: 10px;
+                aspect-ratio: 3/ 2;
             }
-            .station-item .info {
-                padding: 8px 10px 10px;
+            /* 封面内信息适配小屏 */
+            .station-item .cover {
+                padding: 6px;
             }
-            .station-item .info .name {
-                font-size: 13px;
+            .station-item .cover .cover-info {
+                padding: 4px 6px;
+                gap: 1px;
+                border-radius: 4px;
             }
-            .station-item .info .city {
+            .station-item .cover .cover-info .name {
                 font-size: 10px;
+                line-height: 1.2;
+                -webkit-line-clamp: 1;
             }
-            .station-item .info .tag {
-                font-size: 9px;
-                padding: 0 8px;
+            .station-item .cover .cover-info .city {
+                font-size: 8px;
             }
-            .station-item .actions {
-                padding: 2px 10px 8px;
-            }
-            .station-item .actions button {
-                font-size: 12px;
-                padding: 2px 6px;
+            .station-item .cover .cover-info .tag {
+                font-size: 7px;
+                padding: 0 6px;
+                border-radius: 12px;
             }
             .station-item .cover .play-overlay button {
-                width: 40px;
-                height: 40px;
-                font-size: 16px;
+                width: 32px;
+                height: 32px;
+                font-size: 13px;
             }
-            .station-item .cover .playing-badge {
-                font-size: 9px;
-                padding: 1px 8px;
+            .station-item .actions {
+                padding: 2px 6px 6px;
+                gap: 0;
+            }
+            .station-item .actions button {
+                font-size: 10px;
+                padding: 2px 4px;
+            }
+            .station-item .actions button i {
+                font-size: 11px;
+            }
+            .station-item .actions .del-btn {
+                font-size: 10px;
             }
 
             .bottom-actions {
@@ -1278,7 +1318,7 @@
         }
 
         /* ============================================================
-           手机横屏适配
+           手机横屏适配（保持不变 - 隐藏列表只显示播放器）
            ============================================================ */
         @media (orientation: landscape) and (max-height: 500px) {
             body {
@@ -1368,7 +1408,7 @@
         }
 
         /* ============================================================
-           平板端全屏沉浸式适配
+           平板端全屏沉浸式适配（保持3列）
            ============================================================ */
         @media (min-width: 641px) and (max-width: 1024px) {
             body {
@@ -1426,7 +1466,7 @@
         }
 
         /* ============================================================
-           桌面端适配 - 3列卡片
+           桌面端适配 - 3列卡片（保持不变）
            ============================================================ */
         @media (min-width: 1025px) {
             .station-list {
@@ -1449,32 +1489,21 @@
             <div class="search-container">
                 <!-- 品牌标识：左对齐 -->
                 <span class="brand">
-                   <svg width="32" height="32" viewBox="0 -40 256 296" xmlns="http://www.w3.org/2000/svg" style="display:block;">
-    <!-- 头部轮廓（随主题色变化） -->
-    <path d="M 128 220 C 60 190, 30 120, 30 80 C 30 30, 70 10, 128 10 C 186 10, 226 30, 226 80 C 226 120, 196 190, 128 220 Z" 
-          fill="var(--primary, #7c8dff)" stroke="var(--primary, #7c8dff)" stroke-width="4"/>
-    <!-- 左天线 -->
-    <path d="M100 40 L 40 -32" stroke="var(--primary, #7c8dff)" stroke-width="6" stroke-linecap="round"/>
-    <!-- 右天线 -->
-    <path d="M156 40 L 216 -32" stroke="var(--primary, #7c8dff)" stroke-width="6" stroke-linecap="round"/>
-    <!-- 天线顶球 -->
-    <circle cx="40" cy="-32" r="8" fill="var(--primary, #7c8dff)"/>
-    <circle cx="216" cy="-32" r="8" fill="var(--primary, #7c8dff)"/>
-    <!-- 左眼白 -->
-    <ellipse cx="80" cy="124" rx="28" ry="34" fill="#ffffff" transform="rotate(-12 80 124)"/>
-    <!-- 左瞳孔 -->
-    <circle cx="84" cy="128" r="14" fill="#1a1a2e" transform="rotate(-12 84 128)"/>
-    <!-- 左眼高光 -->
-    <circle cx="78" cy="120" r="5" fill="#ffffff" transform="rotate(-12 78 120)"/>
-    <!-- 右眼白 -->
-    <ellipse cx="176" cy="124" rx="28" ry="34" fill="#ffffff" transform="rotate(12 176 124)"/>
-    <!-- 右瞳孔 -->
-    <circle cx="172" cy="128" r="14" fill="#1a1a2e" transform="rotate(12 172 128)"/>
-    <!-- 右眼高光 -->
-    <circle cx="166" cy="120" r="5" fill="#ffffff" transform="rotate(12 166 120)"/>
-    <!-- 嘴巴 -->
-    <path d="M100 172 Q 128 190 156 178" stroke="#1a1a2e" stroke-width="8" stroke-linecap="round" fill="none"/>
-</svg>
+                    <svg width="32" height="32" viewBox="0 -40 256 296" xmlns="http://www.w3.org/2000/svg" style="display:block;">
+                        <path d="M 128 220 C 60 190, 30 120, 30 80 C 30 30, 70 10, 128 10 C 186 10, 226 30, 226 80 C 226 120, 196 190, 128 220 Z"
+                        fill="var(--primary, #7c8dff)" stroke="var(--primary, #7c8dff)" stroke-width="4"/>
+                        <path d="M100 40 L 40 -32" stroke="var(--primary, #7c8dff)" stroke-width="6" stroke-linecap="round"/>
+                        <path d="M156 40 L 216 -32" stroke="var(--primary, #7c8dff)" stroke-width="6" stroke-linecap="round"/>
+                        <circle cx="40" cy="-32" r="8" fill="var(--primary, #7c8dff)"/>
+                        <circle cx="216" cy="-32" r="8" fill="var(--primary, #7c8dff)"/>
+                        <ellipse cx="80" cy="124" rx="28" ry="34" fill="#ffffff" transform="rotate(-12 80 124)"/>
+                        <circle cx="84" cy="128" r="14" fill="#1a1a2e" transform="rotate(-12 84 128)"/>
+                        <circle cx="78" cy="120" r="5" fill="#ffffff" transform="rotate(-12 78 120)"/>
+                        <ellipse cx="176" cy="124" rx="28" ry="34" fill="#ffffff" transform="rotate(12 176 124)"/>
+                        <circle cx="172" cy="128" r="14" fill="#1a1a2e" transform="rotate(12 172 128)"/>
+                        <circle cx="166" cy="120" r="5" fill="#ffffff" transform="rotate(12 166 120)"/>
+                        <path d="M100 172 Q 128 190 156 178" stroke="#1a1a2e" stroke-width="8" stroke-linecap="round" fill="none"/>
+                    </svg>
                     <span class="brand-name">AnsonFM</span>
                 </span>
 
@@ -1763,7 +1792,7 @@
             }
 
             // ============================================================
-            // 渲染 - 卡片网格布局
+            // 渲染 - 卡片网格布局（信息已移到封面内，删除播放中badge）
             // ============================================================
             function renderStationList() {
                 const container = document.getElementById("stationList");
@@ -1811,27 +1840,27 @@
                     item.dataset.id = radio.id;
 
                     // 封面图背景（使用logo或渐变色）
-                    const coverBg = radio.logo ? 
-                        `url(${radio.logo}) center/cover no-repeat` : 
+                    const coverBg = radio.logo ?
+                        `url(${radio.logo}) center/cover no-repeat` :
                         `linear-gradient(135deg, var(--primary), var(--primary-dark))`;
 
                     const tag = radio.tag || "电台";
 
+                    // ===== 修改点1：信息移入封面内（cover-info），删除 playing-badge =====
                     item.innerHTML = `
                         <div class="cover">
                             <div class="placeholder" style="background:${coverBg};"></div>
-                            <span class="playing-badge">● 播放中</span>
+                            <div class="cover-info">
+                                <div class="name">${radio.name}</div>
+                                <div class="city-tag">
+                                    <span class="city">${radio.city || '未知'}</span>
+                                    <span class="tag">${tag}</span>
+                                </div>
+                            </div>
                             <div class="play-overlay">
                                 <button class="play-btn-card" data-id="${radio.id}">
                                     <i class="fa-solid fa-play"></i>
                                 </button>
-                            </div>
-                        </div>
-                        <div class="info">
-                            <div class="name">${radio.name}</div>
-                            <div class="city-tag">
-                                <span class="city">${radio.city || '未知'}</span>
-                                <span class="tag">${tag}</span>
                             </div>
                         </div>
                         <div class="actions">
