@@ -234,6 +234,31 @@
             width: 100%;
             position: relative;
         }
+
+               .search-clear-btn {
+            background: none;
+            border: none;
+            color: var(--text-weak);        /* 默认弱灰色，随主题变化 */
+            cursor: pointer;
+            font-size: 22px;
+            padding: 0px;
+            border-radius: 50%;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            width: 36px;
+            height: 36px;
+        }
+        .search-clear-btn:hover {
+            color: var(--primary);           /* 悬浮时变为主题色 */
+            background: var(--primary-soft);
+        }
+        .search-clear-btn:active {
+            transform: scale(0.9);
+        }
+
         .search-container {
             display: flex;
             align-items: center;
@@ -2059,8 +2084,13 @@
 
                 <input type="text" class="search-input" id="searchInput" placeholder="搜索电台名称或城市..">
 
-                <div class="header-actions">
-                    <button class="icon-btn" id="themeToggle" title="切换主题色">🎨</button>
+<button class="search-clear-btn" id="searchClearBtn" title="清除搜索" style="display:none;">
+    <i class="fa-regular fa-circle-xmark"></i>
+</button>
+
+<div class="header-actions">
+    <button class="icon-btn" id="themeToggle" title="切换主题色">🎨</button>
+
                     <button class="icon-btn" id="darkModeToggle" title="切换明暗">🌓</button>
                     <div class="theme-picker" id="themePicker">
                         <div class="color-dot active" style="background:#7c8dff;" data-color="#7c8dff"></div>
@@ -2956,35 +2986,39 @@ for (const domain of whitelistDomains) {
             // ============================================================
             // 渲染 - 电台列表
             // ============================================================
-            function renderStationList() {
+                                               function renderStationList() {
                 const container = document.getElementById("stationList");
                 const keyword = document.getElementById("searchInput").value.trim().toLowerCase();
 
+                // ===== 先复制全部电台 =====
                 let renderData = [...radioDataSource];
 
-                if (currentFilter === "cat_favorites") {
-                    renderData = renderData.filter(item => favList.includes(item.id));
-                } else if (currentFilter === "cat_all") {
-                    // 全部显示
-                } else if (currentFilter === "cat_history") {
-                    renderData = historyList.map(id => radioDataSource.find(r => r.id === id)).filter(Boolean);
-                } else {
-                    const cat = categoryList.find(c => c.id === currentFilter);
-                    if (cat) {
-                        const name = cat.name;
-                        renderData = renderData.filter(item => item.tag === name || item.area === name);
-                    } else {
-                        renderData = [];
-                    }
-                }
-
+                // ===== 如果有搜索词：只做全局搜索，忽略分类 =====
                 if (keyword) {
                     renderData = renderData.filter(item =>
                         item.name.toLowerCase().includes(keyword) ||
                         (item.city && item.city.toLowerCase().includes(keyword))
                     );
+                } else {
+                    // ===== 无搜索词：按当前分类筛选 =====
+                    if (currentFilter === "cat_favorites") {
+                        renderData = renderData.filter(item => favList.includes(item.id));
+                    } else if (currentFilter === "cat_all") {
+                        // 全部显示
+                    } else if (currentFilter === "cat_history") {
+                        renderData = renderData.filter(item => historyList.includes(item.id));
+                    } else {
+                        const cat = categoryList.find(c => c.id === currentFilter);
+                        if (cat) {
+                            const name = cat.name;
+                            renderData = renderData.filter(item => item.tag === name || item.area === name);
+                        } else {
+                            renderData = [];
+                        }
+                    }
                 }
 
+                // ===== 渲染列表（后续完全不变） =====
                 container.innerHTML = "";
                 if (renderData.length === 0) {
                     container.innerHTML = `<div class="empty-state">📭 没有找到电台</div>`;
@@ -3068,6 +3102,7 @@ for (const domain of whitelistDomains) {
                     container.appendChild(item);
                 });
 
+                // 事件绑定（与原来完全一致）
                 container.querySelectorAll('.play-btn').forEach(btn => {
                     btn.addEventListener('click', (e) => {
                         e.stopPropagation();
@@ -3236,17 +3271,42 @@ for (const domain of whitelistDomains) {
                         if (hlsInstance) { hlsInstance.destroy(); hlsInstance = null; }
                         fallbackToHLS(streamUrl);
                     });
-                } else if (isM3U8 && Hls.isSupported()) {
+                                } else if (isM3U8 && Hls.isSupported()) {
                     fallbackToHLS(streamUrl);
                 } else {
+                    // ===== 针对 iOS 云听源：加时间戳强制刷新 =====
+                    if (!isM3U8 && streamUrl.includes('ytcastmp3.radio.cn')) {
+                        const separator = streamUrl.includes('?') ? '&' : '?';
+                        streamUrl += separator + '_=' + Date.now();
+                    }
+
                     audioPlayer.src = streamUrl;
                     audioPlayer.play().then(() => updatePlayState(true)).catch(() => {
-                        if (currentPlayingId) setCardError(currentPlayingId, "无法播放此流");
-                        updatePlayState(false);
+                        if (currentPlayingId) {
+                            setCardError(currentPlayingId, "无法播放此流");
+                        }
+                        discWrapper.classList.remove('playing');
+                        updatePlayButtonState();
+                        updateFavButtonState();
+                        audioPlayer.pause();
+                        audioPlayer.src = '';
+                        audioPlayer.load();
                     });
                     audioPlayer.addEventListener('playing', () => updatePlayState(true));
                     audioPlayer.addEventListener('pause', () => { if (!audioPlayer.ended) updatePlayState(false); });
                     audioPlayer.addEventListener('ended', () => updatePlayState(false));
+                    audioPlayer.addEventListener('error', function onError() {
+                        if (currentPlayingId) {
+                            setCardError(currentPlayingId, "播放出错");
+                        }
+                        discWrapper.classList.remove('playing');
+                        updatePlayButtonState();
+                        updateFavButtonState();
+                        audioPlayer.pause();
+                        audioPlayer.src = '';
+                        audioPlayer.load();
+                        audioPlayer.removeEventListener('error', onError);
+                    });
                 }
             }
 
@@ -3945,6 +4005,21 @@ for (const domain of whitelistDomains) {
             // ============================================================
             function bindEvents() {
                 document.getElementById('searchInput').addEventListener('input', renderStationList);
+                // 搜索框输入时控制清空按钮显隐
+                const searchInput = document.getElementById('searchInput');
+                const clearBtn = document.getElementById('searchClearBtn');
+
+                searchInput.addEventListener('input', function() {
+                    clearBtn.style.display = this.value.trim().length > 0 ? 'flex' : 'none';
+                });
+
+                // 清空按钮点击：清空搜索框、触发搜索、隐藏按钮、聚焦搜索框
+                clearBtn.addEventListener('click', function() {
+                    searchInput.value = '';
+                    searchInput.dispatchEvent(new Event('input'));
+                    renderStationList();
+                    searchInput.focus();
+                });
                 discWrapper.addEventListener('click', togglePlay);
                 document.getElementById('prevBtn').addEventListener('click', prevStation);
                 document.getElementById('nextBtn').addEventListener('click', nextStation);
