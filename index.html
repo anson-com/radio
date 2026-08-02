@@ -1495,38 +1495,6 @@
                 padding: 0 4px;
             }
         }
-
-        /* ===== 编辑弹窗 - 圆形代理开关 ===== */
-        .proxy-toggle-circle {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 22px;
-            height: 22px;
-            border-radius: 50%;
-            border: 2px solid var(--text-weak);
-            transition: all 0.3s ease;
-            flex-shrink: 0;
-            background: transparent;
-        }
-        .proxy-toggle-circle i {
-            font-size: 14px;
-            color: var(--text-weak);
-            transition: all 0.3s ease;
-        }
-        .proxy-toggle-label input:checked + .proxy-toggle-circle {
-            border-color: var(--primary);
-            background: var(--primary-soft);
-        }
-        .proxy-toggle-label input:checked + .proxy-toggle-circle i {
-            color: var(--primary);
-        }
-        .proxy-toggle-label:hover .proxy-toggle-circle {
-            border-color: var(--primary);
-        }
-        .proxy-toggle-label:hover .proxy-toggle-circle i {
-            color: var(--primary);
-        }
         /* ===== 弹窗通用 ===== */
         .modal-mask {
             position: fixed;
@@ -2340,9 +2308,10 @@
         </div>
     </div>
 
-        <!-- 编辑弹窗 -->
+    <!-- 编辑弹窗 -->
     <div class="modal-mask" id="editModal">
         <div class="modal-box">
+            
             <div class="edit-form">
                 <div class="form-row">
                     <label>电台 ID（不可修改）</label>
@@ -2364,14 +2333,16 @@
                     <label>直播流地址 (m3u8 / mp3) *</label>
                     <input type="text" id="editStream" placeholder="http://...">
                 </div>
-                <div class="form-row">
+                                <div class="form-row">
                     <label>台标图片 URL（选填）</label>
                     <input type="text" id="editLogo" placeholder="https://...">
                 </div>
                 
-                        <div class="modal-footer">
-                <button class="btn-outline-theme" id="saveEditRadio"><i class="fa-regular fa-floppy-disk"></i> 保存修改</button>
+            </div>
+            <div class="modal-footer">
+               <button class="btn-outline-theme" id="saveEditRadio"><i class="fa-regular fa-floppy-disk"></i> 保存修改</button>
                 <button class="btn-outline-theme" id="closeEditModal"><i class="fa-regular fa-circle-xmark"></i> 取消</button>
+               
             </div>
         </div>
     </div>
@@ -3459,9 +3430,9 @@ for (const domain of whitelistDomains) {
         proxyIconHtml = '<i class="fa-solid fa-globe" style="color:var(--text-weak);"></i>';
         toggleClass = '';
         titleText = '关闭代理';
-        } else {
+    } else {
         // 自动模式 - 灰色旋转箭头
-        proxyIconHtml = '<i class="fas fa-circle-half-stroke" style="color:var(--text-weak);"></i>';
+        proxyIconHtml = '<i class="fa-solid fa-rotate" style="color:var(--text-weak);"></i>';
         toggleClass = '';
         titleText = '自动模式';
     }
@@ -3583,7 +3554,7 @@ for (const domain of whitelistDomains) {
                 showToast("已清空全部电台", 2000);
             }
 
-                        function openEditModal(id) {
+            function openEditModal(id) {
                 const radio = radioDataSource.find(r => r.id === id);
                 if (!radio) { showToast("找不到电台"); return; }
                 editingRadioId = id;
@@ -3593,11 +3564,11 @@ for (const domain of whitelistDomains) {
                 document.getElementById("editTag").value = radio.tag || "";
                 document.getElementById("editStream").value = radio.stream || "";
                 document.getElementById("editLogo").value = radio.logo || "";
-                // 已删除：document.getElementById("editUseProxy").checked = radio.useProxy || false;
+                
                 document.getElementById("editModal").classList.add("open");
             }
 
-                        function saveEditRadio() {
+            function saveEditRadio() {
                 if (!editingRadioId) { showToast("没有选中要编辑的电台"); return; }
                 const name = document.getElementById("editName").value.trim();
                 const stream = document.getElementById("editStream").value.trim();
@@ -3609,7 +3580,7 @@ for (const domain of whitelistDomains) {
                 radio.tag = document.getElementById("editTag").value.trim() || "自定义";
                 radio.stream = stream;
                 radio.logo = document.getElementById("editLogo").value.trim() || "";
-                // 已删除：radio.useProxy = document.getElementById("editUseProxy").checked;
+               
                 Storage.save("ansonradio_list", radioDataSource);
                 document.getElementById("editModal").classList.remove("open");
                 if (currentPlayingId === editingRadioId) {
