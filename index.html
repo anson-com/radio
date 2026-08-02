@@ -976,6 +976,500 @@
     transition: all 0.3s ease;
 }
 
+        /* ===== 代理管理弹窗 ===== */
+        #proxyManageModal .modal-box {
+            max-height: 85vh;
+            min-height: 60vh;
+        }
+
+        /* 顶部区域 */
+        .proxy-manage-header {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 12px;
+            flex-shrink: 0;
+        }
+
+        /* 搜索框 */
+        .proxy-search-box {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 12px;
+            border-radius: 20px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid var(--border-line);
+            transition: border-color 0.3s, box-shadow 0.3s;
+            width: 100%;
+        }
+        .proxy-search-box:focus-within {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px var(--primary-soft);
+        }
+        .proxy-search-box input::placeholder {
+            color: var(--text-weak);
+        }
+
+        /* 按钮行 - 横向滚动 */
+        .proxy-actions-scroll {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            overflow-x: auto;
+            overflow-y: hidden;
+            padding: 2px 0 4px 0;
+            scrollbar-width: thin;
+            -webkit-overflow-scrolling: touch;
+            flex-shrink: 0;
+            flex-wrap: nowrap;
+        }
+        .proxy-actions-scroll::-webkit-scrollbar {
+            height: 3px;
+        }
+        .proxy-actions-scroll::-webkit-scrollbar-thumb {
+            background: var(--text-weak);
+            border-radius: 99px;
+        }
+        .proxy-actions-scroll::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        /* 筛选按钮 */
+        .proxy-filter-btn {
+            padding: 3px 12px;
+            border-radius: 14px;
+            border: 1px solid var(--border-line);
+            background: transparent;
+            color: var(--text-secondary);
+            font-size: 11px;
+            cursor: pointer;
+            transition: all 0.2s;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+        .proxy-filter-btn:hover {
+            border-color: var(--primary);
+            color: var(--text-primary);
+            background: var(--primary-soft);
+        }
+        .proxy-filter-btn.active {
+            background: var(--primary);
+            color: #fff;
+            border-color: var(--primary);
+        }
+
+        /* 批量操作按钮 */
+        .proxy-batch-btn {
+            padding: 3px 12px;
+            border-radius: 14px;
+            border: 1px solid var(--border-line);
+            background: transparent;
+            color: var(--text-secondary);
+            font-size: 11px;
+            cursor: pointer;
+            transition: all 0.2s;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+        .proxy-batch-btn:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+            background: var(--primary-soft);
+        }
+        .proxy-batch-btn.primary {
+            background: var(--primary-soft);
+            border-color: var(--primary-border);
+            color: var(--primary);
+        }
+        .proxy-batch-btn.primary:hover {
+            background: var(--primary);
+            color: #fff;
+        }
+      
+
+        .proxy-manage-list {
+            flex: 1;
+            overflow-y: auto;
+            margin-bottom: 12px;
+            min-height: 200px;
+            -webkit-overflow-scrolling: touch;
+        }
+        .proxy-manage-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 8px;
+            border-bottom: 1px solid var(--border-line);
+            font-size: 13px;
+            flex-wrap: nowrap;
+            min-height: 36px;
+        }
+        .proxy-manage-item .proxy-item-name {
+            flex: 1;
+            min-width: 60px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            color: var(--text-primary);
+        }
+        .proxy-manage-item .proxy-item-status {
+            font-size: 11px;
+            padding: 1px 8px;
+            border-radius: 12px;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+        .proxy-manage-item .proxy-item-status.enabled {
+            color: #4ecdc4;
+            background: rgba(78, 205, 196, 0.15);
+        }
+        .proxy-manage-item .proxy-item-status.disabled {
+            color: var(--text-weak);
+            background: rgba(255,255,255,0.05);
+        }
+        .proxy-manage-item .proxy-item-status.auto {
+            color: #ffb347;
+            background: rgba(255, 180, 71, 0.15);
+        }
+        .proxy-manage-item .proxy-item-reason {
+            font-size: 10px;
+            padding: 1px 6px;
+            border-radius: 10px;
+            background: var(--primary-soft);
+            color: var(--primary);
+            white-space: nowrap;
+            flex-shrink: 0;
+            min-width: 28px;
+            text-align: center;
+        }
+        .proxy-manage-item .btn-proxy-switch {
+            background: none;
+            border: none;
+            color: var(--text-weak);
+            cursor: pointer;
+            font-size: 14px;
+            padding: 2px 6px;
+            border-radius: 50%;
+            transition: all 0.2s;
+            flex-shrink: 0;
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .proxy-manage-item .btn-proxy-switch:hover {
+            color: var(--primary);
+            background: var(--primary-soft);
+            transform: rotate(60deg);
+        }
+
+        /* ===== 规则配置面板 ===== */
+        .proxy-rules-toggle {
+            cursor: pointer;
+            padding: 6px 0;
+            color: var(--text-secondary);
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            user-select: none;
+            flex-shrink: 0;
+        }
+        .proxy-rules-toggle:hover {
+            color: var(--text-primary);
+        }
+        .proxy-rules-panel {
+            display: none;
+            padding: 10px 12px;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border-line);
+            background: rgba(255,255,255,0.02);
+            margin-bottom: 10px;
+            flex-shrink: 0;
+        }
+        .proxy-rules-panel .rule-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 3px 0;
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+        .proxy-rules-panel .rule-item input[type="checkbox"] {
+            width: 14px;
+            height: 14px;
+            accent-color: var(--primary);
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+        .proxy-rules-panel .rule-item .rule-label {
+            flex: 1;
+        }
+        .proxy-rules-panel .rule-item .rule-badge {
+            font-size: 9px;
+            padding: 1px 6px;
+            border-radius: 10px;
+            background: var(--primary-soft);
+            color: var(--primary);
+            white-space: nowrap;
+        }
+        .proxy-rules-panel .rule-save-btn {
+            margin-top: 6px;
+            padding: 3px 14px;
+            border-radius: 16px;
+            border: 1px solid var(--primary-border);
+            background: var(--primary-soft);
+            color: var(--primary);
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .proxy-rules-panel .rule-save-btn:hover {
+            background: var(--primary);
+            color: #fff;
+        }
+
+        /* ===== 系统信息弹窗 ===== */
+        #sysInfoModal .modal-box {
+            max-height: 85vh;
+        }
+        .sys-info-scroll {
+            flex: 1;
+            overflow-y: auto;
+            padding-right: 4px;
+            -webkit-overflow-scrolling: touch;
+        }
+        .sys-info-section {
+            margin-bottom: 14px;
+            padding: 12px 14px;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border-line);
+            background: rgba(255,255,255,0.02);
+        }
+        .sys-info-section:last-child {
+            margin-bottom: 0;
+        }
+        .sys-info-section .section-title {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 6px;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .sys-info-section .section-title .badge {
+            font-size: 10px;
+            padding: 0 8px;
+            border-radius: 10px;
+            background: var(--primary-soft);
+            color: var(--primary);
+            font-weight: 400;
+        }
+        .sys-info-section .info-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 2px 0;
+            font-size: 13px;
+        }
+        .sys-info-section .info-row .label {
+            color: var(--text-weak);
+        }
+        .sys-info-section .info-row .value {
+            color: var(--text-primary);
+        }
+        .sys-info-section .info-row .value.highlight {
+            color: var(--primary);
+            font-weight: 600;
+        }
+        .sys-info-section .info-row .value.dim {
+            color: var(--text-weak);
+            font-size: 12px;
+        }
+
+        .stat-categories {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px 10px;
+            padding-top: 4px;
+        }
+        .stat-cat-item {
+            font-size: 12px;
+            color: var(--text-secondary);
+            background: rgba(255,255,255,0.04);
+            padding: 1px 10px;
+            border-radius: 12px;
+            border: 1px solid var(--border-line);
+        }
+
+        .proxy-address {
+            font-size: 11px;
+            color: var(--text-weak);
+            word-break: break-all;
+            font-family: monospace;
+        }
+
+        .trend-container {
+            display: flex;
+            align-items: flex-end;
+            gap: 4px;
+            padding: 6px 0 2px 0;
+            height: 52px;
+        }
+        .trend-bar-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            flex: 1;
+            min-width: 0;
+        }
+        .trend-bar-item .trend-bar {
+            width: 100%;
+            max-width: 20px;
+            min-height: 2px;
+            background: var(--primary);
+            border-radius: 2px 2px 0 0;
+            transition: height 0.3s;
+            opacity: 0.7;
+        }
+        .trend-bar-item .trend-bar:hover {
+            opacity: 1;
+        }
+        .trend-bar-item .trend-label {
+            font-size: 8px;
+            color: var(--text-weak);
+            margin-top: 1px;
+            transform: scale(0.9);
+        }
+        .trend-bar-item .trend-value {
+            font-size: 8px;
+            color: var(--text-weak);
+            opacity: 0.6;
+        }
+
+        .stat-refresh-btn {
+            background: none;
+            border: none;
+            color: var(--text-weak);
+            cursor: pointer;
+            font-size: 12px;
+            padding: 2px 8px;
+            border-radius: 12px;
+            transition: all 0.2s;
+        }
+        .stat-refresh-btn:hover {
+            color: var(--primary);
+            background: var(--primary-soft);
+        }
+
+    
+        /* ===== 管理弹窗代理按钮 ===== */
+        .btn-proxy-toggle {
+            color: var(--text-weak);
+            transition: all 0.25s ease;
+            font-size: 14px;
+        }
+        .btn-proxy-toggle.active {
+            color: var(--primary);
+        }
+        .btn-proxy-toggle:hover {
+            color: var(--primary);
+            background: var(--primary-soft);
+            transform: scale(1.05);
+        }
+
+        /* ===== 设置面板新增入口 ===== */
+        .settings-item .icon .proxy-icon {
+            font-size: 20px;
+        }
+
+        /* ===== 移动端适配 ===== */
+        @media (max-width: 640px) {
+            .proxy-manage-item {
+                font-size: 12px;
+                padding: 5px 4px;
+                gap: 4px;
+                flex-wrap: wrap;
+            }
+            .proxy-manage-item .proxy-item-name {
+                min-width: 50px;
+                font-size: 12px;
+            }
+            .proxy-manage-item .proxy-item-status {
+                font-size: 10px;
+                padding: 0 6px;
+            }
+            .proxy-manage-item .proxy-item-reason {
+                font-size: 9px;
+                padding: 0 4px;
+                min-width: 20px;
+            }
+            .proxy-manage-item .btn-proxy-switch {
+                font-size: 12px;
+                width: 24px;
+                height: 24px;
+            }
+            .proxy-manage-header {
+                gap: 4px;
+            }
+            .proxy-manage-header select {
+                font-size: 11px;
+                height: 24px;
+                padding: 2px 6px;
+            }
+            .proxy-batch-actions button {
+                font-size: 10px;
+                height: 20px;
+                padding: 0 6px;
+            }
+            .proxy-rules-panel .rule-item {
+                font-size: 11px;
+            }
+            .sys-info-section .info-row {
+                font-size: 12px;
+            }
+            .stat-cat-item {
+                font-size: 11px;
+                padding: 0 8px;
+            }
+            .trend-container {
+                height: 40px;
+                gap: 2px;
+            }
+            .trend-bar-item .trend-label {
+                font-size: 7px;
+            }
+            .trend-bar-item .trend-value {
+                font-size: 7px;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .proxy-manage-item {
+                gap: 3px;
+            }
+            .proxy-manage-item .proxy-item-name {
+                font-size: 11px;
+                min-width: 40px;
+                max-width: 80px;
+            }
+            .proxy-manage-item .proxy-item-status {
+                font-size: 9px;
+                padding: 0 4px;
+            }
+            .proxy-manage-item .proxy-item-reason {
+                font-size: 8px;
+                min-width: 16px;
+                padding: 0 3px;
+            }
+            .proxy-batch-actions button {
+                font-size: 9px;
+                padding: 0 4px;
+            }
+        }
         /* ===== 弹窗通用 ===== */
         .modal-mask {
             position: fixed;
@@ -1655,7 +2149,7 @@
                 <label>台标图片 URL（选填）</label>
                 <input type="text" id="formLogo" placeholder="https://...">
             </div>
-            <div class="form-row">
+                        <div class="form-row">
                 <label>分类标签</label>
                 <input type="text" id="formTag" placeholder="例如：广东 / 交通 / 音乐 / 新闻 / 国际">
             </div>
@@ -1735,6 +2229,14 @@
                     </div>
                     <span class="arrow"><i class="fa-solid fa-chevron-right"></i></span>
                 </div>
+                <div class="settings-item" id="settingsProxyManage">
+                    <span class="icon"><i class="fa-solid fa-globe proxy-icon"></i></span>
+                    <div class="info">
+                        <div class="title">代理管理</div>
+                        <div class="desc">批量管理代理设置与规则</div>
+                    </div>
+                    <span class="arrow"><i class="fa-solid fa-chevron-right"></i></span>
+                </div>
 <div class="settings-item" id="settingsRandomColor">
                     <span class="icon"><i class="fa-solid fa-dice"></i></span>
                     <div class="info">
@@ -1801,9 +2303,13 @@
                     <label>直播流地址 (m3u8 / mp3) *</label>
                     <input type="text" id="editStream" placeholder="http://...">
                 </div>
-                <div class="form-row">
+                                <div class="form-row">
                     <label>台标图片 URL（选填）</label>
                     <input type="text" id="editLogo" placeholder="https://...">
+                </div>
+                <div class="form-row" style="display: flex; align-items: center; gap: 10px;">
+                    <input type="checkbox" id="editUseProxy" style="width: auto; margin: 0; height: 18px; width: 18px;">
+                    <label for="editUseProxy" style="margin: 0; font-size: 13px; color: var(--text-secondary);">🌐 启用代理</label>
                 </div>
             </div>
             <div class="modal-footer">
@@ -1813,20 +2319,130 @@
         </div>
     </div>
 
-    <!-- 系统信息弹窗 -->
+        <!-- 系统信息弹窗 -->
     <div class="modal-mask" id="sysInfoModal">
         <div class="modal-box">
-            <div class="sys-info">
-                <div class="info-line copyright">© 版本号 AnsonFM 2026.2.1</div>
-                <div class="info-line">开发作者：Anson</div>
-                <div class="info-line qq">联系 QQ：59253359</div>
+            <div class="sys-info-scroll">
+                <!-- 关于 -->
+                <div class="sys-info-section">
+                    <div class="section-title">📋 关于</div>
+                    <div class="info-row">
+                        <span class="label">版本</span>
+                        <span class="value highlight" id="sysVersion">AnsonFM 2026.2.1</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="label">作者</span>
+                        <span class="value" id="sysAuthor">Anson</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="label">联系 QQ</span>
+                        <span class="value" id="sysQQ">59253359</span>
+                    </div>
+                </div>
+
+                <!-- 电台统计 -->
+                <div class="sys-info-section">
+                    <div class="section-title">
+                        📻 电台统计
+                        <span class="badge" id="statTotal">0 个</span>
+                    </div>
+                    <div class="stat-categories" id="statCategories">
+                        <span style="color:var(--text-weak);font-size:12px;">加载中...</span>
+                    </div>
+                </div>
+
+                <!-- 代理信息 -->
+                <div class="sys-info-section">
+                    <div class="section-title">
+                        🌐 代理信息
+                        <button class="stat-refresh-btn" id="refreshStats" title="刷新统计"><i class="fa-solid fa-rotate"></i></button>
+                    </div>
+                    <div class="info-row">
+                        <span class="label">代理地址</span>
+                        <span class="value dim proxy-address" id="proxyAddress">https://m3u8.kowiwa11.workers.dev/</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="label">启用代理</span>
+                        <span class="value" id="proxyEnabledCount">0 个</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="label">今日请求</span>
+                        <span class="value" id="todayUsed">0</span>
+                        <span style="color:var(--text-weak);font-size:12px;">/ <span id="todayLimit">100,000</span></span>
+                        <span style="color:var(--text-weak);font-size:12px;margin-left:4px;">(<span id="todayPercent">0%</span>)</span>
+                    </div>
+                    <div class="trend-container" id="trendBars">
+                        <div style="width:100%;text-align:center;color:var(--text-weak);font-size:11px;">加载趋势数据...</div>
+                    </div>
+                </div>
             </div>
-            <div class="modal-footer">
-    <button class="btn-outline-theme" id="closeSysInfo"><i class="fa-regular fa-circle-xmark"></i> 关闭</button>
-</div>
+
+            <div class="modal-footer" style="margin-top:12px;flex-shrink:0;">
+                <button class="btn-outline-theme" id="closeSysInfo"><i class="fa-regular fa-circle-xmark"></i> 关闭</button>
+            </div>
         </div>
     </div>
 
+    <!-- 代理管理弹窗 -->
+    <div class="modal-mask" id="proxyManageModal">
+        <div class="modal-box">
+                        <div class="proxy-manage-header">
+                <!-- 搜索框 -->
+                <div class="proxy-search-box">
+                    <i class="fa-solid fa-search" style="color:var(--text-weak);font-size:14px;"></i>
+                    <input type="text" id="proxySearchInput" placeholder="搜索电台名称..." style="flex:1;border:none;background:transparent;color:var(--text-primary);font-size:13px;outline:none;padding:4px 0;">
+                </div>
+                <!-- 所有按钮在一行，横向滚动 -->
+                <div class="proxy-actions-scroll">
+                    <button class="proxy-filter-btn active" data-filter="all">全部</button>
+                    <button class="proxy-filter-btn" data-filter="manual_on">手启全显</button>
+                    <button class="proxy-filter-btn" data-filter="manual_off">手关全显</button>
+                    <button class="proxy-filter-btn" data-filter="auto">自动全显</button>
+                    <button class="proxy-batch-btn" id="proxyBatchEnable">全启</button>
+                    <button class="proxy-batch-btn" id="proxyBatchDisable">全关</button>
+                    <button class="proxy-batch-btn" id="proxyBatchAuto">重置自动</button>
+                </div>
+            </div>
+
+            <div class="proxy-manage-list" id="proxyManageList">
+                <div style="text-align:center;color:var(--text-weak);padding:30px 0;">加载中...</div>
+            </div>
+
+            <!-- 规则配置 -->
+            <div class="proxy-rules-toggle" id="proxyRulesToggle">
+                <i class="fa-solid fa-chevron-down"></i> ⚙️ 自动代理规则配置
+            </div>
+            <div class="proxy-rules-panel" id="proxyRulesPanel">
+                
+<div class="rule-item">
+    <input type="checkbox" id="ruleProblematicDomains">
+    <span class="rule-label">高风险域名防盗链</span>
+    <span class="rule-badge">推荐开启</span>
+</div>
+<div class="rule-item">
+    <input type="checkbox" id="ruleAntiTheftParams">
+    <span class="rule-label">鉴权/时效性参数</span>
+    <span class="rule-badge">推荐开启</span>
+</div>
+<div class="rule-item">
+    <input type="checkbox" id="ruleIpDirect">
+    <span class="rule-label">IP直连/跨域风险</span>
+    <span class="rule-badge">推荐开启</span>
+</div>
+<div class="rule-item">
+    <input type="checkbox" id="ruleHttpMixed">
+    <span class="rule-label">HTTP明文协议/混合内容阻止</span>
+    <span class="rule-badge">推荐开启</span>
+</div>
+
+            </div>
+
+                        <div class="modal-footer">
+                <button class="btn-outline-theme" id="saveProxyRules"><i class="fa-regular fa-floppy-disk"></i> 保存配置</button>
+                <button class="btn-outline-theme" id="closeProxyManage"><i class="fa-regular fa-circle-xmark"></i> 关闭</button>
+            </div>
+        </div>
+    </div>
    <!-- 分类管理弹窗 -->
 <div class="modal-mask" id="categoryManageModal">
     <div class="modal-box">
@@ -1866,6 +2482,9 @@
             let cardError = null;
             let cardErrorTimer = null;
 
+            const PROXY_RULES_KEY = "ansonradio_proxy_rules";
+            const PROXY_STATS_KEY = "ansonradio_proxy_stats";
+
             // 12色主题色列表
             const themeColors = [
                 "#7c8dff", "#ff6b6b", "#4ecdc4", "#ffb347", "#ff6b9d",
@@ -1874,7 +2493,7 @@
             ];
             let colorClickIndex = 0;
 
-            // 分类列表 - 初始顺序：广东，交通，音乐，新闻，全国，国际，收藏，历史，全部
+            // 分类列表
             let categoryList = [];
             const CATEGORY_STORAGE_KEY = "ansonradio_categories";
 
@@ -1893,6 +2512,170 @@
                 save(key, data) { localStorage.setItem(key, JSON.stringify(data)); },
                 load(key) { const s = localStorage.getItem(key); return s ? JSON.parse(s) : null; }
             };
+
+            // ============================================================
+            // 代理规则配置
+            // ============================================================
+            const defaultRules = {
+                httpMixedContent: true,
+                problematicDomains: true,
+                antiTheftParams: true,
+                ipDirect: true
+            };
+
+            function getProxyRules() {
+                const saved = Storage.load(PROXY_RULES_KEY);
+                if (saved && typeof saved === 'object') {
+                    return { ...defaultRules, ...saved };
+                }
+                return { ...defaultRules };
+            }
+
+            function saveProxyRules(rules) {
+                Storage.save(PROXY_RULES_KEY, rules);
+            }
+
+            // ============================================================
+            // 代理统计
+            // ============================================================
+            function getTodayStr() {
+                return new Date().toISOString().split('T')[0];
+            }
+
+            function getProxyStats() {
+                return Storage.load(PROXY_STATS_KEY) || {};
+            }
+
+            function recordProxyUsage(radioId) {
+                const today = getTodayStr();
+                const stats = getProxyStats();
+                if (!stats[today]) {
+                    stats[today] = { total: 0, stations: {} };
+                }
+                stats[today].total += 1;
+                stats[today].stations[radioId] = (stats[today].stations[radioId] || 0) + 1;
+                Storage.save(PROXY_STATS_KEY, stats);
+            }
+
+            function getTodayStats() {
+                const today = getTodayStr();
+                const stats = getProxyStats();
+                return stats[today] || { total: 0, stations: {} };
+            }
+
+            function getLast7DaysStats() {
+                const stats = getProxyStats();
+                const days = [];
+                for (let i = 6; i >= 0; i--) {
+                    const d = new Date();
+                    d.setDate(d.getDate() - i);
+                    const key = d.toISOString().split('T')[0];
+                    days.push({ date: key, total: stats[key] ? stats[key].total : 0 });
+                }
+                return days;
+            }
+
+                        // ============================================================
+            // 多层决策树
+            // ============================================================
+            function shouldUseProxy(streamUrl, radio) {
+                // 第一层：用户手动设置（最高优先级）
+                if (radio.useProxy !== undefined) {
+                    return { useProxy: radio.useProxy, reason: radio.useProxy ? '手动启用' : '手动禁用' };
+                }
+
+                // ===== 白名单域名（即使 http 也不走代理） =====
+const whitelistDomains = ['satellitepull.cnr.cn', 'sk.cri.cn', 'stream.sun0769.com'];
+for (const domain of whitelistDomains) {
+    if (streamUrl.includes(domain)) {
+        return { useProxy: false, reason: '白名单' };
+    }
+}
+
+                const rules = getProxyRules();
+                const isHttp = streamUrl.startsWith('http://');
+                const isM3U8 = streamUrl.includes('.m3u8') || streamUrl.includes('m3u8');
+
+                 // 第二层：HTTP明文协议/混合内容阻止
+                if (rules.httpMixedContent && isHttp && isM3U8) {
+                    return { useProxy: true, reason: 'HTTP明文' };
+                }
+
+
+                // 第三层：高风险域名防盗链
+                if (rules.problematicDomains) {
+                    const domains = ['xmcdn.com', 'qingting.fm', 'ajmide.com', 'revma.com', 'streamtheworld.com'];
+                    for (const domain of domains) {
+                        if (streamUrl.includes(domain)) {
+                            return { useProxy: true, reason: '高风险域名' };
+                        }
+                    }
+                }
+
+                // 第四层：鉴权/时效性参数
+                if (rules.antiTheftParams) {
+                    const params = ['txSecret', 'txTime', 'sign', 'signature', 'key', 'token'];
+                    for (const param of params) {
+                        if (streamUrl.includes(param + '=') || streamUrl.includes('&' + param + '=')) {
+                            return { useProxy: true, reason: '鉴权参数' };
+                        }
+                    }
+                }
+
+                // 第五层：IP直连/跨域风险
+                if (rules.ipDirect) {
+                    const ipPattern = /\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b/;
+                    if (ipPattern.test(streamUrl)) {
+                        return { useProxy: true, reason: 'IP直连' };
+                    }
+                }
+               
+                return { useProxy: false, reason: '直连' };
+            }
+
+            // ============================================================
+            // 统计信息
+            // ============================================================
+            function getStatistics() {
+                const total = radioDataSource.length;
+                const categoryStats = {};
+                let proxyEnabledCount = 0;
+
+                // 分类统计（排除收藏和历史）
+                const displayCategories = categoryList.filter(
+                    cat => cat.id !== 'cat_favorites' && cat.id !== 'cat_history'
+                );
+
+                displayCategories.forEach(cat => {
+                    let count = 0;
+                    const catName = cat.name;
+                    radioDataSource.forEach(radio => {
+                        if (cat.id === 'cat_all') {
+                            count = total;
+                        } else if (radio.tag === catName || radio.area === catName) {
+                            count++;
+                        }
+                    });
+                    if (count > 0) {
+                        categoryStats[cat.id] = { name: catName, count: count };
+                    }
+                });
+
+                // 代理统计
+                radioDataSource.forEach(radio => {
+                    const result = shouldUseProxy(radio.stream || '', radio);
+                    if (result.useProxy) {
+                        proxyEnabledCount++;
+                    }
+                });
+
+                return {
+                    total: total,
+                    categories: categoryStats,
+                    proxyEnabled: proxyEnabledCount,
+                    directCount: total - proxyEnabledCount
+                };
+            }
 
             // ============================================================
             // 分类管理
@@ -1939,7 +2722,6 @@
                     container.appendChild(tab);
                 });
 
-                // 事件绑定
                 container.querySelectorAll('.category-tab').forEach(tab => {
                     tab.addEventListener('click', function() {
                         const isActive = this.classList.contains('active');
@@ -1958,7 +2740,6 @@
                             this.style.borderColor = '';
                             this.style.color = '';
                             this.style.boxShadow = '';
-                            // 默认切换到"全部"
                             const allTab = container.querySelector('.category-tab[data-filter="cat_all"]');
                             if (allTab) {
                                 allTab.classList.add('active');
@@ -1989,7 +2770,6 @@
                     });
                 });
 
-                // 激活当前filter对应的tab（默认cat_gd）
                 let targetTab = container.querySelector('.category-tab[data-filter="' + currentFilter + '"]');
                 if (!targetTab) {
                     targetTab = container.querySelector('.category-tab[data-filter="cat_gd"]');
@@ -2006,89 +2786,81 @@
                 }
             }
 
-            function updateCategoryTabs() {
-                renderCategoryTabs();
-            }
-
             function renderCategoryManageList() {
-    const list = document.getElementById('categoryManageList');
-    list.innerHTML = '';
-    
-    // 系统分类 ID（这些不在管理列表中显示）
-    const systemIds = ['cat_favorites', 'cat_history', 'cat_all'];
-    const displayList = categoryList.filter(cat => !systemIds.includes(cat.id));
+                const list = document.getElementById('categoryManageList');
+                list.innerHTML = '';
 
-    if (displayList.length === 0) {
-        list.innerHTML = '<div style="text-align:center;color:var(--text-weak);padding:30px 0;">暂无分类</div>';
-        return;
-    }
+                const systemIds = ['cat_favorites', 'cat_history', 'cat_all'];
+                const displayList = categoryList.filter(cat => !systemIds.includes(cat.id));
 
-    displayList.forEach((cat, index) => {
-        const div = document.createElement('div');
-        div.className = 'manage-item';
-        div.innerHTML = `
-            <span class="name">${cat.name}</span>
-            <div class="actions">
-                <button class="btn-move-up" data-id="${cat.id}" ${index === 0 ? 'disabled style="opacity:0.3;cursor:not-allowed;"' : ''} title="上移"><i class="fa-solid fa-arrow-up"></i></button>
-                <button class="btn-move-down" data-id="${cat.id}" ${index === displayList.length-1 ? 'disabled style="opacity:0.3;cursor:not-allowed;"' : ''} title="下移"><i class="fa-solid fa-arrow-down"></i></button>
-                <button class="btn-del" data-id="${cat.id}" title="删除"><i class="fa-regular fa-trash-can"></i></button>
-            </div>
-        `;
-        list.appendChild(div);
-    });
+                if (displayList.length === 0) {
+                    list.innerHTML = '<div style="text-align:center;color:var(--text-weak);padding:30px 0;">暂无分类</div>';
+                    return;
+                }
 
-    // 上移
-    list.querySelectorAll('.btn-move-up').forEach(btn => {
-        btn.addEventListener('click', function() {
-            const id = this.dataset.id;
-            const idx = displayList.findIndex(c => c.id === id);
-            if (idx > 0) {
-                const targetId = displayList[idx - 1].id;
-                const idx1 = categoryList.findIndex(c => c.id === id);
-                const idx2 = categoryList.findIndex(c => c.id === targetId);
-                [categoryList[idx1], categoryList[idx2]] = [categoryList[idx2], categoryList[idx1]];
-                saveCategoryList();
-                renderCategoryManageList();
-                renderCategoryTabs();
+                displayList.forEach((cat, index) => {
+                    const div = document.createElement('div');
+                    div.className = 'manage-item';
+                    div.innerHTML = `
+                            <span class="name">${cat.name}</span>
+                            <div class="actions">
+                                <button class="btn-move-up" data-id="${cat.id}" ${index === 0 ? 'disabled style="opacity:0.3;cursor:not-allowed;"' : ''} title="上移"><i class="fa-solid fa-arrow-up"></i></button>
+                                <button class="btn-move-down" data-id="${cat.id}" ${index === displayList.length-1 ? 'disabled style="opacity:0.3;cursor:not-allowed;"' : ''} title="下移"><i class="fa-solid fa-arrow-down"></i></button>
+                                <button class="btn-del" data-id="${cat.id}" title="删除"><i class="fa-regular fa-trash-can"></i></button>
+                            </div>
+                        `;
+                    list.appendChild(div);
+                });
+
+                list.querySelectorAll('.btn-move-up').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const id = this.dataset.id;
+                        const idx = displayList.findIndex(c => c.id === id);
+                        if (idx > 0) {
+                            const targetId = displayList[idx - 1].id;
+                            const idx1 = categoryList.findIndex(c => c.id === id);
+                            const idx2 = categoryList.findIndex(c => c.id === targetId);
+                            [categoryList[idx1], categoryList[idx2]] = [categoryList[idx2], categoryList[idx1]];
+                            saveCategoryList();
+                            renderCategoryManageList();
+                            renderCategoryTabs();
+                        }
+                    });
+                });
+
+                list.querySelectorAll('.btn-move-down').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const id = this.dataset.id;
+                        const idx = displayList.findIndex(c => c.id === id);
+                        if (idx < displayList.length - 1) {
+                            const targetId = displayList[idx + 1].id;
+                            const idx1 = categoryList.findIndex(c => c.id === id);
+                            const idx2 = categoryList.findIndex(c => c.id === targetId);
+                            [categoryList[idx1], categoryList[idx2]] = [categoryList[idx2], categoryList[idx1]];
+                            saveCategoryList();
+                            renderCategoryManageList();
+                            renderCategoryTabs();
+                        }
+                    });
+                });
+
+                list.querySelectorAll('.btn-del').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const id = this.dataset.id;
+                        const cat = categoryList.find(c => c.id === id);
+                        if (!cat) return;
+                        if (!confirm('确定删除分类「' + cat.name + '」吗？')) return;
+                        const idx = categoryList.findIndex(c => c.id === id);
+                        if (idx > -1) {
+                            categoryList.splice(idx, 1);
+                            saveCategoryList();
+                            renderCategoryManageList();
+                            renderCategoryTabs();
+                            showToast('已删除');
+                        }
+                    });
+                });
             }
-        });
-    });
-
-    // 下移
-    list.querySelectorAll('.btn-move-down').forEach(btn => {
-        btn.addEventListener('click', function() {
-            const id = this.dataset.id;
-            const idx = displayList.findIndex(c => c.id === id);
-            if (idx < displayList.length - 1) {
-                const targetId = displayList[idx + 1].id;
-                const idx1 = categoryList.findIndex(c => c.id === id);
-                const idx2 = categoryList.findIndex(c => c.id === targetId);
-                [categoryList[idx1], categoryList[idx2]] = [categoryList[idx2], categoryList[idx1]];
-                saveCategoryList();
-                renderCategoryManageList();
-                renderCategoryTabs();
-            }
-        });
-    });
-
-    // 删除
-    list.querySelectorAll('.btn-del').forEach(btn => {
-        btn.addEventListener('click', function() {
-            const id = this.dataset.id;
-            const cat = categoryList.find(c => c.id === id);
-            if (!cat) return;
-            if (!confirm('确定删除分类「' + cat.name + '」吗？')) return;
-            const idx = categoryList.findIndex(c => c.id === id);
-            if (idx > -1) {
-                categoryList.splice(idx, 1);
-                saveCategoryList();
-                renderCategoryManageList();
-                renderCategoryTabs();
-                showToast('已删除');
-            }
-        });
-    });
-}
 
             function openCategoryManageModal() {
                 renderCategoryManageList();
@@ -2113,6 +2885,11 @@
                 volumeValue = Storage.load("ansonradio_volume") ?? 80;
                 document.getElementById("audioPlayer").volume = volumeValue / 100;
                 loadCategoryList();
+
+                // 初始化代理规则（如果不存在）
+                if (!Storage.load(PROXY_RULES_KEY)) {
+                    saveProxyRules(defaultRules);
+                }
             }
 
             // ============================================================
@@ -2180,159 +2957,156 @@
             // 渲染 - 电台列表
             // ============================================================
             function renderStationList() {
-    const container = document.getElementById("stationList");
-    const keyword = document.getElementById("searchInput").value.trim().toLowerCase();
+                const container = document.getElementById("stationList");
+                const keyword = document.getElementById("searchInput").value.trim().toLowerCase();
 
-    let renderData = [...radioDataSource];
+                let renderData = [...radioDataSource];
 
-    if (currentFilter === "cat_favorites") {
-        renderData = renderData.filter(item => favList.includes(item.id));
-    } else if (currentFilter === "cat_all") {
-        // 全部显示
-    } else if (currentFilter === "cat_history") {
-        renderData = historyList.map(id => radioDataSource.find(r => r.id === id)).filter(Boolean);
-    } else {
-        const cat = categoryList.find(c => c.id === currentFilter);
-        if (cat) {
-            const name = cat.name;
-            renderData = renderData.filter(item => item.tag === name || item.area === name);
-        } else {
-            renderData = [];
-        }
-    }
+                if (currentFilter === "cat_favorites") {
+                    renderData = renderData.filter(item => favList.includes(item.id));
+                } else if (currentFilter === "cat_all") {
+                    // 全部显示
+                } else if (currentFilter === "cat_history") {
+                    renderData = historyList.map(id => radioDataSource.find(r => r.id === id)).filter(Boolean);
+                } else {
+                    const cat = categoryList.find(c => c.id === currentFilter);
+                    if (cat) {
+                        const name = cat.name;
+                        renderData = renderData.filter(item => item.tag === name || item.area === name);
+                    } else {
+                        renderData = [];
+                    }
+                }
 
-    if (keyword) {
-        renderData = renderData.filter(item =>
-            item.name.toLowerCase().includes(keyword) ||
-            (item.city && item.city.toLowerCase().includes(keyword))
-        );
-    }
+                if (keyword) {
+                    renderData = renderData.filter(item =>
+                        item.name.toLowerCase().includes(keyword) ||
+                        (item.city && item.city.toLowerCase().includes(keyword))
+                    );
+                }
 
-    container.innerHTML = "";
-    if (renderData.length === 0) {
-        container.innerHTML = `<div class="empty-state">📭 没有找到电台</div>`;
-        return;
-    }
+                container.innerHTML = "";
+                if (renderData.length === 0) {
+                    container.innerHTML = `<div class="empty-state">📭 没有找到电台</div>`;
+                    return;
+                }
 
-    const isAllCategory = (currentFilter === 'cat_all');
+                const isAllCategory = (currentFilter === 'cat_all');
 
-    renderData.forEach((radio) => {
-        const isPlaying = radio.id === currentPlayingId && !(cardError && cardError.id === radio.id);
-        const isFav = favList.includes(radio.id);
-        const hasError = cardError && cardError.id === radio.id;
+                renderData.forEach((radio) => {
+                    const isPlaying = radio.id === currentPlayingId && !(cardError && cardError.id === radio.id);
+                    const isFav = favList.includes(radio.id);
+                    const hasError = cardError && cardError.id === radio.id;
 
-        const item = document.createElement("div");
-        item.className = `station-item ${isPlaying ? 'active' : ''}`;
-        item.dataset.id = radio.id;
+                    const item = document.createElement("div");
+                    item.className = `station-item ${isPlaying ? 'active' : ''}`;
+                    item.dataset.id = radio.id;
 
-        const coverBg = radio.logo ?
-            `url(${radio.logo}) center/cover no-repeat` :
-            `linear-gradient(135deg, var(--primary), var(--primary-dark))`;
+                    const coverBg = radio.logo ?
+                        `url(${radio.logo}) center/cover no-repeat` :
+                        `linear-gradient(135deg, var(--primary), var(--primary-dark))`;
 
-        const tag = radio.tag || "电台";
+                    const tag = radio.tag || "电台";
 
-        const errorHtml = hasError ?
-            `<div class="error-overlay show">
-                <div class="error-toast">${cardError.message}</div>
-             </div>` :
-            `<div class="error-overlay"></div>`;
+                    const errorHtml = hasError ?
+                        `<div class="error-overlay show">
+                                <div class="error-toast">${cardError.message}</div>
+                             </div>` :
+                        `<div class="error-overlay"></div>`;
 
-        item.innerHTML = `
-            <div class="cover" style="background: ${coverBg}; background-size: cover; background-position: center;">
-                <div class="gradient-mask"></div>
-                <div class="playing-dot"></div>
-                <div class="cover-info">
-                    <div class="name">${radio.name}</div>
-                    <div class="city-tag">
-                        <span class="city">${radio.city || '未知'}</span>
-                        <span class="tag">${tag}</span>
-                    </div>
-                </div>
-            </div>
-            <div class="actions">
-                ${isAllCategory ? `
-                    <button class="del-btn" data-id="${radio.id}" style="margin-right: auto;"><i class="fa-regular fa-trash-can"></i></button>
-                    ${isPlaying ? `
-                        <button class="star-btn" data-id="${radio.id}" title="收藏" style="margin-right: 0;">
-                            <i class="${isFav ? 'fa-solid' : 'fa-regular'} fa-star"></i>
-                        </button>
-                    ` : `
-                        <button class="play-btn" data-id="${radio.id}" title="播放" style="margin-right: 0;">
-                            <i class="fa-solid fa-play"></i>
-                        </button>
-                    `}
-                ` : `
-                    ${isPlaying ? `
-                        <button class="star-btn" data-id="${radio.id}" title="收藏" style="margin-right: 0;">
-                            <i class="${isFav ? 'fa-solid' : 'fa-regular'} fa-star"></i>
-                        </button>
-                    ` : `
-                        <button class="play-btn" data-id="${radio.id}" title="播放" style="margin-right: 0;">
-                            <i class="fa-solid fa-play"></i>
-                        </button>
-                    `}
-                `}
-            </div>
-            ${errorHtml}
-        `;
+                    item.innerHTML = `
+                            <div class="cover" style="background: ${coverBg}; background-size: cover; background-position: center;">
+                                <div class="gradient-mask"></div>
+                                <div class="playing-dot"></div>
+                                <div class="cover-info">
+                                    <div class="name">${radio.name}</div>
+                                    <div class="city-tag">
+                                        <span class="city">${radio.city || '未知'}</span>
+                                        <span class="tag">${tag}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="actions">
+                                ${isAllCategory ? `
+                                    <button class="del-btn" data-id="${radio.id}" style="margin-right: auto;"><i class="fa-regular fa-trash-can"></i></button>
+                                    ${isPlaying ? `
+                                        <button class="star-btn" data-id="${radio.id}" title="收藏" style="margin-right: 0;">
+                                            <i class="${isFav ? 'fa-solid' : 'fa-regular'} fa-star"></i>
+                                        </button>
+                                    ` : `
+                                        <button class="play-btn" data-id="${radio.id}" title="播放" style="margin-right: 0;">
+                                            <i class="fa-solid fa-play"></i>
+                                        </button>
+                                    `}
+                                ` : `
+                                    ${isPlaying ? `
+                                        <button class="star-btn" data-id="${radio.id}" title="收藏" style="margin-right: 0;">
+                                            <i class="${isFav ? 'fa-solid' : 'fa-regular'} fa-star"></i>
+                                        </button>
+                                    ` : `
+                                        <button class="play-btn" data-id="${radio.id}" title="播放" style="margin-right: 0;">
+                                            <i class="fa-solid fa-play"></i>
+                                        </button>
+                                    `}
+                                `}
+                            </div>
+                            ${errorHtml}
+                        `;
 
-        item.addEventListener('click', (e) => {
-            if (e.target.closest('.play-btn')) return;
-            if (e.target.closest('.del-btn')) return;
-            if (e.target.closest('.star-btn')) return;
-            if (hasError) {
-                clearCardError();
-                playRadio(radio.id);
-                return;
+                    item.addEventListener('click', (e) => {
+                        if (e.target.closest('.play-btn')) return;
+                        if (e.target.closest('.del-btn')) return;
+                        if (e.target.closest('.star-btn')) return;
+                        if (hasError) {
+                            clearCardError();
+                            playRadio(radio.id);
+                            return;
+                        }
+                        playRadio(radio.id);
+                    });
+
+                    container.appendChild(item);
+                });
+
+                container.querySelectorAll('.play-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        if (cardError) clearCardError();
+                        playRadio(btn.dataset.id);
+                    });
+                });
+
+                container.querySelectorAll('.star-btn').forEach(btn => {
+                    btn.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        const id = this.dataset.id;
+                        const idx = favList.indexOf(id);
+                        if (idx > -1) {
+                            favList.splice(idx, 1);
+                        } else {
+                            favList.push(id);
+                        }
+                        Storage.save("ansonradio_fav", favList);
+                        renderStationList();
+                        updateFavButtonState();
+                    });
+                });
+
+                container.querySelectorAll('.del-btn').forEach(btn => {
+                    btn.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        const id = this.dataset.id;
+                        const radio = radioDataSource.find(r => r.id === id);
+                        if (!radio) return;
+                        if (!confirm(`确定删除「${radio.name}」吗？`)) return;
+                        deleteRadioById(id);
+                        renderStationList();
+                    });
+                });
+
+                updatePlayButtonState();
+                updateFavButtonState();
             }
-            playRadio(radio.id);
-        });
-
-        container.appendChild(item);
-    });
-
-    // 播放按钮事件
-    container.querySelectorAll('.play-btn').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            if (cardError) clearCardError();
-            playRadio(btn.dataset.id);
-        });
-    });
-
-    // 星星按钮事件（收藏/取消收藏）
-    container.querySelectorAll('.star-btn').forEach(btn => {
-        btn.addEventListener('click', function(e) {
-            e.stopPropagation();
-            const id = this.dataset.id;
-            const idx = favList.indexOf(id);
-            if (idx > -1) {
-                favList.splice(idx, 1);
-            } else {
-                favList.push(id);
-            }
-            Storage.save("ansonradio_fav", favList);
-            renderStationList();
-            updateFavButtonState();
-        });
-    });
-
-    // 删除按钮事件
-    container.querySelectorAll('.del-btn').forEach(btn => {
-        btn.addEventListener('click', function(e) {
-            e.stopPropagation();
-            const id = this.dataset.id;
-            const radio = radioDataSource.find(r => r.id === id);
-            if (!radio) return;
-            if (!confirm(`确定删除「${radio.name}」吗？`)) return;
-            deleteRadioById(id);
-            renderStationList();
-        });
-    });
-
-    updatePlayButtonState();
-    updateFavButtonState();
-}
 
             // ============================================================
             // 播放引擎
@@ -2424,12 +3198,25 @@
 
                 renderStationList();
 
-                const streamUrl = radio.stream.trim();
+                let streamUrl = radio.stream.trim();
                 if (!streamUrl) {
                     setCardError(radioId, "直播地址为空");
                     return;
                 }
 
+                // ===== 多层决策树判断 =====
+                const decision = shouldUseProxy(streamUrl, radio);
+                const proxyBase = "https://m3u8.kowiwa11.workers.dev/?url=";
+
+                if (decision.useProxy) {
+                    streamUrl = proxyBase + encodeURIComponent(streamUrl);
+                    recordProxyUsage(radioId);
+                    console.log(`[代理] ${radio.name} 使用代理播放 (原因: ${decision.reason})`);
+                } else {
+                    console.log(`[直连] ${radio.name} 直接播放 (原因: ${decision.reason})`);
+                }
+
+                // ===== 后续播放逻辑 =====
                 const isM3U8 = streamUrl.includes('.m3u8') || streamUrl.includes('m3u8');
                 const nativeHlsSupport = audioPlayer.canPlayType('application/vnd.apple.mpegurl') ||
                     audioPlayer.canPlayType('audio/mpegurl');
@@ -2504,35 +3291,33 @@
             }
 
             function toggleFav() {
-    if (!currentPlayingId) {
-        // 修改收藏按钮文字为“未播放”
-        const btn = document.getElementById('btnFav');
-        const span = btn.querySelector('span');
-        if (span) {
-            span.textContent = '未播放';
-            // 清除之前的定时器
-            clearTimeout(window._favTempTimer);
-            window._favTempTimer = setTimeout(() => {
-                // 恢复文字
                 if (!currentPlayingId) {
-                    span.textContent = '收藏';
-                } else {
-                    updateFavButtonState();
+                    const btn = document.getElementById('btnFav');
+                    const span = btn.querySelector('span');
+                    if (span) {
+                        span.textContent = '未播放';
+                        clearTimeout(window._favTempTimer);
+                        window._favTempTimer = setTimeout(() => {
+                            if (!currentPlayingId) {
+                                span.textContent = '收藏';
+                            } else {
+                                updateFavButtonState();
+                            }
+                        }, 2000);
+                    }
+                    return;
                 }
-            }, 2000);
-        }
-        return;
-    }
-    const idx = favList.indexOf(currentPlayingId);
-    if (idx > -1) {
-        favList.splice(idx, 1);
-    } else {
-        favList.push(currentPlayingId);
-    }
-    Storage.save("ansonradio_fav", favList);
-    renderStationList();
-    updateFavButtonState();
-}
+                const idx = favList.indexOf(currentPlayingId);
+                if (idx > -1) {
+                    favList.splice(idx, 1);
+                } else {
+                    favList.push(currentPlayingId);
+                }
+                Storage.save("ansonradio_fav", favList);
+                renderStationList();
+                updateFavButtonState();
+            }
+
             // ============================================================
             // 管理功能
             // ============================================================
@@ -2556,20 +3341,47 @@
                     return;
                 }
                 data.forEach(radio => {
-                    const isFav = favList.includes(radio.id);
-                    const div = document.createElement("div");
-                    div.className = "manage-item";
-                    div.innerHTML = `
-                        <span class="name">${radio.name} (${radio.city || '未知'})</span>
-                        <div class="actions">
-                            <button class="btn-fav-manage ${isFav ? 'active' : ''}" data-id="${radio.id}" title="收藏"><i class="${isFav ? 'fa-solid' : 'fa-regular'} fa-heart"></i></button>
-                            <button class="btn-edit" data-id="${radio.id}" title="编辑"><i class="fa-regular fa-pen-to-square"></i></button>
-                            <button class="btn-del" data-id="${radio.id}" title="删除"><i class="fa-regular fa-trash-can"></i></button>
-                        </div>
-                    `;
-                    list.appendChild(div);
-                });
+    const isFav = favList.includes(radio.id);
 
+    // 代理图标：三种状态三种显示（使用内联样式确保颜色正确）
+    let proxyIconHtml = '';
+    let toggleClass = '';
+    let titleText = '';
+
+    if (radio.useProxy === true) {
+        // 启用代理 - 主题色实心地球（跟随当前主题色）
+        proxyIconHtml = '<i class="fa-solid fa-globe" style="color:var(--primary);"></i>';
+        toggleClass = 'active';
+        titleText = '启用代理';
+    } else if (radio.useProxy === false) {
+        // 关闭代理 - 灰色实心地球
+        proxyIconHtml = '<i class="fa-solid fa-globe" style="color:var(--text-weak);"></i>';
+        toggleClass = '';
+        titleText = '关闭代理';
+    } else {
+        // 自动模式 - 灰色旋转箭头
+        proxyIconHtml = '<i class="fa-solid fa-rotate" style="color:var(--text-weak);"></i>';
+        toggleClass = '';
+        titleText = '自动模式';
+    }
+
+    const div = document.createElement("div");
+    div.className = "manage-item";
+    div.innerHTML = `
+            <span class="name">${radio.name} (${radio.city || '未知'})</span>
+            <div class="actions">
+                <button class="btn-fav-manage ${isFav ? 'active' : ''}" data-id="${radio.id}" title="收藏"><i class="${isFav ? 'fa-solid' : 'fa-regular'} fa-heart"></i></button>
+                <button class="btn-edit" data-id="${radio.id}" title="编辑"><i class="fa-regular fa-pen-to-square"></i></button>
+                <button class="btn-del" data-id="${radio.id}" title="删除"><i class="fa-regular fa-trash-can"></i></button>
+                <button class="btn-proxy-toggle ${toggleClass}" data-id="${radio.id}" title="${titleText}">
+                    ${proxyIconHtml}
+                </button>
+            </div>
+        `;
+    list.appendChild(div);
+});
+
+                // 收藏
                 list.querySelectorAll('.btn-fav-manage').forEach(btn => {
                     btn.addEventListener('click', function() {
                         const id = this.dataset.id;
@@ -2583,19 +3395,49 @@
                         updateFavButtonState();
                     });
                 });
+
+                // 编辑
                 list.querySelectorAll('.btn-edit').forEach(btn => {
                     btn.addEventListener('click', function() {
                         const id = this.dataset.id;
                         openEditModal(id);
                     });
                 });
+
+                // 删除
                 list.querySelectorAll('.btn-del').forEach(btn => {
                     btn.addEventListener('click', function() {
                         const id = this.dataset.id;
-                        if (!confirm(`确定删除「${radioDataSource.find(r=>r.id===id).name}」吗？`)) return;
+                        if (!confirm(`确定删除「${radioDataSource.find(r => r.id === id).name}」吗？`)) return;
                         deleteRadioById(id);
                         const kw = document.getElementById("manageSearchInput").value;
                         renderManageList(kw);
+                    });
+                });
+
+                // 代理开关
+                list.querySelectorAll('.btn-proxy-toggle').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const id = this.dataset.id;
+                        const radio = radioDataSource.find(r => r.id === id);
+                        if (!radio) return;
+
+                        // 循环切换：undefined → true → false → undefined
+                        if (radio.useProxy === undefined) {
+                            radio.useProxy = true;
+                            showToast(`${radio.name} 启用代理`);
+                        } else if (radio.useProxy === true) {
+                            radio.useProxy = false;
+                            showToast(`${radio.name} 关闭代理`);
+                        } else {
+                            radio.useProxy = undefined;
+                            showToast(`${radio.name} 自动模式`);
+                        }
+
+                        Storage.save("ansonradio_list", radioDataSource);
+                        const kw = document.getElementById("manageSearchInput").value;
+                        renderManageList(kw);
+                        renderStationList();
                     });
                 });
             }
@@ -2650,6 +3492,7 @@
                 document.getElementById("editTag").value = radio.tag || "";
                 document.getElementById("editStream").value = radio.stream || "";
                 document.getElementById("editLogo").value = radio.logo || "";
+                document.getElementById("editUseProxy").checked = radio.useProxy || false;
                 document.getElementById("editModal").classList.add("open");
             }
 
@@ -2665,6 +3508,7 @@
                 radio.tag = document.getElementById("editTag").value.trim() || "自定义";
                 radio.stream = stream;
                 radio.logo = document.getElementById("editLogo").value.trim() || "";
+                radio.useProxy = document.getElementById("editUseProxy").checked;
                 Storage.save("ansonradio_list", radioDataSource);
                 document.getElementById("editModal").classList.remove("open");
                 if (currentPlayingId === editingRadioId) {
@@ -2674,6 +3518,249 @@
                 const kw = document.getElementById("manageSearchInput").value;
                 renderManageList(kw);
                 showToast("修改已保存");
+            }
+
+            // ============================================================
+            // 代理管理弹窗
+            // ============================================================
+            let proxyFilterMode = 'all';
+
+            function openProxyManageModal() {
+                document.getElementById("proxyManageModal").classList.add("open");
+                renderProxyManageList();
+            }
+
+            function closeProxyManageModal() {
+                document.getElementById("proxyManageModal").classList.remove("open");
+            }
+
+                       function renderProxyManageList() {
+                const list = document.getElementById("proxyManageList");
+                let data = [...radioDataSource];
+                
+                // ===== 搜索过滤 =====
+                const keyword = document.getElementById("proxySearchInput").value.trim().toLowerCase();
+                if (keyword) {
+                    data = data.filter(radio => radio.name.toLowerCase().includes(keyword));
+                }
+                
+                // ===== 获取当前选中的筛选按钮 =====
+                const activeFilterBtn = document.querySelector('.proxy-filter-btn.active');
+                const filter = activeFilterBtn ? activeFilterBtn.dataset.filter : 'all';
+
+                // ===== 状态筛选 =====
+                data = data.filter(radio => {
+                    const status = radio.useProxy !== undefined ? (radio.useProxy ? 'manual_on' : 'manual_off') : 'auto';
+                    if (filter === 'manual_on') return status === 'manual_on';
+                    if (filter === 'manual_off') return status === 'manual_off';
+                    if (filter === 'auto') return status === 'auto';
+                    return true;
+                });
+
+                list.innerHTML = "";
+                if (data.length === 0) {
+                    list.innerHTML = '<div style="text-align:center;color:var(--text-weak);padding:30px 0;">暂无匹配电台</div>';
+                    return;
+                }
+
+                data.forEach(radio => {
+                    const decision = shouldUseProxy(radio.stream || '', radio);
+                    const status = radio.useProxy !== undefined ? (radio.useProxy ? 'manual_on' : 'manual_off') : 'auto';
+
+                    let statusLabel, statusClass, statusIcon;
+                    if (status === 'manual_on') {
+                        statusLabel = '已开启';
+                        statusClass = 'enabled';
+                        statusIcon = '●';
+                    } else if (status === 'manual_off') {
+                        statusLabel = '已关闭';
+                        statusClass = 'disabled';
+                        statusIcon = '○';
+                    } else {
+                        statusLabel = decision.useProxy ? '自动代理' : '自动直连';
+                        statusClass = 'auto';
+                        statusIcon = '◐';
+                    }
+
+                    // 触发原因标签（短标签，不换行）
+                    let reasonLabel = decision.reason;
+                    if (reasonLabel === '手动启用') reasonLabel = '-';
+                    else if (reasonLabel === '手动禁用') reasonLabel = '手动';
+                    else if (reasonLabel === 'HTTP明文') reasonLabel = '明文';
+                    else if (reasonLabel === '高风险域名') reasonLabel = '域名';
+                    else if (reasonLabel === '鉴权参数') reasonLabel = '鉴权';
+                    else if (reasonLabel === 'IP直连') reasonLabel = '直连';
+                    else if (reasonLabel === '直连') reasonLabel = '直连';
+
+                    const isProxyActive = (status === 'manual_on' || (status === 'auto' && decision.useProxy));
+
+                    // 生成原因标签
+                    let reasonDisplay = '';
+                    if (isProxyActive) {
+                        reasonDisplay = reasonLabel;
+                    } else if (status === 'manual_off') {
+                        reasonDisplay = '-';
+                    } else if (status === 'auto' && !decision.useProxy) {
+                        reasonDisplay = '直连';
+                    } else {
+                        reasonDisplay = '-';
+                    }
+
+                    const div = document.createElement("div");
+                    div.className = "proxy-manage-item";
+                    div.innerHTML = `
+                        <span class="proxy-item-name" title="${radio.name}">${radio.name}</span>
+                        <span class="proxy-item-status ${statusClass}">${statusIcon} ${statusLabel}</span>
+                        <span class="proxy-item-reason">${reasonDisplay}</span>
+                        <button class="btn-proxy-switch" data-id="${radio.id}" title="切换状态"><i class="fa-solid fa-rotate"></i></button>
+                    `;
+                    list.appendChild(div);
+                });
+
+                // 切换按钮事件
+                list.querySelectorAll('.btn-proxy-switch').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const id = this.dataset.id;
+                        const radio = radioDataSource.find(r => r.id === id);
+                        if (!radio) return;
+
+                        if (radio.useProxy === undefined) {
+                            radio.useProxy = true;
+                        } else if (radio.useProxy === true) {
+                            radio.useProxy = false;
+                        } else {
+                            radio.useProxy = undefined;
+                        }
+                        Storage.save("ansonradio_list", radioDataSource);
+                        renderProxyManageList();
+                        renderStationList();
+                    });
+                });
+            }
+
+                       // 代理管理批量操作
+            function proxyBatchAction(action) {
+                const data = [...radioDataSource];
+                
+                // 获取当前选中的筛选按钮
+                const activeFilterBtn = document.querySelector('.proxy-filter-btn.active');
+                const filter = activeFilterBtn ? activeFilterBtn.dataset.filter : 'all';
+
+                let targetData = data;
+                if (filter !== 'all') {
+                    targetData = data.filter(radio => {
+                        const status = radio.useProxy !== undefined ? (radio.useProxy ? 'manual_on' : 'manual_off') : 'auto';
+                        if (filter === 'manual_on') return status === 'manual_on';
+                        if (filter === 'manual_off') return status === 'manual_off';
+                        if (filter === 'auto') return status === 'auto';
+                        return true;
+                    });
+                }
+
+                targetData.forEach(radio => {
+                    if (action === 'enable') {
+                        radio.useProxy = true;
+                    } else if (action === 'disable') {
+                        radio.useProxy = false;
+                    } else if (action === 'auto') {
+                        radio.useProxy = undefined;
+                    }
+                });
+
+                Storage.save("ansonradio_list", radioDataSource);
+                renderProxyManageList();
+                renderStationList();
+                showToast(`批量操作完成: ${targetData.length} 个电台`);
+            }
+
+            // ============================================================
+            // 规则配置
+            // ============================================================
+            function renderProxyRules() {
+                const rules = getProxyRules();
+                document.getElementById('ruleHttpMixed').checked = rules.httpMixedContent;
+                document.getElementById('ruleProblematicDomains').checked = rules.problematicDomains;
+                document.getElementById('ruleAntiTheftParams').checked = rules.antiTheftParams;
+                document.getElementById('ruleIpDirect').checked = rules.ipDirect;
+            }
+
+            function saveRulesFromUI() {
+                const rules = {
+                    httpMixedContent: document.getElementById('ruleHttpMixed').checked,
+                    problematicDomains: document.getElementById('ruleProblematicDomains').checked,
+                    antiTheftParams: document.getElementById('ruleAntiTheftParams').checked,
+                    ipDirect: document.getElementById('ruleIpDirect').checked
+                };
+                saveProxyRules(rules);
+                showToast('规则配置已保存');
+                renderProxyManageList();
+            }
+
+            // ============================================================
+            // 系统信息
+            // ============================================================
+            function openSysInfoModal() {
+                renderSysInfo();
+                document.getElementById('sysInfoModal').classList.add('open');
+            }
+
+            function renderSysInfo() {
+                const stats = getStatistics();
+                const todayStats = getTodayStats();
+                const weekStats = getLast7DaysStats();
+
+                // 版本信息
+                document.getElementById('sysVersion').textContent = 'AnsonFM 2026.2.1';
+                document.getElementById('sysAuthor').textContent = 'Anson';
+                document.getElementById('sysQQ').textContent = '59253359';
+
+                // 电台统计
+                document.getElementById('statTotal').textContent = stats.total + ' 个';
+
+                const catContainer = document.getElementById('statCategories');
+                catContainer.innerHTML = '';
+                const catEntries = Object.entries(stats.categories);
+                if (catEntries.length > 0) {
+                    catEntries.forEach(([id, cat]) => {
+                        const span = document.createElement('span');
+                        span.className = 'stat-cat-item';
+                        span.textContent = `${cat.name} ${cat.count}`;
+                        catContainer.appendChild(span);
+                    });
+                } else {
+                    catContainer.innerHTML = '<span class="stat-cat-item" style="color:var(--text-weak);">暂无分类数据</span>';
+                }
+
+                // 代理信息
+                const proxyBase = "https://m3u8.kowiwa11.workers.dev/?url=";
+                // 删除或注释掉这行
+                // document.getElementById('proxyStatus').textContent = '✅ 已启用';
+                document.getElementById('proxyAddress').textContent = proxyBase;
+                document.getElementById('proxyEnabledCount').textContent = stats.proxyEnabled + ' 个';
+
+                // 今日请求
+                const limit = 100000;
+                const used = todayStats.total;
+                const percent = Math.min((used / limit) * 100, 100);
+                document.getElementById('todayUsed').textContent = used.toLocaleString();
+                document.getElementById('todayLimit').textContent = limit.toLocaleString();
+                document.getElementById('todayPercent').textContent = percent.toFixed(2) + '%';
+
+                // 7天趋势（简化柱状图）
+                const maxVal = Math.max(...weekStats.map(d => d.total), 1);
+                const trendContainer = document.getElementById('trendBars');
+                trendContainer.innerHTML = '';
+                weekStats.forEach(day => {
+                    const bar = document.createElement('div');
+                    bar.className = 'trend-bar-item';
+                    const height = Math.max((day.total / maxVal) * 30, 2);
+                    bar.innerHTML = `
+                            <div class="trend-bar" style="height:${height}px;"></div>
+                            <span class="trend-label">${day.date.slice(5)}</span>
+                            <span class="trend-value">${day.total}</span>
+                        `;
+                    trendContainer.appendChild(bar);
+                });
             }
 
             // ============================================================
@@ -2719,7 +3806,8 @@
                                 tag: item.tag || "",
                                 stream: item.stream || "",
                                 logo: item.logo || "",
-                                desc: item.desc || ""
+                                desc: item.desc || "",
+                                useProxy: item.useProxy !== undefined ? item.useProxy : undefined
                             });
                             count++;
                         });
@@ -2750,6 +3838,8 @@
                 const stream = document.getElementById("formStream").value.trim();
                 const logo = document.getElementById("formLogo").value.trim();
                 const tag = document.getElementById("formTag").value.trim();
+                
+
                 if (!name || !stream) { showToast("名称和地址不能为空"); return; }
                 const newId = "auto_" + Date.now();
                 radioDataSource.push({
@@ -2760,7 +3850,8 @@
                     tag: tag || "自定义",
                     stream,
                     logo,
-                    desc: "手动添加"
+                    desc: "手动添加",
+                    
                 });
                 Storage.save("ansonradio_list", radioDataSource);
                 document.getElementById("addRadioModal").classList.remove("open");
@@ -2769,6 +3860,7 @@
                 document.getElementById("formStream").value = "";
                 document.getElementById("formLogo").value = "";
                 document.getElementById("formTag").value = "";
+                
                 renderStationList();
                 updateFavButtonState();
                 showToast("添加成功");
@@ -2802,12 +3894,11 @@
             function randomThemeColor() {
                 const idx = Math.floor(Math.random() * themeColors.length);
                 const color = themeColors[idx];
-                setThemeColor(color);    
-// showToast(`🎨 主题色已切换`, 1500);  // 已删除提示
+                setThemeColor(color);
             }
 
             // ============================================================
-            // 底部点击反馈（保留原逻辑，不改变）
+            // 底部点击反馈
             // ============================================================
             function addClickFeedback(btn) {
                 const color = themeColors[colorClickIndex % themeColors.length];
@@ -2853,42 +3944,32 @@
             // 事件绑定
             // ============================================================
             function bindEvents() {
-                // 搜索
                 document.getElementById('searchInput').addEventListener('input', renderStationList);
-
-                // 唱片点击播放/暂停
                 discWrapper.addEventListener('click', togglePlay);
-
-                // 播放器两侧
                 document.getElementById('prevBtn').addEventListener('click', prevStation);
                 document.getElementById('nextBtn').addEventListener('click', nextStation);
 
-                // 底部收藏按钮 - 收藏当前播放电台，图标变为实心主题色
                 const btnFav = document.getElementById('btnFav');
                 btnFav.addEventListener('click', function(e) {
                     addClickFeedback(this);
                     toggleFav();
                 });
 
-                // 上一曲
                 document.getElementById('btnPrev').addEventListener('click', function(e) {
                     addClickFeedback(this);
                     prevStation();
                 });
 
-                // 播放/暂停
                 document.getElementById('btnPlay').addEventListener('click', function(e) {
                     addClickFeedback(this);
                     togglePlay();
                 });
 
-                // 下一曲
                 document.getElementById('btnNext').addEventListener('click', function(e) {
                     addClickFeedback(this);
                     nextStation();
                 });
 
-                // 设置
                 document.getElementById('btnSettings').addEventListener('click', function(e) {
                     addClickFeedback(this);
                     document.getElementById('settingsModal').classList.add('open');
@@ -2915,9 +3996,13 @@
                     document.getElementById('settingsModal').classList.remove('open');
                     openManageModal();
                 });
+                document.getElementById('settingsProxyManage').addEventListener('click', () => {
+                    document.getElementById('settingsModal').classList.remove('open');
+                    openProxyManageModal();
+                });
                 document.getElementById('settingsSysInfo').addEventListener('click', () => {
                     document.getElementById('settingsModal').classList.remove('open');
-                    document.getElementById('sysInfoModal').classList.add('open');
+                    openSysInfoModal();
                 });
                 document.getElementById('settingsRandomColor').addEventListener('click', () => {
                     randomThemeColor();
@@ -2937,7 +4022,41 @@
                     if (e.target === e.currentTarget) document.getElementById('sysInfoModal').classList.remove('open');
                 });
 
-                // 主题切换
+                // 代理管理弹窗
+                document.getElementById('closeProxyManage').addEventListener('click', closeProxyManageModal);
+                document.getElementById('proxyManageModal').addEventListener('click', (e) => {
+                    if (e.target === e.currentTarget) closeProxyManageModal();
+                });
+                
+                // 代理管理 - 搜索
+                document.getElementById('proxySearchInput').addEventListener('input', renderProxyManageList);
+
+                // 代理管理 - 筛选按钮（4个）
+                document.querySelectorAll('.proxy-filter-btn').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        document.querySelectorAll('.proxy-filter-btn').forEach(b => b.classList.remove('active'));
+                        this.classList.add('active');
+                        renderProxyManageList();
+                    });
+                });
+
+                // 批量操作
+                document.getElementById('proxyBatchEnable').addEventListener('click', () => proxyBatchAction('enable'));
+                document.getElementById('proxyBatchDisable').addEventListener('click', () => proxyBatchAction('disable'));
+                document.getElementById('proxyBatchAuto').addEventListener('click', () => proxyBatchAction('auto'));
+
+                // 规则配置
+                document.getElementById('proxyRulesToggle').addEventListener('click', function() {
+                    const panel = document.getElementById('proxyRulesPanel');
+                    panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+                    this.querySelector('i').className = panel.style.display === 'none' ?
+                        'fa-solid fa-chevron-right' : 'fa-solid fa-chevron-down';
+                });
+                document.getElementById('saveProxyRules').addEventListener('click', saveRulesFromUI);
+
+                // 系统信息中的今日更新
+                document.getElementById('refreshStats').addEventListener('click', renderSysInfo);
+
                 document.getElementById('themeToggle').addEventListener('click', (e) => {
                     e.stopPropagation();
                     document.getElementById('themePicker').classList.toggle('open');
@@ -2953,14 +4072,12 @@
                     });
                 });
 
-                // 明暗模式
                 document.getElementById('darkModeToggle').addEventListener('click', function() {
                     document.body.classList.toggle('light-mode');
                     const mode = document.body.classList.contains('light-mode') ? 'light' : 'dark';
                     Storage.save("ansonradio_theme", mode);
                 });
 
-                // 新增电台弹窗
                 document.querySelectorAll('.closeModal').forEach(btn => {
                     btn.addEventListener('click', () => {
                         document.getElementById('addRadioModal').classList.remove('open');
@@ -2971,7 +4088,6 @@
                     if (e.target === e.currentTarget) document.getElementById('addRadioModal').classList.remove('open');
                 });
 
-                // 分类管理弹窗
                 document.getElementById('closeCategoryManage').addEventListener('click', function() {
                     document.getElementById('categoryManageModal').classList.remove('open');
                 });
@@ -2979,7 +4095,6 @@
                     if (e.target === e.currentTarget) this.classList.remove('open');
                 });
 
-                // 添加分类
                 document.getElementById('addCategoryBtn').addEventListener('click', function() {
                     const input = document.getElementById('newCategoryInput');
                     const name = input.value.trim();
@@ -2998,7 +4113,6 @@
                     }
                 });
 
-                // 导入弹窗
                 document.getElementById('importCancel').addEventListener('click', closeImportModal);
                 document.getElementById('importModal').addEventListener('click', (e) => {
                     if (e.target === e.currentTarget) closeImportModal();
@@ -3021,7 +4135,6 @@
                     }
                 });
 
-                // 管理弹窗
                 document.getElementById('closeManageModal').addEventListener('click', () => {
                     document.getElementById('manageModal').classList.remove('open');
                 });
@@ -3033,7 +4146,6 @@
                 });
                 document.getElementById('clearAllBtn').addEventListener('click', clearAllStations);
 
-                // 编辑弹窗
                 document.getElementById('closeEditModal').addEventListener('click', () => {
                     document.getElementById('editModal').classList.remove('open');
                 });
@@ -3042,7 +4154,6 @@
                 });
                 document.getElementById('saveEditRadio').addEventListener('click', saveEditRadio);
 
-                // 键盘空格
                 document.addEventListener('keydown', (e) => {
                     if (e.target.tagName === 'INPUT') return;
                     if (e.key === ' ' || e.key === 'Space') {
@@ -3065,6 +4176,10 @@
                 renderCategoryTabs();
                 renderStationList();
                 bindEvents();
+
+                // 渲染规则配置（默认）
+                renderProxyRules();
+
                 nowPlaying.textContent = "未播放";
                 updatePlayButtonState();
                 updateFavButtonState();
