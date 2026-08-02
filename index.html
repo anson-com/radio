@@ -1,4 +1,3019 @@
-            function renderStationList() {
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>AnsonFM</title>
+    <link href="https://fonts.googleapis.com/css2?family=Lobster&family=Pacifico&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        if (typeof Promise !== 'undefined' && typeof Symbol !== 'undefined') {
+            document.write('<script src="https://cdn.jsdelivr.net/npm/hls.js@latest"><\/script>');
+        } else {
+            document.write('<script src="https://cdn.jsdelivr.net/npm/hls.js@0.14.17/dist/hls.min.js"><\/script>');
+        }
+    </script>
+    <style>
+        /* ===== 全局 ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        :root {
+            --primary: #7c8dff;
+            --primary-light: #8e9dff;
+            --primary-dark: #5a6be0;
+            --primary-glow: rgba(124, 141, 255, 0.5);
+            --primary-soft: rgba(124, 141, 255, 0.12);
+            --primary-border: rgba(124, 141, 255, 0.25);
+            --bg-body: radial-gradient(circle at 20% 30%, #1a1f2e, #0b0d14);
+            --bg-card: rgba(255, 255, 255, 0.06);
+            --text-primary: rgba(255, 255, 255, 0.92);
+            --text-secondary: rgba(255, 255, 255, 0.66);
+            --text-weak: rgba(255, 255, 255, 0.40);
+            --border-line: rgba(255, 255, 255, 0.09);
+            --radius-sm: 8px;
+            --radius-md: 30px;
+            --radius-lg: 48px;
+            --gap-xs: 6px;
+            --gap-sm: 12px;
+            --gap-md: 18px;
+            --gap-lg: 24px;
+        }
+
+        body.light-mode {
+            --bg-body: #f4f6fc;
+            --bg-card: rgba(255, 255, 255, 0.85);
+            --text-primary: #181c2c;
+            --text-secondary: #444860;
+            --text-weak: #868aa0;
+            --border-line: rgba(0, 0, 0, 0.10);
+        }
+
+        /* 浅色模式弹窗适配 */
+        body.light-mode .modal-box {
+            background: #ffffff;
+            border-color: rgba(0, 0, 0, 0.10);
+            color: #181c2c;
+        }
+        body.light-mode .modal-box .form-row label {
+            color: #444860;
+        }
+        body.light-mode .modal-box .form-row input {
+            background: #f0f2f6;
+            border-color: rgba(0, 0, 0, 0.12);
+            color: #181c2c;
+        }
+        body.light-mode .modal-box .form-row input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(124, 141, 255, 0.20);
+        }
+        body.light-mode .modal-box .form-row input::placeholder {
+            color: #a0a4b8;
+        }
+        body.light-mode .modal-list .manage-item {
+            border-bottom-color: rgba(0, 0, 0, 0.06);
+        }
+        body.light-mode .modal-list .manage-item .name {
+            color: #181c2c;
+        }
+        body.light-mode .import-options .import-btn-option {
+            background: rgba(0, 0, 0, 0.02);
+            border-color: rgba(0, 0, 0, 0.08);
+        }
+        body.light-mode .import-options .import-btn-option:hover {
+            background: rgba(124, 141, 255, 0.08);
+            border-color: rgba(124, 141, 255, 0.25);
+        }
+        body.light-mode .import-options .import-btn-option .text .title {
+            color: #181c2c;
+        }
+        body.light-mode .import-options .import-btn-option .text .desc {
+            color: #868aa0;
+        }
+        body.light-mode .settings-item {
+            background: rgba(0, 0, 0, 0.02);
+            border-color: rgba(0, 0, 0, 0.06);
+            color: #181c2c;
+        }
+        body.light-mode .settings-item:hover {
+            background: rgba(124, 141, 255, 0.08);
+            border-color: rgba(124, 141, 255, 0.20);
+        }
+        body.light-mode .settings-item .info .desc {
+            color: #868aa0;
+        }
+        body.light-mode .settings-item .arrow {
+            color: #a0a4b8;
+        }
+        body.light-mode .modal-search-box input {
+            background: #f0f2f6;
+            border-color: rgba(0, 0, 0, 0.10);
+            color: #181c2c;
+        }
+        body.light-mode .modal-search-box input::placeholder {
+            color: #a0a4b8;
+        }
+        body.light-mode .modal-search-box input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(124, 141, 255, 0.20);
+        }
+        body.light-mode .edit-form .form-row input {
+            background: #f0f2f6;
+            border-color: rgba(0, 0, 0, 0.10);
+            color: #181c2c;
+        }
+        body.light-mode .edit-form .form-row input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(124, 141, 255, 0.20);
+        }
+        body.light-mode .edit-form .form-row label {
+            color: #444860;
+        }
+        body.light-mode .btn-line {
+            color: #444860;
+            border-color: rgba(0, 0, 0, 0.10);
+        }
+        body.light-mode .btn-line:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+            background: rgba(124, 141, 255, 0.08);
+        }
+        body.light-mode .btn-line.btn-clear {
+            color: #e74c3c;
+            border-color: rgba(231, 76, 60, 0.25);
+            background: rgba(231, 76, 60, 0.05);
+        }
+        body.light-mode .btn-line.btn-clear:hover {
+            background: rgba(231, 76, 60, 0.12);
+            border-color: #e74c3c;
+            color: #c0392b;
+        }
+        body.light-mode .modal-box h3 {
+            color: #181c2c;
+        }
+        body.light-mode .sys-info .info-row {
+            border-bottom-color: rgba(0, 0, 0, 0.06);
+        }
+        body.light-mode .sys-info .info-row .label {
+            color: #868aa0;
+        }
+        body.light-mode .sys-info .info-row .value {
+            color: #181c2c;
+        }
+        body.light-mode .sys-info .info-row .value.copyright {
+            color: var(--primary);
+        }
+
+        body.light-mode .btn-skip-disc {
+            background: rgba(0, 0, 0, 0.06);
+            border-color: rgba(0, 0, 0, 0.12);
+            color: var(--text-primary);
+        }
+        @media (hover: hover) {
+            body.light-mode .btn-skip-disc:hover {
+                background: rgba(0, 0, 0, 0.10);
+                color: var(--primary);
+                border-color: var(--primary-border);
+            }
+        }
+        body.light-mode .btn-skip-disc:active {
+            transform: scale(0.92);
+            color: var(--primary);
+            border-color: var(--primary-border);
+            background: rgba(0, 0, 0, 0.15);
+        }
+
+        body {
+            background: var(--bg-body);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            transition: background 0.4s ease;
+            overscroll-behavior: none;
+        }
+
+        ::-webkit-scrollbar {
+            width: 4px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 99px;
+        }
+
+        .radio-app {
+            width: 100%;
+            max-width: 560px;
+            background: var(--bg-card);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border-radius: var(--radius-lg);
+            padding: 24px 22px 30px;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+            border: 1px solid var(--border-line);
+            transition: background 0.3s ease, color 0.3s ease;
+            position: relative;
+            height: 96vh;
+            max-height: 96vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* ===== 顶部搜索栏 ===== */
+        .search-header {
+            flex-shrink: 0;
+            margin-bottom: 31px;
+            width: 100%;
+            position: relative;
+        }
+
+               .search-clear-btn {
+            background: none;
+            border: none;
+            color: var(--text-weak);        /* 默认弱灰色，随主题变化 */
+            cursor: pointer;
+            font-size: 22px;
+            padding: 0px;
+            border-radius: 50%;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            width: 36px;
+            height: 36px;
+        }
+        .search-clear-btn:hover {
+            color: var(--primary);           /* 悬浮时变为主题色 */
+            background: var(--primary-soft);
+        }
+        .search-clear-btn:active {
+            transform: scale(0.9);
+        }
+
+        .search-container {
+            display: flex;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-line);
+            border-radius: 30px;
+            padding: 4px 6px 4px 16px;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+            gap: 6px;
+            min-height: 44px;
+        }
+        .search-container:focus-within {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px var(--primary-soft);
+        }
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 2px;
+            flex-shrink: 0;
+            color: var(--primary);
+            font-size: 21px;
+            font-weight: 600;
+            letter-spacing: 0.3px;
+            white-space: nowrap;
+            text-shadow: 0 0 10px var(--primary-glow), 0 0 60px var(--primary-soft);
+            user-select: none;
+        }
+        .brand .brand-icon {
+            font-size: 18px;
+        }
+        .search-container .search-input {
+            flex: 1;
+            min-width: 60px;
+            border: none;
+            background: transparent;
+            color: var(--text-primary);
+            font-size: 14px;
+            padding: 6px 4px;
+            outline: none;
+            height: 36px;
+        }
+        .search-container .search-input::placeholder {
+            color: var(--text-weak);
+            font-weight: 400;
+        }
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            flex-shrink: 0;
+        }
+        .header-actions .icon-btn {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 50%;
+            width: 34px;
+            height: 34px;
+            font-size: 20px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-secondary);
+            line-height: 1;
+            padding: 0;
+            outline: none !important;
+            -webkit-tap-highlight-color: transparent !important;
+        }
+        .header-actions .icon-btn:hover {
+            background: var(--primary-soft);
+            border-color: var(--primary);
+            color: var(--primary);
+            transform: scale(1.05);
+        }
+        .header-actions .icon-btn:active {
+            background: var(--primary-soft);
+            transform: scale(0.92);
+        }
+        .header-actions .icon-btn.active-mode {
+            background: var(--primary-soft);
+            color: var(--primary);
+        }
+        .theme-picker {
+            display: none;
+            position: absolute;
+            right: 0;
+            top: 54px;
+            background: var(--bg-card);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            padding: 12px 16px;
+            border-radius: 24px;
+            border: 1px solid var(--border-line);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+            z-index: 100;
+            gap: 10px;
+            flex-wrap: wrap;
+            width: 176px;
+            justify-content: center;
+        }
+        .theme-picker.open {
+            display: flex;
+        }
+        .color-dot {
+            width: 34px;
+            height: 34px;
+            border-radius: 34px;
+            border: 2px solid transparent;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .color-dot:hover {
+            transform: scale(1.12);
+        }
+        .color-dot.active {
+            border-color: #fff;
+            box-shadow: 0 0 16px rgba(255, 255, 255, 0.2);
+        }
+
+        /* ===== 播放器展示区 ===== */
+        .player-display {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            flex-shrink: 0;
+            margin-bottom: 18px;
+            min-height: 200px;
+        }
+        .player-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 41px;
+            width: 100%;
+        }
+        .disc-wrapper {
+            position: relative;
+            width: 160px;
+            height: 160px;
+            flex-shrink: 0;
+            cursor: pointer;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .disc-wrapper:active {
+            transform: scale(0.96);
+            transition: transform 0.1s ease;
+        }
+        .disc {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: radial-gradient(circle at 35% 35%, #3c4055, #171a26);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6), inset 0 -4px 8px rgba(0, 0, 0, 0.6);
+            transition: box-shadow 0.4s ease;
+            pointer-events: none;
+        }
+        .disc-inner {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 40% 40%, #727a9e, #2a2f42);
+            box-shadow: inset 0 0 0 4px #1c1f2b, 0 0 0 6px rgba(255, 255, 255, 0.03);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 36px;
+            color: rgba(255, 255, 255, 0.2);
+            transition: all 0.5s ease;
+            pointer-events: none;
+            user-select: none;
+        }
+        .disc-wrapper.playing .disc {
+            box-shadow: 0 12px 60px var(--primary-glow), 0 0 100px rgba(124, 141, 255, 0.12);
+        }
+        .disc-wrapper.playing .disc-inner {
+            animation: spin 8s linear infinite;
+            color: #fff;
+            text-shadow: 0 0 20px var(--primary);
+        }
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        .btn-skip-disc {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--border-line);
+            border-radius: 50%;
+            width: 48px;
+            height: 48px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-secondary);
+            flex-shrink: 0;
+            backdrop-filter: blur(8px);
+            -webkit-tap-highlight-color: transparent;
+        }
+        .btn-skip-disc:hover {
+            color: #fff;
+            background: rgba(255, 255, 255, 0.08);
+            border-color: var(--primary-border);
+        }
+        .btn-skip-disc:active {
+            transform: scale(0.92);
+            color: var(--primary);
+            border-color: var(--primary-border);
+            background: rgba(255, 255, 255, 0.08);
+        }
+        .btn-skip-disc svg {
+            width: 24px;
+            height: 24px;
+            fill: currentColor;
+            display: block;
+        }
+        .now-playing-wrapper {
+            position: relative;
+            display: inline-block;
+            margin-top: 12px;
+            margin-bottom: 12px;
+            width: auto;
+            max-width: 100%;
+        }
+        .now-playing {
+            font-size: 20px;
+            font-weight: 600;
+            text-align: center;
+            color: var(--primary);
+            text-shadow: 0 0 20px var(--primary-glow);
+            font-family: 'Dancing Script', cursive;
+            display: block;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 100%;
+            padding: 0 4px;
+        }
+
+        /* ===== Toast ===== */
+        .toast {
+            position: fixed;
+            left: 50%;
+            top: 40px;
+            transform: translateX(-50%);
+            background: var(--bg-card);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            padding: 10px 24px;
+            border-radius: 99px;
+            border: 1px solid var(--border-line);
+            color: var(--text-primary);
+            z-index: 9999;
+            display: none;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+            font-size: 14px;
+            font-weight: 500;
+            transition: background 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+            text-align: center;
+            max-width: 90%;
+        }
+        .toast.error {
+            color: var(--primary);
+            border-color: var(--primary-border);
+            box-shadow: 0 8px 24px var(--primary-glow), inset 0 0 30px var(--primary-soft);
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.05);
+        }
+
+        /* ===== 功能栏（分类菜单） ===== */
+        .function-bar {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 0px;
+            flex-shrink: 0;
+        }
+        .category-tabs {
+            display: flex;
+            gap: 6px;
+            overflow-x: auto;
+            overflow-y: hidden;
+            padding: 2px 0 6px 0;
+            scrollbar-width: none;
+            -webkit-overflow-scrolling: touch;
+            flex-wrap: nowrap;
+            justify-content: flex-start;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .category-tabs::-webkit-scrollbar {
+            display: none;
+        }
+        .category-tab {
+            flex: 0 0 auto;
+            text-align: center;
+            padding: 6px 14px;
+            border-radius: 30px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--border-line);
+            color: var(--text-secondary);
+            font-size: 13px;
+            white-space: nowrap;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            -webkit-tap-highlight-color: transparent !important;
+            -webkit-touch-callout: none;
+            outline: none !important;
+            user-select: none;
+        }
+        .category-tab:active {
+            transform: scale(0.94);
+        }
+        .category-tab.active {
+            background: var(--primary);
+            color: #fff;
+            border-color: var(--primary);
+            box-shadow: 0 4px 12px var(--primary-glow);
+        }
+        .category-tab:hover:not(.active) {
+            background: rgba(255, 255, 255, 0.06);
+            color: var(--text-primary);
+        }
+
+        /* ===== 电台列表 ===== */
+        .station-list-wrapper {
+            flex: 1 1 0;
+            overflow-y: auto;
+            margin-top: 4px;
+            padding-right: 0;
+            min-height: 0;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none !important;
+            -ms-overflow-style: none !important;
+        }
+        .station-list-wrapper::-webkit-scrollbar {
+            display: none !important;
+            width: 0 !important;
+            height: 0 !important;
+        }
+        .station-list {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px 8px;
+            padding: 4px 0px 0px 0px;
+        }
+
+        .station-item {
+            display: flex;
+            flex-direction: column;
+            background: var(--bg-card);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-radius: 16px;
+            border: 1px solid var(--border-line);
+            overflow: hidden;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            position: relative;
+            aspect-ratio: 3 / 2.38;
+        }
+        .station-item:hover {
+            transform: translateY(-4px);
+            border-color: var(--primary-border);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+        }
+        .station-item.active {
+            border-color: var(--primary);
+            box-shadow: 0 0 30px var(--primary-glow), inset 0 0 30px var(--primary-soft);
+            transform: translateY(-2px);
+        }
+        .station-item .cover {
+            position: relative;
+            flex: 1;
+            min-height: 0;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            justify-content: center;
+            padding: 12px;
+        }
+        .station-item .cover .gradient-mask {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.65) 0%, rgba(0,0,0,0.15) 55%, transparent 80%);
+            z-index: 1;
+            pointer-events: none;
+            border-radius: 0;
+        }
+        .station-item .cover .playing-dot {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--primary);
+            box-shadow: 0 0 20px var(--primary-glow), 0 0 60px var(--primary-glow);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: 3;
+            pointer-events: none;
+        }
+        .station-item.active .cover .playing-dot {
+            opacity: 1;
+        }
+        .station-item .cover .cover-info {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            justify-content: flex-start;
+            gap: 3px;
+            width: 100%;
+            padding: 8px 10px;
+            background: rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            pointer-events: none;
+            transition: background 0.3s ease;
+        }
+        .station-item .cover .cover-info .name {
+            font-weight: 600;
+            font-size: 14px;
+            color: #fff;
+            line-height: 1.3;
+            display: -webkit-box;
+            -webkit-line-clamp: 1;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            width: 100%;
+            text-shadow: 0 1px 4px rgba(0,0,0,0.3);
+        }
+        .station-item .cover .cover-info .city-tag {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-wrap: wrap;
+            width: 100%;
+        }
+        .station-item .cover .cover-info .city {
+            font-size: 11px;
+            color: rgba(255,255,255,0.85);
+            text-shadow: 0 1px 3px rgba(0,0,0,0.3);
+        }
+        .station-item .cover .cover-info .tag {
+            font-size: 10px;
+            color: #fff;
+            background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+            padding: 1px 10px;
+            border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.10);
+            text-shadow: 0 1px 3px rgba(0,0,0,0.2);
+        }
+
+        .station-item .actions {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding: 4px 12px 10px;
+            flex-shrink: 0;
+            border-top: none !important;
+            border: none !important;
+            gap: 12px;
+            opacity: 1 !important;
+            background: inherit;
+            background-image: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            margin-top: -1px;
+        }
+        .station-item .actions button {
+            position: relative;
+            z-index: 1;
+            background: none;
+            border: none;
+            color: rgba(255,255,255,0.9);
+            cursor: pointer;
+            font-size: 18px;
+            padding: 0;
+            border-radius: 50%;
+            transition: all 0.2s ease;
+            line-height: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+        }
+        .station-item .actions button:hover {
+            color: #fff;
+            background: rgba(255,255,255,0.15);
+            transform: scale(1.05);
+        }
+        .station-item .actions .del-btn {
+            color: rgba(255,255,255,0.6);
+            font-size: 13px;
+        }
+        .station-item .actions .del-btn:hover {
+            color: #ff6b6b;
+            background: rgba(255,0,0,0.2);
+        }
+        .station-item .actions .play-btn {
+            margin-right: auto;
+        }
+
+/* ===== 卡片收藏消息提示 ===== */
+.station-item .fav-message {
+    position: absolute;
+    inset: 0;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 25;
+    pointer-events: none;
+    border-radius: 16px;
+    background: rgba(0, 0, 0, 0.30);
+    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px);
+}
+.station-item .fav-message.show {
+    display: flex;
+}
+.station-item .fav-message .fav-msg-text {
+    background: rgba(0, 0, 0, 0.80);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    padding: 8px 24px;
+    border-radius: 30px;
+    color: #fff;
+    font-size: 16px;
+    font-weight: 500;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+}
+
+        body.light-mode .station-item .actions {
+            border-top: none !important;
+            border: none !important;
+            opacity: 1 !important;
+            background-image: linear-gradient(135deg, var(--primary), var(--primary-dark));
+        }
+        body.light-mode .station-item .actions button {
+            color: rgba(255,255,255,0.9);
+        }
+        body.light-mode .station-item .actions button:hover {
+            color: #fff;
+            background: rgba(255,255,255,0.2);
+        }
+        body.light-mode .station-item .actions .del-btn {
+            color: rgba(255,255,255,0.6);
+        }
+        body.light-mode .station-item .actions .del-btn:hover {
+            color: #ff6b6b;
+            background: rgba(255,0,0,0.15);
+        }
+
+        /* ===== 错误遮罩 ===== */
+        .station-item .error-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 20;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            background: rgba(0,0,0,0.55);
+            border-radius: 16px;
+        }
+        .station-item .error-overlay.show {
+            opacity: 1;
+        }
+        .station-item .error-overlay .error-toast {
+            background: var(--bg-card);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            padding: 10px 24px;
+            border-radius: 99px;
+            border: 1px solid var(--primary-border);
+            box-shadow: 0 8px 24px var(--primary-glow), inset 0 0 30px var(--primary-soft);
+            color: var(--primary);
+            text-shadow: 0 0 10px rgba(255,255,255,0.05);
+            font-size: 14px;
+            font-weight: 500;
+            text-align: center;
+            max-width: 85%;
+            line-height: 1.5;
+        }
+
+        .empty-state {
+            grid-column: 1 / -1;
+            text-align: center;
+            color: var(--text-weak);
+            padding: 60px 0;
+            font-size: 14px;
+        }
+
+        /* ===== 底部导航栏 ===== */
+        .bottom-actions {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.04);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--primary-border);
+            border-radius: 20px;
+            margin: 0px 0px 0px;
+            padding: 6px 4px 8px;
+            flex-shrink: 0;
+            gap: 0;
+            position: relative;
+            box-shadow: 0 12px 40px -10px var(--primary-glow);
+            transition: box-shadow 0.4s ease, border-color 0.4s ease;
+        }
+        .bottom-actions::after {
+            content: '';
+            position: absolute;
+            bottom: -12px;
+            left: -20px;
+            right: -20px;
+            height: 50px;
+            background: radial-gradient(ellipse at center bottom, var(--primary-glow), transparent 70%);
+            filter: blur(20px);
+            z-index: -1;
+            opacity: 0.6;
+            transition: opacity 0.4s ease;
+        }
+        body.light-mode .bottom-actions::after {
+            opacity: 0.3;
+        }
+        .bottom-actions .btn-action {
+            background: transparent;
+            border: none;
+            padding: 4px 0 2px 0;
+            border-radius: 16px;
+            color: var(--text-weak);
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+            flex: 1;
+            text-align: center;
+            position: relative;
+            min-height: 52px;
+            justify-content: center;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+        }
+        .bottom-actions .btn-action i {
+            font-size: 24px;
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), color 0.25s ease;
+        }
+        .bottom-actions .btn-action span {
+            font-size: 11px;
+            font-weight: 500;
+            letter-spacing: 0.3px;
+            opacity: 0.75;
+            transition: opacity 0.25s ease, color 0.25s ease;
+        }
+        .bottom-actions .btn-action:hover {
+            color: var(--primary);
+            background: transparent;
+            transform: translateY(-1px);
+        }
+        .bottom-actions .btn-action:hover i,
+        .bottom-actions .btn-action:hover span {
+            color: var(--primary);
+        }
+        .bottom-actions .btn-action:hover i {
+            transform: scale(1.08);
+        }
+        .bottom-actions .btn-action.clicked {
+            animation: btnTapPop 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+        .bottom-actions .btn-action.clicked i {
+            animation: iconPop 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+        .bottom-actions .btn-action.clicked span {
+            animation: textPop 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+        @keyframes btnTapPop {
+            0% { transform: scale(1); }
+            30% { transform: scale(0.92); background: var(--primary-soft); }
+            70% { transform: scale(1.05); }
+            100% { transform: scale(1); background: transparent; }
+        }
+        @keyframes iconPop {
+            0% { transform: scale(1); }
+            30% { transform: scale(0.85); color: var(--primary); }
+            70% { transform: scale(1.15); color: var(--primary); }
+            100% { transform: scale(1); color: var(--text-weak); }
+        }
+        @keyframes textPop {
+            0% { opacity: 0.75; }
+            30% { opacity: 0.4; }
+            70% { opacity: 1; color: var(--primary); }
+            100% { opacity: 0.75; color: var(--text-weak); }
+        }
+
+        .bottom-actions .btn-action.active-fav {
+            color: var(--primary);
+        }
+        .bottom-actions .btn-action.active-fav i {
+            transform: scale(1.1);
+            color: var(--primary);
+        }
+        .bottom-actions .btn-action.active-fav span {
+            color: var(--primary);
+            opacity: 1;
+        }
+        .bottom-actions .btn-action.active-fav::after {
+    content: none;  /* 改为 none */
+    position: absolute;
+    bottom: 1px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 16px;
+    height: 3px;
+    background: var(--primary);
+    border-radius: 3px;
+    box-shadow: 0 0 12px var(--primary-glow);
+    transition: all 0.3s ease;
+}
+
+        /* ===== 代理管理弹窗 ===== */
+        #proxyManageModal .modal-box {
+            max-height: 85vh;
+            min-height: 60vh;
+        }
+
+        /* 顶部区域 */
+        .proxy-manage-header {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 12px;
+            flex-shrink: 0;
+        }
+
+        /* 搜索框 */
+        .proxy-search-box {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 12px;
+            border-radius: 20px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid var(--border-line);
+            transition: border-color 0.3s, box-shadow 0.3s;
+            width: 100%;
+        }
+        .proxy-search-box:focus-within {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px var(--primary-soft);
+        }
+        .proxy-search-box input::placeholder {
+            color: var(--text-weak);
+        }
+
+        /* 按钮行 - 横向滚动 */
+        .proxy-actions-scroll {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            overflow-x: auto;
+            overflow-y: hidden;
+            padding: 2px 0 4px 0;
+            scrollbar-width: thin;
+            -webkit-overflow-scrolling: touch;
+            flex-shrink: 0;
+            flex-wrap: nowrap;
+        }
+        .proxy-actions-scroll::-webkit-scrollbar {
+            height: 3px;
+        }
+        .proxy-actions-scroll::-webkit-scrollbar-thumb {
+            background: var(--text-weak);
+            border-radius: 99px;
+        }
+        .proxy-actions-scroll::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        /* 筛选按钮 */
+        .proxy-filter-btn {
+            padding: 3px 12px;
+            border-radius: 14px;
+            border: 1px solid var(--border-line);
+            background: transparent;
+            color: var(--text-secondary);
+            font-size: 11px;
+            cursor: pointer;
+            transition: all 0.2s;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+        .proxy-filter-btn:hover {
+            border-color: var(--primary);
+            color: var(--text-primary);
+            background: var(--primary-soft);
+        }
+        .proxy-filter-btn.active {
+            background: var(--primary);
+            color: #fff;
+            border-color: var(--primary);
+        }
+
+        /* 批量操作按钮 */
+        .proxy-batch-btn {
+            padding: 3px 12px;
+            border-radius: 14px;
+            border: 1px solid var(--border-line);
+            background: transparent;
+            color: var(--text-secondary);
+            font-size: 11px;
+            cursor: pointer;
+            transition: all 0.2s;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+        .proxy-batch-btn:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+            background: var(--primary-soft);
+        }
+        .proxy-batch-btn.primary {
+            background: var(--primary-soft);
+            border-color: var(--primary-border);
+            color: var(--primary);
+        }
+        .proxy-batch-btn.primary:hover {
+            background: var(--primary);
+            color: #fff;
+        }
+      
+
+        .proxy-manage-list {
+            flex: 1;
+            overflow-y: auto;
+            margin-bottom: 12px;
+            min-height: 200px;
+            -webkit-overflow-scrolling: touch;
+        }
+        .proxy-manage-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 8px;
+            border-bottom: 1px solid var(--border-line);
+            font-size: 13px;
+            flex-wrap: nowrap;
+            min-height: 36px;
+        }
+        .proxy-manage-item .proxy-item-name {
+            flex: 1;
+            min-width: 60px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            color: var(--text-primary);
+        }
+        .proxy-manage-item .proxy-item-status {
+            font-size: 11px;
+            padding: 1px 8px;
+            border-radius: 12px;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+        .proxy-manage-item .proxy-item-status.enabled {
+            color: #4ecdc4;
+            background: rgba(78, 205, 196, 0.15);
+        }
+        .proxy-manage-item .proxy-item-status.disabled {
+            color: var(--text-weak);
+            background: rgba(255,255,255,0.05);
+        }
+        .proxy-manage-item .proxy-item-status.auto {
+            color: #ffb347;
+            background: rgba(255, 180, 71, 0.15);
+        }
+        .proxy-manage-item .proxy-item-reason {
+            font-size: 10px;
+            padding: 1px 6px;
+            border-radius: 10px;
+            background: var(--primary-soft);
+            color: var(--primary);
+            white-space: nowrap;
+            flex-shrink: 0;
+            min-width: 28px;
+            text-align: center;
+        }
+        .proxy-manage-item .btn-proxy-switch {
+            background: none;
+            border: none;
+            color: var(--text-weak);
+            cursor: pointer;
+            font-size: 14px;
+            padding: 2px 6px;
+            border-radius: 50%;
+            transition: all 0.2s;
+            flex-shrink: 0;
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .proxy-manage-item .btn-proxy-switch:hover {
+            color: var(--primary);
+            background: var(--primary-soft);
+            transform: rotate(60deg);
+        }
+
+        /* ===== 规则配置面板 ===== */
+        .proxy-rules-toggle {
+            cursor: pointer;
+            padding: 6px 0;
+            color: var(--text-secondary);
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            user-select: none;
+            flex-shrink: 0;
+        }
+        .proxy-rules-toggle:hover {
+            color: var(--text-primary);
+        }
+        .proxy-rules-panel {
+            display: none;
+            padding: 10px 12px;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border-line);
+            background: rgba(255,255,255,0.02);
+            margin-bottom: 10px;
+            flex-shrink: 0;
+        }
+        .proxy-rules-panel .rule-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 3px 0;
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+        .proxy-rules-panel .rule-item input[type="checkbox"] {
+            width: 14px;
+            height: 14px;
+            accent-color: var(--primary);
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+        .proxy-rules-panel .rule-item .rule-label {
+            flex: 1;
+        }
+        .proxy-rules-panel .rule-item .rule-badge {
+            font-size: 9px;
+            padding: 1px 6px;
+            border-radius: 10px;
+            background: var(--primary-soft);
+            color: var(--primary);
+            white-space: nowrap;
+        }
+        .proxy-rules-panel .rule-save-btn {
+            margin-top: 6px;
+            padding: 3px 14px;
+            border-radius: 16px;
+            border: 1px solid var(--primary-border);
+            background: var(--primary-soft);
+            color: var(--primary);
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .proxy-rules-panel .rule-save-btn:hover {
+            background: var(--primary);
+            color: #fff;
+        }
+
+        /* ===== 系统信息弹窗 ===== */
+        #sysInfoModal .modal-box {
+            max-height: 85vh;
+        }
+        .sys-info-scroll {
+            flex: 1;
+            overflow-y: auto;
+            padding-right: 4px;
+            -webkit-overflow-scrolling: touch;
+        }
+        .sys-info-section {
+            margin-bottom: 14px;
+            padding: 12px 14px;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border-line);
+            background: rgba(255,255,255,0.02);
+        }
+        .sys-info-section:last-child {
+            margin-bottom: 0;
+        }
+        .sys-info-section .section-title {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 6px;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .sys-info-section .section-title .badge {
+            font-size: 10px;
+            padding: 0 8px;
+            border-radius: 10px;
+            background: var(--primary-soft);
+            color: var(--primary);
+            font-weight: 400;
+        }
+        .sys-info-section .info-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 2px 0;
+            font-size: 13px;
+        }
+        .sys-info-section .info-row .label {
+            color: var(--text-weak);
+        }
+        .sys-info-section .info-row .value {
+            color: var(--text-primary);
+        }
+        .sys-info-section .info-row .value.highlight {
+            color: var(--primary);
+            font-weight: 600;
+        }
+        .sys-info-section .info-row .value.dim {
+            color: var(--text-weak);
+            font-size: 12px;
+        }
+
+        .stat-categories {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px 10px;
+            padding-top: 4px;
+        }
+        .stat-cat-item {
+            font-size: 12px;
+            color: var(--text-secondary);
+            background: rgba(255,255,255,0.04);
+            padding: 1px 10px;
+            border-radius: 12px;
+            border: 1px solid var(--border-line);
+        }
+
+        .proxy-address {
+            font-size: 11px;
+            color: var(--text-weak);
+            word-break: break-all;
+            font-family: monospace;
+        }
+
+        .trend-container {
+            display: flex;
+            align-items: flex-end;
+            gap: 4px;
+            padding: 6px 0 2px 0;
+            height: 52px;
+        }
+        .trend-bar-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            flex: 1;
+            min-width: 0;
+        }
+        .trend-bar-item .trend-bar {
+            width: 100%;
+            max-width: 20px;
+            min-height: 2px;
+            background: var(--primary);
+            border-radius: 2px 2px 0 0;
+            transition: height 0.3s;
+            opacity: 0.7;
+        }
+        .trend-bar-item .trend-bar:hover {
+            opacity: 1;
+        }
+        .trend-bar-item .trend-label {
+            font-size: 8px;
+            color: var(--text-weak);
+            margin-top: 1px;
+            transform: scale(0.9);
+        }
+        .trend-bar-item .trend-value {
+            font-size: 8px;
+            color: var(--text-weak);
+            opacity: 0.6;
+        }
+
+        .stat-refresh-btn {
+            background: none;
+            border: none;
+            color: var(--text-weak);
+            cursor: pointer;
+            font-size: 12px;
+            padding: 2px 8px;
+            border-radius: 12px;
+            transition: all 0.2s;
+        }
+        .stat-refresh-btn:hover {
+            color: var(--primary);
+            background: var(--primary-soft);
+        }
+
+    
+        /* ===== 管理弹窗代理按钮 ===== */
+        .btn-proxy-toggle {
+            color: var(--text-weak);
+            transition: all 0.25s ease;
+            font-size: 14px;
+        }
+        .btn-proxy-toggle.active {
+            color: var(--primary);
+        }
+        .btn-proxy-toggle:hover {
+            color: var(--primary);
+            background: var(--primary-soft);
+            transform: scale(1.05);
+        }
+
+        /* ===== 设置面板新增入口 ===== */
+        .settings-item .icon .proxy-icon {
+            font-size: 20px;
+        }
+
+        /* ===== 移动端适配 ===== */
+        @media (max-width: 640px) {
+            .proxy-manage-item {
+                font-size: 12px;
+                padding: 5px 4px;
+                gap: 4px;
+                flex-wrap: wrap;
+            }
+            .proxy-manage-item .proxy-item-name {
+                min-width: 50px;
+                font-size: 12px;
+            }
+            .proxy-manage-item .proxy-item-status {
+                font-size: 10px;
+                padding: 0 6px;
+            }
+            .proxy-manage-item .proxy-item-reason {
+                font-size: 9px;
+                padding: 0 4px;
+                min-width: 20px;
+            }
+            .proxy-manage-item .btn-proxy-switch {
+                font-size: 12px;
+                width: 24px;
+                height: 24px;
+            }
+            .proxy-manage-header {
+                gap: 4px;
+            }
+            .proxy-manage-header select {
+                font-size: 11px;
+                height: 24px;
+                padding: 2px 6px;
+            }
+            .proxy-batch-actions button {
+                font-size: 10px;
+                height: 20px;
+                padding: 0 6px;
+            }
+            .proxy-rules-panel .rule-item {
+                font-size: 11px;
+            }
+            .sys-info-section .info-row {
+                font-size: 12px;
+            }
+            .stat-cat-item {
+                font-size: 11px;
+                padding: 0 8px;
+            }
+            .trend-container {
+                height: 40px;
+                gap: 2px;
+            }
+            .trend-bar-item .trend-label {
+                font-size: 7px;
+            }
+            .trend-bar-item .trend-value {
+                font-size: 7px;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .proxy-manage-item {
+                gap: 3px;
+            }
+            .proxy-manage-item .proxy-item-name {
+                font-size: 11px;
+                min-width: 40px;
+                max-width: 80px;
+            }
+            .proxy-manage-item .proxy-item-status {
+                font-size: 9px;
+                padding: 0 4px;
+            }
+            .proxy-manage-item .proxy-item-reason {
+                font-size: 8px;
+                min-width: 16px;
+                padding: 0 3px;
+            }
+            .proxy-batch-actions button {
+                font-size: 9px;
+                padding: 0 4px;
+            }
+        }
+
+        /* ===== 编辑弹窗 - 圆形代理开关 ===== */
+        .proxy-toggle-circle {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            border: 2px solid var(--text-weak);
+            transition: all 0.3s ease;
+            flex-shrink: 0;
+            background: transparent;
+        }
+        .proxy-toggle-circle i {
+            font-size: 14px;
+            color: var(--text-weak);
+            transition: all 0.3s ease;
+        }
+        .proxy-toggle-label input:checked + .proxy-toggle-circle {
+            border-color: var(--primary);
+            background: var(--primary-soft);
+        }
+        .proxy-toggle-label input:checked + .proxy-toggle-circle i {
+            color: var(--primary);
+        }
+        .proxy-toggle-label:hover .proxy-toggle-circle {
+            border-color: var(--primary);
+        }
+        .proxy-toggle-label:hover .proxy-toggle-circle i {
+            color: var(--primary);
+        }
+        /* ===== 弹窗通用 ===== */
+        .modal-mask {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(8px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 999;
+        }
+        .modal-mask.open {
+            display: flex;
+        }
+        .modal-box {
+            width: min(92%, 440px);
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            border-radius: var(--radius-lg);
+            padding: var(--gap-lg);
+            border: 1px solid var(--border-line);
+            box-shadow: 0 40px 80px rgba(0, 0, 0, 0.5);
+            max-height: 80vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* 设置面板专用样式 - 顶部无标题，保留间距 */
+        .settings-list {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            margin-bottom: 16px;
+            margin-top: 4px;
+        }
+        .settings-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 14px 18px;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border-line);
+            background: rgba(255,255,255,0.02);
+            cursor: pointer;
+            transition: all 0.25s ease;
+            color: var(--text-primary);
+        }
+        .settings-item:hover {
+            background: var(--primary-soft);
+            border-color: var(--primary-border);
+            transform: translateX(4px);
+        }
+        .settings-item .icon {
+            font-size: 24px;
+            width: 36px;
+            text-align: center;
+            color: var(--primary);
+        }
+        .settings-item .info .title {
+            font-size: 16px;
+            font-weight: 500;
+        }
+        .settings-item .info .desc {
+            font-size: 13px;
+            color: var(--text-weak);
+            margin-top: 2px;
+        }
+        .settings-item .arrow {
+            margin-left: auto;
+            color: var(--text-weak);
+        }
+
+        /* 管理弹窗搜索框 */
+        .modal-search-box {
+            margin-bottom: 12px;
+            flex-shrink: 0;
+        }
+        .modal-search-box input {
+            width: 100%;
+            padding: 8px 14px;
+            border-radius: 30px;
+            background: rgba(0, 0, 0, 0.15);
+            border: 1px solid var(--border-line);
+            color: var(--text-primary);
+            font-size: 13px;
+            outline: none;
+            transition: 0.2s;
+        }
+        .modal-search-box input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px var(--primary-soft);
+        }
+        .modal-search-box input::placeholder {
+            color: var(--text-weak);
+        }
+
+       .modal-list {
+    overflow-y: auto;
+    flex: 1;
+    margin-bottom: 14px;
+    -webkit-overflow-scrolling: touch;
+}
+        .modal-list .manage-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 10px;    
+            border-bottom: 1px solid var(--border-line); 
+        }
+        .modal-list .manage-item .name {
+            font-size: 14px;
+            flex: 1;
+            min-width: 0;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .modal-list .manage-item .actions {
+            display: flex;
+            gap: 4px;
+            flex-shrink: 0;
+            margin-left: 8px;
+        }
+        .modal-list .manage-item .actions button {
+            background: none;
+            border: none;
+            color: var(--text-weak);
+            cursor: pointer;
+            font-size: 14px;
+            padding: 4px;
+            border-radius: 20px;
+            transition: all 0.25s ease;
+            line-height: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+        }
+        .modal-list .manage-item .actions .btn-fav-manage {
+            color: var(--text-weak);
+        }
+        .modal-list .manage-item .actions .btn-fav-manage.active {
+            color: var(--primary);
+            text-shadow: 0 0 12px var(--primary-glow);
+        }
+        .modal-list .manage-item .actions .btn-fav-manage:hover {
+            color: var(--primary);
+            background: var(--primary-soft);
+            transform: scale(1.05);
+        }
+        .modal-list .manage-item .actions .btn-edit {
+            color: var(--text-weak);
+        }
+        .modal-list .manage-item .actions .btn-edit:hover {
+            color: var(--primary);
+            background: var(--primary-soft);
+            transform: scale(1.05);
+        }
+        .modal-list .manage-item .actions .btn-del {
+            color: var(--text-weak);
+        }
+        .modal-list .manage-item .actions .btn-del:hover {
+            color: var(--primary);
+            background: var(--primary-soft);
+            transform: scale(1.05);
+        }
+
+        .modal-footer {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+            flex-shrink: 0;
+            flex-wrap: wrap;
+        }
+        .btn-line {
+            padding: 8px 18px;
+            border-radius: 30px;
+            background: transparent;
+            border: 1px solid var(--border-line);
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: 0.2s;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .btn-line:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+            background: var(--primary-soft);
+        }
+        .btn-line.btn-clear {
+            color: #ff6b6b;
+            border-color: rgba(255, 107, 107, 0.3);
+            background: rgba(255, 0, 0, 0.06);
+        }
+        .btn-line.btn-clear:hover {
+            background: rgba(255, 0, 0, 0.12);
+            border-color: #ff6b6b;
+            color: #ff4757;
+        }
+
+        .btn-outline-theme {
+            padding: 8px 18px;
+            border-radius: 30px;
+            background: var(--primary-soft);
+            border: 1px solid var(--primary-border);
+            color: var(--primary);
+            cursor: pointer;
+            transition: all 0.25s ease;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .btn-outline-theme:hover {
+            background: var(--primary);
+            color: #fff;
+            border-color: var(--primary);
+            transform: translateY(-1px);
+        }
+        .btn-outline-theme:active {
+            transform: scale(0.96);
+        }
+
+        .modal-box .form-row input,
+        .edit-form .form-row input {
+            border-radius: 30px;
+        }
+        .edit-form .form-row {
+            margin-bottom: 12px;
+        }
+        .edit-form .form-row label {
+            display: block;
+            margin-bottom: 4px;
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+        .edit-form .form-row input {
+            width: 100%;
+            padding: 10px 14px;
+            background: rgba(0, 0, 0, 0.15);
+            border: 1px solid var(--border-line);
+            color: var(--text-primary);
+            outline: none;
+            font-size: 14px;
+            transition: 0.2s;
+        }
+        .edit-form .form-row input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px var(--primary-soft);
+        }
+
+        .import-options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            padding: 4px 0 16px;
+        }
+        .import-options .import-btn-option {
+            padding: 14px 20px;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border-line);
+            background: rgba(255, 255, 255, 0.03);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: left;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+        .import-options .import-btn-option:hover {
+            background: var(--primary-soft);
+            border-color: var(--primary-border);
+        }
+        .import-options .import-btn-option .icon {
+    font-size: 28px;
+    opacity: 0.8;
+    color: var(--primary);  /* 新增：随主题色变化 */
+    width: 36px;
+    text-align: center;
+}
+        .import-options .import-btn-option .text .title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        .import-options .import-btn-option .text .desc {
+            font-size: 13px;
+            color: var(--text-weak);
+            margin-top: 2px;
+        }
+
+        /* 系统信息样式 */
+        .sys-info {
+            padding: 12px 0;
+            color: var(--text-secondary);
+            line-height: 2.0;
+            text-align: center;
+        }
+        .sys-info .info-line {
+            padding: 6px 0;
+            color: var(--text-primary);
+            font-size: 15px;
+        }
+        .sys-info .info-line.copyright {
+            color: var(--primary);
+            font-weight: 600;
+            font-size: 17px;
+        }
+        .sys-info .info-line.qq {
+            color: var(--text-secondary);
+        }
+
+        /* ===== 新增电台弹窗 - 独立样式 ===== */
+        #addRadioModal.modal-mask {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 999;
+        }
+        #addRadioModal.modal-mask.open {
+            display: flex;
+        }
+
+        #addRadioModal .modal-box {
+            width: min(92%, 440px);
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: var(--radius-lg);
+            padding: var(--gap-lg);
+            border: 1px solid var(--border-line);
+            box-shadow: 0 40px 80px rgba(0, 0, 0, 0.5);
+            max-height: 80vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        #addRadioModal .form-row {
+            margin-bottom: 12px;
+            width: 100%;
+        }
+        #addRadioModal .form-row:last-child {
+            margin-bottom: 16px;
+        }
+        #addRadioModal .form-row label {
+            display: block;
+            margin-bottom: 4px;
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+        #addRadioModal .form-row input {
+            width: 100%;
+            padding: 10px 14px;
+            background: rgba(0, 0, 0, 0.15);
+            border: 1px solid var(--border-line);
+            border-radius: 30px;
+            color: var(--text-primary);
+            font-size: 14px;
+            outline: none;
+            transition: all 0.25s ease;
+        }
+        #addRadioModal .form-row input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px var(--primary-soft);
+        }
+        #addRadioModal .form-row input::placeholder {
+            color: var(--text-weak);
+        }
+
+        #addRadioModal .modal-footer {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+            flex-shrink: 0;
+        }
+
+        body.light-mode #addRadioModal .modal-box {
+            background: #ffffff;
+            border-color: rgba(0, 0, 0, 0.10);
+        }
+        body.light-mode #addRadioModal .form-row label {
+            color: #444860;
+        }
+        body.light-mode #addRadioModal .form-row input {
+            background: #f0f2f6;
+            border-color: rgba(0, 0, 0, 0.12);
+            color: #181c2c;
+        }
+        body.light-mode #addRadioModal .form-row input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(124, 141, 255, 0.20);
+        }
+        body.light-mode #addRadioModal .form-row input::placeholder {
+            color: #a0a4b8;
+        }
+
+        /* ===== 分类管理弹窗 ===== */
+        #categoryManageModal .modal-box {
+            width: min(92%, 440px);
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: var(--radius-lg);
+            padding: var(--gap-lg);
+            border: 1px solid var(--border-line);
+            box-shadow: 0 40px 80px rgba(0, 0, 0, 0.5);
+            max-height: 80vh;
+            display: flex;
+            flex-direction: column;
+        }
+        .category-manage-header {
+            margin-bottom: 12px;
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .category-add-row {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+        .category-add-row input {
+            flex: 1;
+            padding: 8px 14px;
+            border-radius: 30px;
+            background: rgba(0, 0, 0, 0.15);
+            border: 1px solid var(--border-line);
+            color: var(--text-primary);
+            outline: none;
+            font-size: 14px;
+            transition: 0.2s;
+        }
+        .category-add-row input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px var(--primary-soft);
+        }
+        .category-add-row input::placeholder {
+            color: var(--text-weak);
+        }
+
+        body.light-mode #categoryManageModal .modal-box {
+            background: #ffffff;
+            border-color: rgba(0, 0, 0, 0.10);
+            color: #181c2c;
+        }
+        body.light-mode .category-add-row input {
+            background: #f0f2f6;
+            border-color: rgba(0, 0, 0, 0.10);
+            color: #181c2c;
+        }
+        body.light-mode .category-add-row input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(124, 141, 255, 0.20);
+        }
+
+/* 分类管理弹窗内，最后一个分类项去掉底边框，消除与输入框之间的分割线 */
+#categoryManageList .manage-item:last-child {
+    border-bottom: none;
+}
+
+        /* ===== 移动端适配 ===== */
+        @media (max-width: 640px) {
+            body { padding: 0; overscroll-behavior: none; }
+            .radio-app {
+                width: 100%; max-width: 100%; height: 100vh; max-height: 100vh;
+                border-radius: 32px; box-shadow: none; border: none;
+                padding-top: max(16px, env(safe-area-inset-top));
+                padding-bottom: max(16px, env(safe-area-inset-bottom));
+                padding-left: max(12px, env(safe-area-inset-left));
+                padding-right: max(12px, env(safe-area-inset-right));
+            }
+            .search-header { margin-bottom: 31px; }
+            .search-container { padding: 2px 4px 2px 12px; min-height: 38px; border-radius: 24px; }
+            .brand { font-size: 18px; gap: 2px; }
+            .brand .brand-icon { font-size: 15px; }
+            .search-container .search-input { font-size: 13px; height: 32px; padding: 4px 2px; }
+            .header-actions .icon-btn { width: 28px; height: 28px; font-size: 18px; }
+            .theme-picker { right: -4px; top: 46px; width: 156px; padding: 10px 12px; }
+            .color-dot { width: 28px; height: 28px; }
+            .player-display { min-height: 170px; }
+            .btn-skip-disc { width: 40px; height: 40px; }
+            .btn-skip-disc svg { width: 18px; height: 18px; }
+            .player-row { gap: 22px; }
+            .now-playing-wrapper { margin-top: 14px; }
+            .now-playing { font-size: 18px; }
+            .toast { font-size: 12px; padding: 8px 18px; top: 30px; }
+            .category-tab { font-size: 12px; padding: 4px 12px; }
+            .station-list { grid-template-columns: repeat(3, 1fr); gap: 6px; padding: 4px 0 0 0; }
+            .station-item { border-radius: 10px; aspect-ratio: 3 / 2.38; }
+            .station-item .cover { padding: 6px; }
+            .station-item .cover .cover-info { padding: 4px 6px; gap: 1px; border-radius: 4px; }
+            .station-item .cover .cover-info .name { font-size: 12px; line-height: 1.2; -webkit-line-clamp: 1; }
+            .station-item .cover .cover-info .city { font-size: 10px; }
+            .station-item .cover .cover-info .tag { font-size: 9px; padding: 0 6px; border-radius: 12px; }
+            .station-item .cover .playing-dot { width: 6px; height: 6px; top: 6px; right: 6px; }
+            .station-item .actions { padding: 2px 6px 6px; gap: 8px; }
+            .station-item .actions button { font-size: 14px; padding: 0; width: 30px; height: 30px; }
+            .station-item .actions button i { font-size: 14px; }
+            .station-item .actions .del-btn { font-size: 10px; }
+            .station-item .error-overlay { border-radius: 10px; }
+            .station-item .error-overlay .error-toast { font-size: 12px; padding: 6px 16px; max-width: 90%; }
+            .bottom-actions { padding: 4px 2px 6px; border-radius: 16px; margin: 0px 0px -12px; box-shadow: 0 12px 30px -2px var(--primary-glow); }
+            .bottom-actions::after { bottom: -10px; left: -10px; right: -10px; height: 30px; filter: blur(15px); opacity: 0.5; }
+            .bottom-actions .btn-action { font-size: 12px; min-height: 44px; padding: 2px 0 0 0; }
+            .bottom-actions .btn-action i { font-size: 18px; }
+            .bottom-actions .btn-action span { font-size: 12px; }
+            .bottom-actions .btn-action.active-fav::after { width: 12px; height: 2px; bottom: 0px; }
+            .station-list-wrapper { scrollbar-width: none !important; -ms-overflow-style: none !important; }
+            .station-list-wrapper::-webkit-scrollbar { display: none !important; width: 0 !important; height: 0 !important; }
+        }
+
+        @media (orientation: landscape) and (max-height: 500px) {
+            body { padding: 0; overscroll-behavior: none; }
+            .radio-app { width: 100%; max-width: 100%; height: 100dvh; max-height: 100dvh; border-radius: 24px; box-shadow: none; border: none; padding-top: max(12px, env(safe-area-inset-top)); padding-bottom: max(12px, env(safe-area-inset-bottom)); padding-left: max(16px, env(safe-area-inset-left)); padding-right: max(16px, env(safe-area-inset-right)); justify-content: center; }
+            .function-bar, .station-list-wrapper, .bottom-actions { display: none !important; }
+            .player-display { min-height: auto; margin-bottom: 0; justify-content: center; }
+            .player-row { gap: 80px; }
+            .disc-wrapper { width: 260px; height: 260px; }
+            .disc-inner { width: 110px; height: 110px; font-size: 50px; }
+            .btn-skip-disc { width: 60px; height: 60px; }
+            .btn-skip-disc svg { width: 26px; height: 26px; }
+            .now-playing-wrapper { margin-top: 12px; }
+            .now-playing { font-size: 18px; }
+            .toast { font-size: 13px; padding: 6px 16px; top: 20px; }
+            .search-header { margin-bottom: 12px; }
+            .search-container { background: transparent !important; border: none !important; border-radius: 0 !important; padding: 4px 0; min-height: auto; justify-content: space-between; box-shadow: none !important; }
+            .brand { font-size: 20px; }
+            .search-container .search-input { display: none !important; }
+            .header-actions .icon-btn { width: 36px; height: 36px; font-size: 24px; }
+        }
+
+        @media (min-width: 641px) and (max-width: 1024px) {
+            body { padding: 0 !important; overflow: hidden; align-items: flex-start; justify-content: center; background: var(--bg-body); }
+            .radio-app { max-width: 100% !important; width: 100%; height: 100vh; max-height: 100vh; border-radius: 0 !important; padding: 20px 16px 0; box-shadow: none !important; border: none !important; display: flex; flex-direction: column; justify-content: flex-start; background: var(--bg-card); overflow: hidden; position: relative; }
+            .station-list-wrapper { flex: 1 1 auto; overflow-y: auto; min-height: 0; -webkit-overflow-scrolling: touch; }
+            .station-list { grid-template-columns: repeat(3, 1fr); gap: 8px; }
+            .bottom-actions { margin-top: 14px; flex-shrink: 0; padding-bottom: env(safe-area-inset-bottom, 12px); }
+            .now-playing { font-size: 19px; }
+            .category-tab { font-size: 12px; padding: 5px 12px; }
+            .bottom-actions .btn-action { font-size: 12px; padding: 6px 14px; }
+            .search-container { min-height: 44px; }
+        }
+
+        @media (min-width: 1025px) {
+            .station-list { grid-template-columns: repeat(3, 1fr); gap: 10px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== 主卡片 ===== -->
+    <div class="radio-app" id="app">
+
+        <!-- ===== 顶部搜索栏 ===== -->
+        <div class="search-header">
+            <div class="search-container">
+                <span class="brand">
+                    <svg width="32" height="32" viewBox="0 -40 256 296" xmlns="http://www.w3.org/2000/svg" style="display:block;">
+                        <path d="M 128 220 C 60 190, 30 120, 30 80 C 30 30, 70 10, 128 10 C 186 10, 226 30, 226 80 C 226 120, 196 190, 128 220 Z"
+                        fill="var(--primary, #7c8dff)" stroke="var(--primary, #7c8dff)" stroke-width="4"/>
+                        <path d="M100 40 L 40 -32" stroke="var(--primary, #7c8dff)" stroke-width="6" stroke-linecap="round"/>
+                        <path d="M156 40 L 216 -32" stroke="var(--primary, #7c8dff)" stroke-width="6" stroke-linecap="round"/>
+                        <circle cx="40" cy="-32" r="8" fill="var(--primary, #7c8dff)"/>
+                        <circle cx="216" cy="-32" r="8" fill="var(--primary, #7c8dff)"/>
+                        <ellipse cx="80" cy="124" rx="28" ry="34" fill="#ffffff" transform="rotate(-12 80 124)"/>
+                        <circle cx="84" cy="128" r="14" fill="#1a1a2e" transform="rotate(-12 84 128)"/>
+                        <circle cx="78" cy="120" r="5" fill="#ffffff" transform="rotate(-12 78 120)"/>
+                        <ellipse cx="176" cy="124" rx="28" ry="34" fill="#ffffff" transform="rotate(12 176 124)"/>
+                        <circle cx="172" cy="128" r="14" fill="#1a1a2e" transform="rotate(12 172 128)"/>
+                        <circle cx="166" cy="120" r="5" fill="#ffffff" transform="rotate(12 166 120)"/>
+                        <path d="M100 172 Q 128 190 156 178" stroke="#1a1a2e" stroke-width="8" stroke-linecap="round" fill="none"/>
+                    </svg>
+                    <span class="brand-name">AnsonFM</span>
+                </span>
+
+                <input type="text" class="search-input" id="searchInput" placeholder="搜索电台名称或城市..">
+
+<button class="search-clear-btn" id="searchClearBtn" title="清除搜索" style="display:none;">
+    <i class="fa-regular fa-circle-xmark"></i>
+</button>
+
+<div class="header-actions">
+    <button class="icon-btn" id="themeToggle" title="切换主题色">🎨</button>
+
+                    <button class="icon-btn" id="darkModeToggle" title="切换明暗">🌓</button>
+                    <div class="theme-picker" id="themePicker">
+                        <div class="color-dot active" style="background:#7c8dff;" data-color="#7c8dff"></div>
+                        <div class="color-dot" style="background:#ff6b6b;" data-color="#ff6b6b"></div>
+                        <div class="color-dot" style="background:#4ecdc4;" data-color="#4ecdc4"></div>
+                        <div class="color-dot" style="background:#ffb347;" data-color="#ffb347"></div>
+                        <div class="color-dot" style="background:#ff6b9d;" data-color="#ff6b9d"></div>
+                        <div class="color-dot" style="background:#4dabf7;" data-color="#4dabf7"></div>
+                        <div class="color-dot" style="background:#a855f7;" data-color="#a855f7"></div>
+                        <div class="color-dot" style="background:#34d399;" data-color="#34d399"></div>
+                        <div class="color-dot" style="background:#E86A17;" data-color="#E86A17"></div>
+                        <div class="color-dot" style="background:#D4AF37;" data-color="#D4AF37"></div>
+                        <div class="color-dot" style="background:#C0C0C0;" data-color="#C0C0C0"></div>
+                        <div class="color-dot" style="background:#003153;" data-color="#003153"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== 播放器展示区 ===== -->
+        <div class="player-display">
+            <div class="player-row">
+                <button class="btn-skip-disc" id="prevBtn" title="上一曲">
+                    <svg viewBox="0 0 24 24" width="24" height="24" style="display:block;">
+                        <path d="M18 4L6 12L18 20V4Z" fill="currentColor"/>
+                        <rect x="2" y="4" width="2" height="16" fill="currentColor"/>
+                    </svg>
+                </button>
+                <div class="disc-wrapper" id="discWrapper" role="button" tabindex="0" aria-label="播放/暂停">
+                    <div class="disc">
+                        <div class="disc-inner" id="discInner">♪</div>
+                    </div>
+                </div>
+                <button class="btn-skip-disc" id="nextBtn" title="下一曲">
+                    <svg viewBox="0 0 24 24" width="24" height="24" style="display:block;">
+                        <path d="M6 4L18 12L6 20V4Z" fill="currentColor"/>
+                        <rect x="20" y="4" width="2" height="16" fill="currentColor"/>
+                    </svg>
+                </button>
+            </div>
+            <div class="now-playing-wrapper">
+                <span class="now-playing" id="nowPlaying">未播放</span>
+            </div>
+        </div>
+
+        <!-- ===== 分类菜单 ===== -->
+        <div class="function-bar">
+            <div class="category-tabs" id="categoryTabs"></div>
+        </div>
+
+        <!-- ===== 电台列表 ===== -->
+        <div class="station-list-wrapper">
+            <div class="station-list" id="stationList"></div>
+        </div>
+
+        <!-- ===== 底部操作栏 ===== -->
+        <div class="bottom-actions">
+            <button class="btn-action" id="btnFav"><i class="fa-regular fa-heart"></i> <span>收藏</span></button>
+            <button class="btn-action" id="btnPrev"><i class="fa-solid fa-backward-step"></i> <span>上一曲</span></button>
+            <button class="btn-action" id="btnPlay"><i class="fa-solid fa-play"></i> <span>播放</span></button>
+            <button class="btn-action" id="btnNext"><i class="fa-solid fa-forward-step"></i> <span>下一曲</span></button>
+            <button class="btn-action" id="btnSettings"><i class="fa-solid fa-gear"></i> <span>设置</span></button>
+        </div>
+    </div>
+
+    <!-- ============================================================
+        弹窗区域
+    ============================================================ -->
+
+    <!-- 新增电台弹窗 -->
+    <div class="modal-mask" id="addRadioModal">
+        <div class="modal-box">
+            <div class="form-row">
+                <label>电台名称 *</label>
+                <input type="text" id="formName" placeholder="例如：广东新闻广播">
+            </div>
+            <div class="form-row">
+                <label>所属城市</label>
+                <input type="text" id="formCity" placeholder="例如：广州">
+            </div>
+            <div class="form-row">
+                <label>直播流地址 (m3u8 / mp3) *</label>
+                <input type="text" id="formStream" placeholder="http://...">
+            </div>
+            <div class="form-row">
+                <label>台标图片 URL（选填）</label>
+                <input type="text" id="formLogo" placeholder="https://...">
+            </div>
+                        <div class="form-row">
+                <label>分类标签</label>
+                <input type="text" id="formTag" placeholder="例如：广东 / 交通 / 音乐 / 新闻 / 国际">
+            </div>
+            <div class="modal-footer">
+                <button class="btn-outline-theme" id="saveRadio"><i class="fa-regular fa-floppy-disk"></i> 保存</button>
+                <button class="btn-outline-theme closeModal"><i class="fa-regular fa-circle-xmark"></i> 取消</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 导入弹窗 -->
+<div class="modal-mask" id="importModal">
+    <div class="modal-box">
+        <div class="import-options">
+            <div class="import-btn-option" id="importOverwrite">
+                <span class="icon"><i class="fa-solid fa-file-import"></i></span>
+                <div class="text">
+                    <div class="title">覆盖导入</div>
+                    <div class="desc">清空电台列表，用新数据完全替换</div>
+                </div>
+            </div>
+            <div class="import-btn-option" id="importAppend">
+                <span class="icon"><i class="fa-solid fa-file-circle-plus"></i></span>
+                <div class="text">
+                    <div class="title">追加导入</div>
+                    <div class="desc">追加到列表末尾，重复ID自动跳过</div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn-outline-theme" id="importCancel"><i class="fa-regular fa-circle-xmark"></i> 取消</button>
+        </div>
+    </div>
+</div>
+
+    <!-- 设置面板 -->
+    <div class="modal-mask" id="settingsModal">
+        <div class="modal-box">
+            <div class="settings-list">
+                <div class="settings-item" id="settingsAddRadio">
+                    <span class="icon"><i class="fa-solid fa-plus-circle"></i></span>
+                    <div class="info">
+                        <div class="title">新增电台</div>
+                        <div class="desc">手动添加新的电台</div>
+                    </div>
+                    <span class="arrow"><i class="fa-solid fa-chevron-right"></i></span>
+                </div>
+                <div class="settings-item" id="settingsImport">
+                    <span class="icon"><i class="fa-solid fa-file-import"></i></span>
+                    <div class="info">
+                        <div class="title">导入电台</div>
+                        <div class="desc">从 JSON 文件导入电台列表</div>
+                    </div>
+                    <span class="arrow"><i class="fa-solid fa-chevron-right"></i></span>
+                </div>
+                <div class="settings-item" id="settingsExport">
+                    <span class="icon"><i class="fa-solid fa-file-export"></i></span>
+                    <div class="info">
+                        <div class="title">导出电台</div>
+                        <div class="desc">将当前列表导出为 JSON 文件</div>
+                    </div>
+                    <span class="arrow"><i class="fa-solid fa-chevron-right"></i></span>
+                </div>
+                <div class="settings-item" id="settingsCategoryManage">
+                    <span class="icon"><i class="fa-solid fa-tags"></i></span>
+                    <div class="info">
+                        <div class="title">分类管理</div>
+                        <div class="desc">增加、删除、排序电台分类</div>
+                    </div>
+                    <span class="arrow"><i class="fa-solid fa-chevron-right"></i></span>
+                </div>
+                <div class="settings-item" id="settingsManage">
+                    <span class="icon"><i class="fa-solid fa-list"></i></span>
+                    <div class="info">
+                        <div class="title">电台管理</div>
+                        <div class="desc">编辑、删除、收藏电台</div>
+                    </div>
+                    <span class="arrow"><i class="fa-solid fa-chevron-right"></i></span>
+                </div>
+                <div class="settings-item" id="settingsProxyManage">
+                    <span class="icon"><i class="fa-solid fa-globe proxy-icon"></i></span>
+                    <div class="info">
+                        <div class="title">代理管理</div>
+                        <div class="desc">批量管理代理设置与规则</div>
+                    </div>
+                    <span class="arrow"><i class="fa-solid fa-chevron-right"></i></span>
+                </div>
+<div class="settings-item" id="settingsRandomColor">
+                    <span class="icon"><i class="fa-solid fa-dice"></i></span>
+                    <div class="info">
+                        <div class="title">主题切换</div>
+                        <div class="desc">从12种颜色中随机切换</div>
+                    </div>
+                    <span class="arrow"><i class="fa-solid fa-chevron-right"></i></span>
+                </div>
+
+                <div class="settings-item" id="settingsSysInfo">
+                    <span class="icon"><i class="fa-solid fa-circle-info"></i></span>
+                    <div class="info">
+                        <div class="title">系统信息</div>
+                        <div class="desc">版本、作者、联系方式</div>
+                    </div>
+                    <span class="arrow"><i class="fa-solid fa-chevron-right"></i></span>
+                </div>
+
+                
+
+            </div>
+            <div class="modal-footer">
+                <button class="btn-outline-theme" id="closeSettings"><i class="fa-regular fa-circle-xmark"></i> 关闭</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 管理弹窗 -->
+    <div class="modal-mask" id="manageModal">
+        <div class="modal-box">
+            <div class="modal-search-box">
+                <input id="manageSearchInput" placeholder="🔍 搜索电台名称...">
+            </div>
+            <div class="modal-list" id="manageList"></div>
+            <div class="modal-footer">
+                <button class="btn-line btn-clear" id="clearAllBtn"><i class="fa-regular fa-trash-can"></i> 清空</button>
+                <button class="btn-outline-theme" id="closeManageModal"><i class="fa-regular fa-circle-xmark"></i> 关闭</button>
+            </div>
+        </div>
+    </div>
+
+        <!-- 编辑弹窗 -->
+    <div class="modal-mask" id="editModal">
+        <div class="modal-box">
+            <div class="edit-form">
+                <div class="form-row">
+                    <label>电台 ID（不可修改）</label>
+                    <input type="text" id="editId" disabled style="opacity:0.5;cursor:not-allowed;">
+                </div>
+                <div class="form-row">
+                    <label>电台名称 *</label>
+                    <input type="text" id="editName" placeholder="电台名称">
+                </div>
+                <div class="form-row">
+                    <label>所属城市</label>
+                    <input type="text" id="editCity" placeholder="城市">
+                </div>
+                <div class="form-row">
+                    <label>分类标签</label>
+                    <input type="text" id="editTag" placeholder="例如：广东 / 全国 / 交通 / 音乐 / 新闻 / 国际">
+                </div>
+                <div class="form-row">
+                    <label>直播流地址 (m3u8 / mp3) *</label>
+                    <input type="text" id="editStream" placeholder="http://...">
+                </div>
+                <div class="form-row">
+                    <label>台标图片 URL（选填）</label>
+                    <input type="text" id="editLogo" placeholder="https://...">
+                </div>
+                
+                        <div class="modal-footer">
+                <button class="btn-outline-theme" id="saveEditRadio"><i class="fa-regular fa-floppy-disk"></i> 保存修改</button>
+                <button class="btn-outline-theme" id="closeEditModal"><i class="fa-regular fa-circle-xmark"></i> 取消</button>
+            </div>
+        </div>
+    </div>
+
+        <!-- 系统信息弹窗 -->
+    <div class="modal-mask" id="sysInfoModal">
+        <div class="modal-box">
+            <div class="sys-info-scroll">
+                <!-- 关于 -->
+                <div class="sys-info-section">
+                    <div class="section-title">📋 关于</div>
+                    <div class="info-row">
+                        <span class="label">版本</span>
+                        <span class="value highlight" id="sysVersion">AnsonFM 2026.2.1</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="label">作者</span>
+                        <span class="value" id="sysAuthor">Anson</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="label">联系 QQ</span>
+                        <span class="value" id="sysQQ">59253359</span>
+                    </div>
+                </div>
+
+                <!-- 电台统计 -->
+                <div class="sys-info-section">
+                    <div class="section-title">
+                        📻 电台统计
+                        <span class="badge" id="statTotal">0 个</span>
+                    </div>
+                    <div class="stat-categories" id="statCategories">
+                        <span style="color:var(--text-weak);font-size:12px;">加载中...</span>
+                    </div>
+                </div>
+
+                <!-- 代理信息 -->
+                <div class="sys-info-section">
+                    <div class="section-title">
+                        🌐 代理信息
+                        <button class="stat-refresh-btn" id="refreshStats" title="刷新统计"><i class="fa-solid fa-rotate"></i></button>
+                    </div>
+                    <div class="info-row">
+                        <span class="label">代理地址</span>
+                        <span class="value dim proxy-address" id="proxyAddress">https://m3u8.kowiwa11.workers.dev/</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="label">启用代理</span>
+                        <span class="value" id="proxyEnabledCount">0 个</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="label">今日请求</span>
+                        <span class="value" id="todayUsed">0</span>
+                        <span style="color:var(--text-weak);font-size:12px;">/ <span id="todayLimit">100,000</span></span>
+                        <span style="color:var(--text-weak);font-size:12px;margin-left:4px;">(<span id="todayPercent">0%</span>)</span>
+                    </div>
+                    <div class="trend-container" id="trendBars">
+                        <div style="width:100%;text-align:center;color:var(--text-weak);font-size:11px;">加载趋势数据...</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer" style="margin-top:12px;flex-shrink:0;">
+                <button class="btn-outline-theme" id="closeSysInfo"><i class="fa-regular fa-circle-xmark"></i> 关闭</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 代理管理弹窗 -->
+    <div class="modal-mask" id="proxyManageModal">
+        <div class="modal-box">
+                        <div class="proxy-manage-header">
+                <!-- 搜索框 -->
+                <div class="proxy-search-box">
+                    <i class="fa-solid fa-search" style="color:var(--text-weak);font-size:14px;"></i>
+                    <input type="text" id="proxySearchInput" placeholder="搜索电台名称..." style="flex:1;border:none;background:transparent;color:var(--text-primary);font-size:13px;outline:none;padding:4px 0;">
+                </div>
+                <!-- 所有按钮在一行，横向滚动 -->
+                <div class="proxy-actions-scroll">
+                    <button class="proxy-filter-btn active" data-filter="all">全部</button>
+                    <button class="proxy-filter-btn" data-filter="manual_on">手启全显</button>
+                    <button class="proxy-filter-btn" data-filter="manual_off">手关全显</button>
+                    <button class="proxy-filter-btn" data-filter="auto">自动全显</button>
+                    <button class="proxy-batch-btn" id="proxyBatchEnable">全启</button>
+                    <button class="proxy-batch-btn" id="proxyBatchDisable">全关</button>
+                    <button class="proxy-batch-btn" id="proxyBatchAuto">重置自动</button>
+                </div>
+            </div>
+
+            <div class="proxy-manage-list" id="proxyManageList">
+                <div style="text-align:center;color:var(--text-weak);padding:30px 0;">加载中...</div>
+            </div>
+
+            <!-- 规则配置 -->
+            <div class="proxy-rules-toggle" id="proxyRulesToggle">
+                <i class="fa-solid fa-chevron-down"></i> ⚙️ 自动代理规则配置
+            </div>
+            <div class="proxy-rules-panel" id="proxyRulesPanel">
+                
+<div class="rule-item">
+    <input type="checkbox" id="ruleProblematicDomains">
+    <span class="rule-label">高风险域名防盗链</span>
+    <span class="rule-badge">推荐开启</span>
+</div>
+<div class="rule-item">
+    <input type="checkbox" id="ruleAntiTheftParams">
+    <span class="rule-label">鉴权/时效性参数</span>
+    <span class="rule-badge">推荐开启</span>
+</div>
+<div class="rule-item">
+    <input type="checkbox" id="ruleIpDirect">
+    <span class="rule-label">IP直连/跨域风险</span>
+    <span class="rule-badge">推荐开启</span>
+</div>
+<div class="rule-item">
+    <input type="checkbox" id="ruleHttpMixed">
+    <span class="rule-label">HTTP明文协议/混合内容阻止</span>
+    <span class="rule-badge">推荐开启</span>
+</div>
+
+            </div>
+
+                        <div class="modal-footer">
+                <button class="btn-outline-theme" id="saveProxyRules"><i class="fa-regular fa-floppy-disk"></i> 保存配置</button>
+                <button class="btn-outline-theme" id="closeProxyManage"><i class="fa-regular fa-circle-xmark"></i> 关闭</button>
+            </div>
+        </div>
+    </div>
+   <!-- 分类管理弹窗 -->
+<div class="modal-mask" id="categoryManageModal">
+    <div class="modal-box">
+        <!-- 顶部标题已删除 -->
+        <div class="modal-list" id="categoryManageList"></div>
+        <!-- 输入框单独一行 -->
+        <div style="margin-bottom:12px;">
+            <input type="text" id="newCategoryInput" placeholder="新分类名称" style="width:100%; padding:8px 14px; border-radius:30px; background:rgba(0,0,0,0.15); border:1px solid var(--border-line); color:var(--text-primary); outline:none; font-size:14px;">
+        </div>
+        <!-- 底部按钮行：添加在左，关闭在右 -->
+        <div class="modal-footer">
+            <button class="btn-outline-theme" id="addCategoryBtn"><i class="fa-solid fa-plus"></i> 添加</button>
+            <button class="btn-outline-theme" id="closeCategoryManage"><i class="fa-regular fa-circle-xmark"></i> 关闭</button>
+        </div>
+    </div>
+</div>
+    <!-- Toast & 文件选择器 -->
+    <div class="toast" id="toast"></div>
+    <input type="file" accept=".json" id="fileSelector" style="display:none;">
+    <audio id="audioPlayer"></audio>
+
+    <script>
+        (function() {
+            "use strict";
+
+            // ============================================================
+            // 数据层
+            // ============================================================
+            let radioDataSource = [];
+            let favList = [];
+            let historyList = [];
+            let currentPlayingId = null;
+            let currentFilter = "cat_gd";
+            let volumeValue = 80;
+            let editingRadioId = null;
+            let errorTimer = null;
+            let cardError = null;
+            let cardErrorTimer = null;
+
+            const PROXY_RULES_KEY = "ansonradio_proxy_rules";
+            const PROXY_STATS_KEY = "ansonradio_proxy_stats";
+
+            // 12色主题色列表
+            const themeColors = [
+                "#7c8dff", "#ff6b6b", "#4ecdc4", "#ffb347", "#ff6b9d",
+                "#4dabf7", "#a855f7", "#34d399", "#E86A17", "#D4AF37",
+                "#C0C0C0", "#003153"
+            ];
+            let colorClickIndex = 0;
+
+            // 分类列表
+            let categoryList = [];
+            const CATEGORY_STORAGE_KEY = "ansonradio_categories";
+
+            const initRadioList = [
+                { "id": "test001", "name": "羊城交通广播", "area": "广东", "city": "广州", "tag": "交通",
+                    "stream": "http://live.xmcdn.com/live/248/64.m3u8", "logo": "", "desc": "广东羊城交通广播" },
+                { "id": "cnr1", "name": "中国之声", "area": "全国", "city": "北京", "tag": "全国",
+                    "stream": "http://satellitepull.cnr.cn/live/wxzgzs/playlist.m3u8", "logo": "",
+                    "desc": "中央人民广播电台中国之声" },
+                { "id": "cnr3", "name": "音乐之声", "area": "全国", "city": "北京", "tag": "音乐",
+                    "stream": "http://satellitepull.cnr.cn/live/wxyyzs/playlist.m3u8", "logo": "",
+                    "desc": "中央人民广播电台音乐之声" }
+            ];
+
+            const Storage = {
+                save(key, data) { localStorage.setItem(key, JSON.stringify(data)); },
+                load(key) { const s = localStorage.getItem(key); return s ? JSON.parse(s) : null; }
+            };
+
+            // ============================================================
+            // 代理规则配置
+            // ============================================================
+            const defaultRules = {
+                httpMixedContent: true,
+                problematicDomains: true,
+                antiTheftParams: true,
+                ipDirect: true
+            };
+
+            function getProxyRules() {
+                const saved = Storage.load(PROXY_RULES_KEY);
+                if (saved && typeof saved === 'object') {
+                    return { ...defaultRules, ...saved };
+                }
+                return { ...defaultRules };
+            }
+
+            function saveProxyRules(rules) {
+                Storage.save(PROXY_RULES_KEY, rules);
+            }
+
+            // ============================================================
+            // 代理统计
+            // ============================================================
+            function getTodayStr() {
+                return new Date().toISOString().split('T')[0];
+            }
+
+            function getProxyStats() {
+                return Storage.load(PROXY_STATS_KEY) || {};
+            }
+
+            function recordProxyUsage(radioId) {
+                const today = getTodayStr();
+                const stats = getProxyStats();
+                if (!stats[today]) {
+                    stats[today] = { total: 0, stations: {} };
+                }
+                stats[today].total += 1;
+                stats[today].stations[radioId] = (stats[today].stations[radioId] || 0) + 1;
+                Storage.save(PROXY_STATS_KEY, stats);
+            }
+
+            function getTodayStats() {
+                const today = getTodayStr();
+                const stats = getProxyStats();
+                return stats[today] || { total: 0, stations: {} };
+            }
+
+            function getLast7DaysStats() {
+                const stats = getProxyStats();
+                const days = [];
+                for (let i = 6; i >= 0; i--) {
+                    const d = new Date();
+                    d.setDate(d.getDate() - i);
+                    const key = d.toISOString().split('T')[0];
+                    days.push({ date: key, total: stats[key] ? stats[key].total : 0 });
+                }
+                return days;
+            }
+
+                        // ============================================================
+            // 多层决策树
+            // ============================================================
+            function shouldUseProxy(streamUrl, radio) {
+                // 第一层：用户手动设置（最高优先级）
+                if (radio.useProxy !== undefined) {
+                    return { useProxy: radio.useProxy, reason: radio.useProxy ? '手动启用' : '手动禁用' };
+                }
+
+                // ===== 白名单域名（即使 http 也不走代理） =====
+const whitelistDomains = ['satellitepull.cnr.cn', 'sk.cri.cn', 'stream.sun0769.com'];
+for (const domain of whitelistDomains) {
+    if (streamUrl.includes(domain)) {
+        return { useProxy: false, reason: '白名单' };
+    }
+}
+
+                const rules = getProxyRules();
+                const isHttp = streamUrl.startsWith('http://');
+                const isM3U8 = streamUrl.includes('.m3u8') || streamUrl.includes('m3u8');
+
+                 // 第二层：HTTP明文协议/混合内容阻止
+                if (rules.httpMixedContent && isHttp && isM3U8) {
+                    return { useProxy: true, reason: 'HTTP明文' };
+                }
+
+
+                // 第三层：高风险域名防盗链
+                if (rules.problematicDomains) {
+                    const domains = ['xmcdn.com', 'qingting.fm', 'ajmide.com', 'revma.com', 'streamtheworld.com'];
+                    for (const domain of domains) {
+                        if (streamUrl.includes(domain)) {
+                            return { useProxy: true, reason: '高风险域名' };
+                        }
+                    }
+                }
+
+                // 第四层：鉴权/时效性参数
+                if (rules.antiTheftParams) {
+                    const params = ['txSecret', 'txTime', 'sign', 'signature', 'key', 'token'];
+                    for (const param of params) {
+                        if (streamUrl.includes(param + '=') || streamUrl.includes('&' + param + '=')) {
+                            return { useProxy: true, reason: '鉴权参数' };
+                        }
+                    }
+                }
+
+                // 第五层：IP直连/跨域风险
+                if (rules.ipDirect) {
+                    const ipPattern = /\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b/;
+                    if (ipPattern.test(streamUrl)) {
+                        return { useProxy: true, reason: 'IP直连' };
+                    }
+                }
+               
+                return { useProxy: false, reason: '直连' };
+            }
+
+            // ============================================================
+            // 统计信息
+            // ============================================================
+            function getStatistics() {
+                const total = radioDataSource.length;
+                const categoryStats = {};
+                let proxyEnabledCount = 0;
+
+                // 分类统计（排除收藏和历史）
+                const displayCategories = categoryList.filter(
+                    cat => cat.id !== 'cat_favorites' && cat.id !== 'cat_history'
+                );
+
+                displayCategories.forEach(cat => {
+                    let count = 0;
+                    const catName = cat.name;
+                    radioDataSource.forEach(radio => {
+                        if (cat.id === 'cat_all') {
+                            count = total;
+                        } else if (radio.tag === catName || radio.area === catName) {
+                            count++;
+                        }
+                    });
+                    if (count > 0) {
+                        categoryStats[cat.id] = { name: catName, count: count };
+                    }
+                });
+
+                // 代理统计
+                radioDataSource.forEach(radio => {
+                    const result = shouldUseProxy(radio.stream || '', radio);
+                    if (result.useProxy) {
+                        proxyEnabledCount++;
+                    }
+                });
+
+                return {
+                    total: total,
+                    categories: categoryStats,
+                    proxyEnabled: proxyEnabledCount,
+                    directCount: total - proxyEnabledCount
+                };
+            }
+
+            // ============================================================
+            // 分类管理
+            // ============================================================
+            function loadCategoryList() {
+                const saved = Storage.load(CATEGORY_STORAGE_KEY);
+                if (saved && saved.length > 0) {
+                    categoryList = saved;
+                } else {
+                    categoryList = [
+                        { id: 'cat_gd', name: '广东' },
+                        { id: 'cat_traffic', name: '交通' },
+                        { id: 'cat_music', name: '音乐' },
+                        { id: 'cat_news', name: '新闻' },
+                        { id: 'cat_china', name: '全国' },
+                        { id: 'cat_international', name: '国际' },
+                        { id: 'cat_favorites', name: '收藏' },
+                        { id: 'cat_history', name: '历史' },
+                        { id: 'cat_all', name: '全部' }
+                    ];
+                    saveCategoryList();
+                }
+            }
+
+            function saveCategoryList() {
+                Storage.save(CATEGORY_STORAGE_KEY, categoryList);
+            }
+
+            function renderCategoryTabs() {
+                const container = document.getElementById('categoryTabs');
+                container.innerHTML = '';
+
+                const specialIcons = {
+                    'cat_favorites': '<i class="fa-solid fa-heart"></i> ',
+                    'cat_history': '<i class="fa-regular fa-clock"></i> '
+                };
+
+                categoryList.forEach(cat => {
+                    const tab = document.createElement('span');
+                    tab.className = 'category-tab';
+                    tab.dataset.filter = cat.id;
+                    const icon = specialIcons[cat.id] || '';
+                    tab.innerHTML = icon + cat.name;
+                    container.appendChild(tab);
+                });
+
+                container.querySelectorAll('.category-tab').forEach(tab => {
+                    tab.addEventListener('click', function() {
+                        const isActive = this.classList.contains('active');
+
+                        container.querySelectorAll('.category-tab').forEach(t => {
+                            t.classList.remove('active');
+                            t.style.background = '';
+                            t.style.borderColor = '';
+                            t.style.color = '';
+                            t.style.boxShadow = '';
+                        });
+
+                        if (isActive) {
+                            this.classList.remove('active');
+                            this.style.background = '';
+                            this.style.borderColor = '';
+                            this.style.color = '';
+                            this.style.boxShadow = '';
+                            const allTab = container.querySelector('.category-tab[data-filter="cat_all"]');
+                            if (allTab) {
+                                allTab.classList.add('active');
+                                const color = themeColors[colorClickIndex % themeColors.length];
+                                colorClickIndex = (colorClickIndex + 1) % themeColors.length;
+                                allTab.style.background = color;
+                                allTab.style.borderColor = color;
+                                allTab.style.color = '#fff';
+                                allTab.style.boxShadow = '0 4px 12px ' + color + '80';
+                            }
+                            currentFilter = 'cat_all';
+                            renderStationList();
+                            updateFavButtonState();
+                            return;
+                        }
+
+                        this.classList.add('active');
+                        const color = themeColors[colorClickIndex % themeColors.length];
+                        colorClickIndex = (colorClickIndex + 1) % themeColors.length;
+                        this.style.background = color;
+                        this.style.borderColor = color;
+                        this.style.color = '#fff';
+                        this.style.boxShadow = '0 4px 12px ' + color + '80';
+
+                        currentFilter = this.dataset.filter;
+                        renderStationList();
+                        updateFavButtonState();
+                    });
+                });
+
+                let targetTab = container.querySelector('.category-tab[data-filter="' + currentFilter + '"]');
+                if (!targetTab) {
+                    targetTab = container.querySelector('.category-tab[data-filter="cat_gd"]');
+                    currentFilter = 'cat_gd';
+                }
+                if (targetTab) {
+                    targetTab.classList.add('active');
+                    const color = themeColors[colorClickIndex % themeColors.length];
+                    colorClickIndex = (colorClickIndex + 1) % themeColors.length;
+                    targetTab.style.background = color;
+                    targetTab.style.borderColor = color;
+                    targetTab.style.color = '#fff';
+                    targetTab.style.boxShadow = '0 4px 12px ' + color + '80';
+                }
+            }
+
+            function renderCategoryManageList() {
+                const list = document.getElementById('categoryManageList');
+                list.innerHTML = '';
+
+                const systemIds = ['cat_favorites', 'cat_history', 'cat_all'];
+                const displayList = categoryList.filter(cat => !systemIds.includes(cat.id));
+
+                if (displayList.length === 0) {
+                    list.innerHTML = '<div style="text-align:center;color:var(--text-weak);padding:30px 0;">暂无分类</div>';
+                    return;
+                }
+
+                displayList.forEach((cat, index) => {
+                    const div = document.createElement('div');
+                    div.className = 'manage-item';
+                    div.innerHTML = `
+                            <span class="name">${cat.name}</span>
+                            <div class="actions">
+                                <button class="btn-move-up" data-id="${cat.id}" ${index === 0 ? 'disabled style="opacity:0.3;cursor:not-allowed;"' : ''} title="上移"><i class="fa-solid fa-arrow-up"></i></button>
+                                <button class="btn-move-down" data-id="${cat.id}" ${index === displayList.length-1 ? 'disabled style="opacity:0.3;cursor:not-allowed;"' : ''} title="下移"><i class="fa-solid fa-arrow-down"></i></button>
+                                <button class="btn-del" data-id="${cat.id}" title="删除"><i class="fa-regular fa-trash-can"></i></button>
+                            </div>
+                        `;
+                    list.appendChild(div);
+                });
+
+                list.querySelectorAll('.btn-move-up').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const id = this.dataset.id;
+                        const idx = displayList.findIndex(c => c.id === id);
+                        if (idx > 0) {
+                            const targetId = displayList[idx - 1].id;
+                            const idx1 = categoryList.findIndex(c => c.id === id);
+                            const idx2 = categoryList.findIndex(c => c.id === targetId);
+                            [categoryList[idx1], categoryList[idx2]] = [categoryList[idx2], categoryList[idx1]];
+                            saveCategoryList();
+                            renderCategoryManageList();
+                            renderCategoryTabs();
+                        }
+                    });
+                });
+
+                list.querySelectorAll('.btn-move-down').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const id = this.dataset.id;
+                        const idx = displayList.findIndex(c => c.id === id);
+                        if (idx < displayList.length - 1) {
+                            const targetId = displayList[idx + 1].id;
+                            const idx1 = categoryList.findIndex(c => c.id === id);
+                            const idx2 = categoryList.findIndex(c => c.id === targetId);
+                            [categoryList[idx1], categoryList[idx2]] = [categoryList[idx2], categoryList[idx1]];
+                            saveCategoryList();
+                            renderCategoryManageList();
+                            renderCategoryTabs();
+                        }
+                    });
+                });
+
+                list.querySelectorAll('.btn-del').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const id = this.dataset.id;
+                        const cat = categoryList.find(c => c.id === id);
+                        if (!cat) return;
+                        if (!confirm('确定删除分类「' + cat.name + '」吗？')) return;
+                        const idx = categoryList.findIndex(c => c.id === id);
+                        if (idx > -1) {
+                            categoryList.splice(idx, 1);
+                            saveCategoryList();
+                            renderCategoryManageList();
+                            renderCategoryTabs();
+                            showToast('已删除');
+                        }
+                    });
+                });
+            }
+
+            function openCategoryManageModal() {
+                renderCategoryManageList();
+                document.getElementById('categoryManageModal').classList.add('open');
+            }
+
+            // ============================================================
+            // 数据初始化
+            // ============================================================
+            function initData() {
+                let saved = Storage.load("ansonradio_list");
+                if (!saved || saved.length === 0) {
+                    radioDataSource = [...initRadioList];
+                    Storage.save("ansonradio_list", radioDataSource);
+                } else {
+                    radioDataSource = saved;
+                }
+                favList = Storage.load("ansonradio_fav") || [];
+                historyList = Storage.load("ansonradio_history") || [];
+                const theme = Storage.load("ansonradio_theme");
+                if (theme === "light") document.body.classList.add("light-mode");
+                volumeValue = Storage.load("ansonradio_volume") ?? 80;
+                document.getElementById("audioPlayer").volume = volumeValue / 100;
+                loadCategoryList();
+
+                // 初始化代理规则（如果不存在）
+                if (!Storage.load(PROXY_RULES_KEY)) {
+                    saveProxyRules(defaultRules);
+                }
+            }
+
+            // ============================================================
+            // Toast
+            // ============================================================
+            function showToast(msg, time = 2000) {
+                const t = document.getElementById("toast");
+                if (t._timer) clearTimeout(t._timer);
+                t.textContent = msg;
+                t.className = 'toast error';
+                t.style.display = 'block';
+                t._timer = setTimeout(() => { t.style.display = 'none'; t.className = 'toast'; t._timer = null; }, time);
+            }
+
+            function hideToast() {
+                const t = document.getElementById("toast");
+                if (t._timer) clearTimeout(t._timer);
+                t.style.display = 'none';
+                t.className = 'toast';
+            }
+
+            // ============================================================
+            // 卡片错误
+            // ============================================================
+            function clearCardError() {
+                if (cardErrorTimer) clearTimeout(cardErrorTimer);
+                cardError = null;
+                renderStationList();
+            }
+
+            function setCardError(id, message) {
+                if (cardErrorTimer) clearTimeout(cardErrorTimer);
+                updatePlayState(false);
+                cardError = { id: id, message: message };
+                renderStationList();
+                cardErrorTimer = setTimeout(() => {
+                    cardError = null;
+                    cardErrorTimer = null;
+                    currentPlayingId = null;
+                    renderStationList();
+                }, 2000);
+            }
+
+            // ============================================================
+            // 更新底部收藏按钮状态
+            // ============================================================
+            function updateFavButtonState() {
+                const btn = document.getElementById('btnFav');
+                const icon = btn.querySelector('i');
+                const span = btn.querySelector('span');
+                if (currentPlayingId && favList.includes(currentPlayingId)) {
+                    icon.className = 'fa-solid fa-heart';
+                    icon.style.color = getComputedStyle(document.documentElement).getPropertyValue('--primary').trim();
+                    span.textContent = '已收藏';
+                    btn.classList.add('active-fav');
+                } else {
+                    icon.className = 'fa-regular fa-heart';
+                    icon.style.color = '';
+                    span.textContent = '收藏';
+                    btn.classList.remove('active-fav');
+                }
+            }
+
+            // ============================================================
+            // 渲染 - 电台列表
+            // ============================================================
+                                                                      function renderStationList() {
                 const container = document.getElementById("stationList");
                 const keyword = document.getElementById("searchInput").value.trim().toLowerCase();
 
@@ -168,3 +3183,1136 @@
                 updatePlayButtonState();
                 updateFavButtonState();
             }
+
+            // ============================================================
+            // 播放引擎
+            // ============================================================
+            let hlsInstance = null;
+            const audioPlayer = document.getElementById("audioPlayer");
+            const discWrapper = document.getElementById("discWrapper");
+            const nowPlaying = document.getElementById("nowPlaying");
+
+            function updatePlayState(state) {
+                if (state) {
+                    discWrapper.classList.add('playing');
+                    if (cardError) clearCardError();
+                    hideToast();
+                    if (errorTimer) clearTimeout(errorTimer);
+                } else {
+                    discWrapper.classList.remove('playing');
+                }
+                updatePlayButtonState();
+                updateFavButtonState();
+            }
+
+            function updatePlayButtonState() {
+                const btn = document.getElementById('btnPlay');
+                const icon = btn.querySelector('i');
+                const span = btn.querySelector('span');
+                if (!audioPlayer.paused && audioPlayer.src) {
+                    icon.className = 'fa-solid fa-pause';
+                    span.textContent = '暂停';
+                } else {
+                    icon.className = 'fa-solid fa-play';
+                    span.textContent = '播放';
+                }
+            }
+
+            function stopPlayback() {
+                if (hlsInstance) { hlsInstance.destroy(); hlsInstance = null; }
+                audioPlayer.pause();
+                audioPlayer.src = '';
+                updatePlayState(false);
+                if (errorTimer) clearTimeout(errorTimer);
+            }
+
+            function fallbackToHLS(url) {
+                if (hlsInstance) { hlsInstance.destroy(); hlsInstance = null; }
+                hlsInstance = new Hls({ enableWorker: true, lowLatencyMode: true });
+                hlsInstance.loadSource(url);
+                hlsInstance.attachMedia(audioPlayer);
+
+                hlsInstance.on(Hls.Events.MANIFEST_PARSED, () => {
+                    audioPlayer.play().then(() => updatePlayState(true)).catch(() => updatePlayState(true));
+                });
+
+                hlsInstance.on(Hls.Events.ERROR, (e, data) => {
+                    if (data.fatal) {
+                        let msg = "加载失败";
+                        if (data.type === Hls.ErrorTypes.NETWORK_ERROR) msg = "网络错误跨域";
+                        else if (data.type === Hls.ErrorTypes.MEDIA_ERROR) msg = "媒体解析错误";
+                        if (currentPlayingId) setCardError(currentPlayingId, msg);
+                        if (hlsInstance) { hlsInstance.destroy(); hlsInstance = null; }
+                        updatePlayState(false);
+                    }
+                });
+
+                audioPlayer.addEventListener('playing', () => updatePlayState(true));
+                audioPlayer.addEventListener('pause', () => { if (!audioPlayer.ended) updatePlayState(false); });
+                audioPlayer.addEventListener('ended', () => updatePlayState(false));
+            }
+
+            function playRadio(radioId) {
+                const radio = radioDataSource.find(r => r.id === radioId);
+                if (!radio) {
+                    setCardError(radioId, "找不到电台");
+                    return;
+                }
+
+                stopPlayback();
+                if (cardError) clearCardError();
+                currentPlayingId = radioId;
+                nowPlaying.textContent = radio.name;
+                hideToast();
+                if (errorTimer) clearTimeout(errorTimer);
+
+                if (!historyList.includes(radioId)) {
+                    historyList.unshift(radioId);
+                    if (historyList.length > 30) historyList.pop();
+                    Storage.save("ansonradio_history", historyList);
+                }
+
+                renderStationList();
+
+                let streamUrl = radio.stream.trim();
+                if (!streamUrl) {
+                    setCardError(radioId, "直播地址为空");
+                    return;
+                }
+
+                // ===== 多层决策树判断 =====
+                const decision = shouldUseProxy(streamUrl, radio);
+                const proxyBase = "https://m3u8.kowiwa11.workers.dev/?url=";
+
+                if (decision.useProxy) {
+                    streamUrl = proxyBase + encodeURIComponent(streamUrl);
+                    recordProxyUsage(radioId);
+                    console.log(`[代理] ${radio.name} 使用代理播放 (原因: ${decision.reason})`);
+                } else {
+                    console.log(`[直连] ${radio.name} 直接播放 (原因: ${decision.reason})`);
+                }
+
+                // ===== 后续播放逻辑 =====
+                const isM3U8 = streamUrl.includes('.m3u8') || streamUrl.includes('m3u8');
+                const nativeHlsSupport = audioPlayer.canPlayType('application/vnd.apple.mpegurl') ||
+                    audioPlayer.canPlayType('audio/mpegurl');
+                const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+
+                if (isM3U8 && (nativeHlsSupport || isIOS)) {
+                    audioPlayer.src = streamUrl;
+                    audioPlayer.play().then(() => updatePlayState(true)).catch((err) => {
+                        console.warn('原生HLS播放失败，降级到HLS.js:', err);
+                        fallbackToHLS(streamUrl);
+                    });
+                    audioPlayer.addEventListener('playing', () => updatePlayState(true));
+                    audioPlayer.addEventListener('pause', () => { if (!audioPlayer.ended) updatePlayState(false); });
+                    audioPlayer.addEventListener('ended', () => updatePlayState(false));
+                    audioPlayer.addEventListener('error', () => {
+                        console.warn('原生HLS报错，尝试降级');
+                        if (hlsInstance) { hlsInstance.destroy(); hlsInstance = null; }
+                        fallbackToHLS(streamUrl);
+                    });
+                                } else if (isM3U8 && Hls.isSupported()) {
+                    fallbackToHLS(streamUrl);
+                } else {
+                    // ===== 针对 iOS 云听源：加时间戳强制刷新 =====
+                    if (!isM3U8 && streamUrl.includes('ytcastmp3.radio.cn')) {
+                        const separator = streamUrl.includes('?') ? '&' : '?';
+                        streamUrl += separator + '_=' + Date.now();
+                    }
+
+                    audioPlayer.src = streamUrl;
+                    audioPlayer.play().then(() => updatePlayState(true)).catch(() => {
+                        if (currentPlayingId) {
+                            setCardError(currentPlayingId, "无法播放此流");
+                        }
+                        discWrapper.classList.remove('playing');
+                        updatePlayButtonState();
+                        updateFavButtonState();
+                        audioPlayer.pause();
+                        audioPlayer.src = '';
+                        audioPlayer.load();
+                    });
+                    audioPlayer.addEventListener('playing', () => updatePlayState(true));
+                    audioPlayer.addEventListener('pause', () => { if (!audioPlayer.ended) updatePlayState(false); });
+                    audioPlayer.addEventListener('ended', () => updatePlayState(false));
+                    audioPlayer.addEventListener('error', function onError() {
+                        if (currentPlayingId) {
+                            setCardError(currentPlayingId, "播放出错");
+                        }
+                        discWrapper.classList.remove('playing');
+                        updatePlayButtonState();
+                        updateFavButtonState();
+                        audioPlayer.pause();
+                        audioPlayer.src = '';
+                        audioPlayer.load();
+                        audioPlayer.removeEventListener('error', onError);
+                    });
+                }
+            }
+
+            // ============================================================
+            // 控制函数
+            // ============================================================
+            function togglePlay() {
+                if (!currentPlayingId) {
+                    if (radioDataSource.length > 0) playRadio(radioDataSource[0].id);
+                    else showToast("请先添加电台");
+                    return;
+                }
+                if (audioPlayer.paused) {
+                    audioPlayer.play().then(() => updatePlayState(true)).catch(() => {
+                        if (currentPlayingId) setCardError(currentPlayingId, "无法播放此流");
+                        updatePlayState(false);
+                    });
+                } else {
+                    audioPlayer.pause();
+                    updatePlayState(false);
+                }
+            }
+
+            function prevStation() {
+                if (radioDataSource.length === 0) return;
+                if (!currentPlayingId) { playRadio(radioDataSource[0].id); return; }
+                const idx = radioDataSource.findIndex(r => r.id === currentPlayingId);
+                if (idx === -1) { playRadio(radioDataSource[0].id); return; }
+                let newIdx = idx - 1;
+                if (newIdx < 0) newIdx = radioDataSource.length - 1;
+                playRadio(radioDataSource[newIdx].id);
+            }
+
+            function nextStation() {
+                if (radioDataSource.length === 0) return;
+                if (!currentPlayingId) { playRadio(radioDataSource[0].id); return; }
+                const idx = radioDataSource.findIndex(r => r.id === currentPlayingId);
+                if (idx === -1) { playRadio(radioDataSource[0].id); return; }
+                let newIdx = idx + 1;
+                if (newIdx >= radioDataSource.length) newIdx = 0;
+                playRadio(radioDataSource[newIdx].id);
+            }
+
+            function toggleFav() {
+                if (!currentPlayingId) {
+                    const btn = document.getElementById('btnFav');
+                    const span = btn.querySelector('span');
+                    if (span) {
+                        span.textContent = '未播放';
+                        clearTimeout(window._favTempTimer);
+                        window._favTempTimer = setTimeout(() => {
+                            if (!currentPlayingId) {
+                                span.textContent = '收藏';
+                            } else {
+                                updateFavButtonState();
+                            }
+                        }, 2000);
+                    }
+                    return;
+                }
+                const idx = favList.indexOf(currentPlayingId);
+                if (idx > -1) {
+                    favList.splice(idx, 1);
+                } else {
+                    favList.push(currentPlayingId);
+                }
+                Storage.save("ansonradio_fav", favList);
+                renderStationList();
+                updateFavButtonState();
+            }
+
+            // ============================================================
+            // 管理功能
+            // ============================================================
+            function openManageModal() {
+                document.getElementById("manageSearchInput").value = "";
+                renderManageList("");
+                document.getElementById("manageModal").classList.add("open");
+                setTimeout(() => document.getElementById("manageSearchInput").focus(), 100);
+            }
+
+            function renderManageList(keyword) {
+                const list = document.getElementById("manageList");
+                let data = [...radioDataSource];
+                if (keyword && keyword.trim() !== "") {
+                    const kw = keyword.trim().toLowerCase();
+                    data = data.filter(item => item.name.toLowerCase().includes(kw));
+                }
+                list.innerHTML = "";
+                if (data.length === 0) {
+                    list.innerHTML = '<div style="text-align:center;color:var(--text-weak);padding:30px 0;">暂无电台</div>';
+                    return;
+                }
+                data.forEach(radio => {
+    const isFav = favList.includes(radio.id);
+
+    // 代理图标：三种状态三种显示（使用内联样式确保颜色正确）
+    let proxyIconHtml = '';
+    let toggleClass = '';
+    let titleText = '';
+
+    if (radio.useProxy === true) {
+        // 启用代理 - 主题色实心地球（跟随当前主题色）
+        proxyIconHtml = '<i class="fa-solid fa-globe" style="color:var(--primary);"></i>';
+        toggleClass = 'active';
+        titleText = '启用代理';
+    } else if (radio.useProxy === false) {
+        // 关闭代理 - 灰色实心地球
+        proxyIconHtml = '<i class="fa-solid fa-globe" style="color:var(--text-weak);"></i>';
+        toggleClass = '';
+        titleText = '关闭代理';
+        } else {
+        // 自动模式 - 灰色旋转箭头
+        proxyIconHtml = '<i class="fas fa-circle-half-stroke" style="color:var(--text-weak);"></i>';
+        toggleClass = '';
+        titleText = '自动模式';
+    }
+
+    const div = document.createElement("div");
+    div.className = "manage-item";
+    div.innerHTML = `
+            <span class="name">${radio.name} (${radio.city || '未知'})</span>
+            <div class="actions">
+                <button class="btn-fav-manage ${isFav ? 'active' : ''}" data-id="${radio.id}" title="收藏"><i class="${isFav ? 'fa-solid' : 'fa-regular'} fa-heart"></i></button>
+                <button class="btn-edit" data-id="${radio.id}" title="编辑"><i class="fa-regular fa-pen-to-square"></i></button>
+                <button class="btn-del" data-id="${radio.id}" title="删除"><i class="fa-regular fa-trash-can"></i></button>
+                <button class="btn-proxy-toggle ${toggleClass}" data-id="${radio.id}" title="${titleText}">
+                    ${proxyIconHtml}
+                </button>
+            </div>
+        `;
+    list.appendChild(div);
+});
+
+                // 收藏
+                list.querySelectorAll('.btn-fav-manage').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const id = this.dataset.id;
+                        const idx = favList.indexOf(id);
+                        if (idx > -1) favList.splice(idx, 1);
+                        else favList.push(id);
+                        Storage.save("ansonradio_fav", favList);
+                        const kw = document.getElementById("manageSearchInput").value;
+                        renderManageList(kw);
+                        renderStationList();
+                        updateFavButtonState();
+                    });
+                });
+
+                // 编辑
+                list.querySelectorAll('.btn-edit').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const id = this.dataset.id;
+                        openEditModal(id);
+                    });
+                });
+
+                // 删除
+                list.querySelectorAll('.btn-del').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const id = this.dataset.id;
+                        if (!confirm(`确定删除「${radioDataSource.find(r => r.id === id).name}」吗？`)) return;
+                        deleteRadioById(id);
+                        const kw = document.getElementById("manageSearchInput").value;
+                        renderManageList(kw);
+                    });
+                });
+
+                // 代理开关
+                list.querySelectorAll('.btn-proxy-toggle').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const id = this.dataset.id;
+                        const radio = radioDataSource.find(r => r.id === id);
+                        if (!radio) return;
+
+                        // 循环切换：undefined → true → false → undefined
+                        if (radio.useProxy === undefined) {
+                            radio.useProxy = true;
+                            showToast(`${radio.name} 启用代理`);
+                        } else if (radio.useProxy === true) {
+                            radio.useProxy = false;
+                            showToast(`${radio.name} 关闭代理`);
+                        } else {
+                            radio.useProxy = undefined;
+                            showToast(`${radio.name} 自动模式`);
+                        }
+
+                        Storage.save("ansonradio_list", radioDataSource);
+                        const kw = document.getElementById("manageSearchInput").value;
+                        renderManageList(kw);
+                        renderStationList();
+                    });
+                });
+            }
+
+            function deleteRadioById(id) {
+                const idx = radioDataSource.findIndex(r => r.id === id);
+                if (idx === -1) return;
+                radioDataSource.splice(idx, 1);
+                Storage.save("ansonradio_list", radioDataSource);
+                if (currentPlayingId === id) {
+                    stopPlayback();
+                    currentPlayingId = null;
+                    nowPlaying.textContent = "未播放";
+                }
+                renderStationList();
+                updateFavButtonState();
+                showToast("已删除");
+            }
+
+            function clearAllStations() {
+                if (radioDataSource.length === 0) {
+                    showToast("列表已空，无需清空");
+                    document.getElementById("manageModal").classList.remove("open");
+                    return;
+                }
+                if (!confirm("⚠️ 确定要清空全部电台吗？此操作不可撤销！")) return;
+
+                radioDataSource = [];
+                favList = [];
+                historyList = [];
+                Storage.save("ansonradio_list", radioDataSource);
+                Storage.save("ansonradio_fav", favList);
+                Storage.save("ansonradio_history", historyList);
+
+                stopPlayback();
+                currentPlayingId = null;
+                nowPlaying.textContent = "未播放";
+                hideToast();
+                document.getElementById("manageModal").classList.remove("open");
+                renderStationList();
+                updateFavButtonState();
+                showToast("已清空全部电台", 2000);
+            }
+
+                        function openEditModal(id) {
+                const radio = radioDataSource.find(r => r.id === id);
+                if (!radio) { showToast("找不到电台"); return; }
+                editingRadioId = id;
+                document.getElementById("editId").value = radio.id;
+                document.getElementById("editName").value = radio.name || "";
+                document.getElementById("editCity").value = radio.city || "";
+                document.getElementById("editTag").value = radio.tag || "";
+                document.getElementById("editStream").value = radio.stream || "";
+                document.getElementById("editLogo").value = radio.logo || "";
+                // 已删除：document.getElementById("editUseProxy").checked = radio.useProxy || false;
+                document.getElementById("editModal").classList.add("open");
+            }
+
+                        function saveEditRadio() {
+                if (!editingRadioId) { showToast("没有选中要编辑的电台"); return; }
+                const name = document.getElementById("editName").value.trim();
+                const stream = document.getElementById("editStream").value.trim();
+                if (!name || !stream) { showToast("名称和地址不能为空"); return; }
+                const radio = radioDataSource.find(r => r.id === editingRadioId);
+                if (!radio) { showToast("电台不存在"); return; }
+                radio.name = name;
+                radio.city = document.getElementById("editCity").value.trim() || "未知";
+                radio.tag = document.getElementById("editTag").value.trim() || "自定义";
+                radio.stream = stream;
+                radio.logo = document.getElementById("editLogo").value.trim() || "";
+                // 已删除：radio.useProxy = document.getElementById("editUseProxy").checked;
+                Storage.save("ansonradio_list", radioDataSource);
+                document.getElementById("editModal").classList.remove("open");
+                if (currentPlayingId === editingRadioId) {
+                    nowPlaying.textContent = radio.name;
+                }
+                renderStationList();
+                const kw = document.getElementById("manageSearchInput").value;
+                renderManageList(kw);
+                showToast("修改已保存");
+            }
+
+            // ============================================================
+            // 代理管理弹窗
+            // ============================================================
+            let proxyFilterMode = 'all';
+
+            function openProxyManageModal() {
+                document.getElementById("proxyManageModal").classList.add("open");
+                renderProxyManageList();
+            }
+
+            function closeProxyManageModal() {
+                document.getElementById("proxyManageModal").classList.remove("open");
+            }
+
+                       function renderProxyManageList() {
+                const list = document.getElementById("proxyManageList");
+                let data = [...radioDataSource];
+                
+                // ===== 搜索过滤 =====
+                const keyword = document.getElementById("proxySearchInput").value.trim().toLowerCase();
+                if (keyword) {
+                    data = data.filter(radio => radio.name.toLowerCase().includes(keyword));
+                }
+                
+                // ===== 获取当前选中的筛选按钮 =====
+                const activeFilterBtn = document.querySelector('.proxy-filter-btn.active');
+                const filter = activeFilterBtn ? activeFilterBtn.dataset.filter : 'all';
+
+                // ===== 状态筛选 =====
+                data = data.filter(radio => {
+                    const status = radio.useProxy !== undefined ? (radio.useProxy ? 'manual_on' : 'manual_off') : 'auto';
+                    if (filter === 'manual_on') return status === 'manual_on';
+                    if (filter === 'manual_off') return status === 'manual_off';
+                    if (filter === 'auto') return status === 'auto';
+                    return true;
+                });
+
+                list.innerHTML = "";
+                if (data.length === 0) {
+                    list.innerHTML = '<div style="text-align:center;color:var(--text-weak);padding:30px 0;">暂无匹配电台</div>';
+                    return;
+                }
+
+                data.forEach(radio => {
+                    const decision = shouldUseProxy(radio.stream || '', radio);
+                    const status = radio.useProxy !== undefined ? (radio.useProxy ? 'manual_on' : 'manual_off') : 'auto';
+
+                    let statusLabel, statusClass, statusIcon;
+                    if (status === 'manual_on') {
+                        statusLabel = '已开启';
+                        statusClass = 'enabled';
+                        statusIcon = '●';
+                    } else if (status === 'manual_off') {
+                        statusLabel = '已关闭';
+                        statusClass = 'disabled';
+                        statusIcon = '○';
+                    } else {
+                        statusLabel = decision.useProxy ? '自动代理' : '自动直连';
+                        statusClass = 'auto';
+                        statusIcon = '◐';
+                    }
+
+                    // 触发原因标签（短标签，不换行）
+                    let reasonLabel = decision.reason;
+                    if (reasonLabel === '手动启用') reasonLabel = '-';
+                    else if (reasonLabel === '手动禁用') reasonLabel = '手动';
+                    else if (reasonLabel === 'HTTP明文') reasonLabel = '明文';
+                    else if (reasonLabel === '高风险域名') reasonLabel = '域名';
+                    else if (reasonLabel === '鉴权参数') reasonLabel = '鉴权';
+                    else if (reasonLabel === 'IP直连') reasonLabel = '直连';
+                    else if (reasonLabel === '直连') reasonLabel = '直连';
+
+                    const isProxyActive = (status === 'manual_on' || (status === 'auto' && decision.useProxy));
+
+                    // 生成原因标签
+                    let reasonDisplay = '';
+                    if (isProxyActive) {
+                        reasonDisplay = reasonLabel;
+                    } else if (status === 'manual_off') {
+                        reasonDisplay = '-';
+                    } else if (status === 'auto' && !decision.useProxy) {
+                        reasonDisplay = '直连';
+                    } else {
+                        reasonDisplay = '-';
+                    }
+
+                    const div = document.createElement("div");
+                    div.className = "proxy-manage-item";
+                    div.innerHTML = `
+                        <span class="proxy-item-name" title="${radio.name}">${radio.name}</span>
+                        <span class="proxy-item-status ${statusClass}">${statusIcon} ${statusLabel}</span>
+                        <span class="proxy-item-reason">${reasonDisplay}</span>
+                        <button class="btn-proxy-switch" data-id="${radio.id}" title="切换状态"><i class="fa-solid fa-rotate"></i></button>
+                    `;
+                    list.appendChild(div);
+                });
+
+                // 切换按钮事件
+                list.querySelectorAll('.btn-proxy-switch').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const id = this.dataset.id;
+                        const radio = radioDataSource.find(r => r.id === id);
+                        if (!radio) return;
+
+                        if (radio.useProxy === undefined) {
+                            radio.useProxy = true;
+                        } else if (radio.useProxy === true) {
+                            radio.useProxy = false;
+                        } else {
+                            radio.useProxy = undefined;
+                        }
+                        Storage.save("ansonradio_list", radioDataSource);
+                        renderProxyManageList();
+                        renderStationList();
+                    });
+                });
+            }
+
+                       // 代理管理批量操作
+            function proxyBatchAction(action) {
+                const data = [...radioDataSource];
+                
+                // 获取当前选中的筛选按钮
+                const activeFilterBtn = document.querySelector('.proxy-filter-btn.active');
+                const filter = activeFilterBtn ? activeFilterBtn.dataset.filter : 'all';
+
+                let targetData = data;
+                if (filter !== 'all') {
+                    targetData = data.filter(radio => {
+                        const status = radio.useProxy !== undefined ? (radio.useProxy ? 'manual_on' : 'manual_off') : 'auto';
+                        if (filter === 'manual_on') return status === 'manual_on';
+                        if (filter === 'manual_off') return status === 'manual_off';
+                        if (filter === 'auto') return status === 'auto';
+                        return true;
+                    });
+                }
+
+                targetData.forEach(radio => {
+                    if (action === 'enable') {
+                        radio.useProxy = true;
+                    } else if (action === 'disable') {
+                        radio.useProxy = false;
+                    } else if (action === 'auto') {
+                        radio.useProxy = undefined;
+                    }
+                });
+
+                Storage.save("ansonradio_list", radioDataSource);
+                renderProxyManageList();
+                renderStationList();
+                showToast(`批量操作完成: ${targetData.length} 个电台`);
+            }
+
+            // ============================================================
+            // 规则配置
+            // ============================================================
+            function renderProxyRules() {
+                const rules = getProxyRules();
+                document.getElementById('ruleHttpMixed').checked = rules.httpMixedContent;
+                document.getElementById('ruleProblematicDomains').checked = rules.problematicDomains;
+                document.getElementById('ruleAntiTheftParams').checked = rules.antiTheftParams;
+                document.getElementById('ruleIpDirect').checked = rules.ipDirect;
+            }
+
+            function saveRulesFromUI() {
+                const rules = {
+                    httpMixedContent: document.getElementById('ruleHttpMixed').checked,
+                    problematicDomains: document.getElementById('ruleProblematicDomains').checked,
+                    antiTheftParams: document.getElementById('ruleAntiTheftParams').checked,
+                    ipDirect: document.getElementById('ruleIpDirect').checked
+                };
+                saveProxyRules(rules);
+                showToast('规则配置已保存');
+                renderProxyManageList();
+            }
+
+            // ============================================================
+            // 系统信息
+            // ============================================================
+            function openSysInfoModal() {
+                renderSysInfo();
+                document.getElementById('sysInfoModal').classList.add('open');
+            }
+
+            function renderSysInfo() {
+                const stats = getStatistics();
+                const todayStats = getTodayStats();
+                const weekStats = getLast7DaysStats();
+
+                // 版本信息
+                document.getElementById('sysVersion').textContent = 'AnsonFM 2026.2.1';
+                document.getElementById('sysAuthor').textContent = 'Anson';
+                document.getElementById('sysQQ').textContent = '59253359';
+
+                // 电台统计
+                document.getElementById('statTotal').textContent = stats.total + ' 个';
+
+                const catContainer = document.getElementById('statCategories');
+                catContainer.innerHTML = '';
+                const catEntries = Object.entries(stats.categories);
+                if (catEntries.length > 0) {
+                    catEntries.forEach(([id, cat]) => {
+                        const span = document.createElement('span');
+                        span.className = 'stat-cat-item';
+                        span.textContent = `${cat.name} ${cat.count}`;
+                        catContainer.appendChild(span);
+                    });
+                } else {
+                    catContainer.innerHTML = '<span class="stat-cat-item" style="color:var(--text-weak);">暂无分类数据</span>';
+                }
+
+                // 代理信息
+                const proxyBase = "https://m3u8.kowiwa11.workers.dev/?url=";
+                // 删除或注释掉这行
+                // document.getElementById('proxyStatus').textContent = '✅ 已启用';
+                document.getElementById('proxyAddress').textContent = proxyBase;
+                document.getElementById('proxyEnabledCount').textContent = stats.proxyEnabled + ' 个';
+
+                // 今日请求
+                const limit = 100000;
+                const used = todayStats.total;
+                const percent = Math.min((used / limit) * 100, 100);
+                document.getElementById('todayUsed').textContent = used.toLocaleString();
+                document.getElementById('todayLimit').textContent = limit.toLocaleString();
+                document.getElementById('todayPercent').textContent = percent.toFixed(2) + '%';
+
+                // 7天趋势（简化柱状图）
+                const maxVal = Math.max(...weekStats.map(d => d.total), 1);
+                const trendContainer = document.getElementById('trendBars');
+                trendContainer.innerHTML = '';
+                weekStats.forEach(day => {
+                    const bar = document.createElement('div');
+                    bar.className = 'trend-bar-item';
+                    const height = Math.max((day.total / maxVal) * 30, 2);
+                    bar.innerHTML = `
+                            <div class="trend-bar" style="height:${height}px;"></div>
+                            <span class="trend-label">${day.date.slice(5)}</span>
+                            <span class="trend-value">${day.total}</span>
+                        `;
+                    trendContainer.appendChild(bar);
+                });
+            }
+
+            // ============================================================
+            // 导入/导出功能
+            // ============================================================
+            let importMode = null;
+
+            function openImportModal() {
+                importMode = null;
+                document.getElementById("importModal").classList.add("open");
+            }
+
+            function closeImportModal() {
+                document.getElementById("importModal").classList.remove("open");
+                document.getElementById("fileSelector").value = "";
+            }
+
+            function performImport(file) {
+                if (!importMode) {
+                    showToast("请选择导入方式");
+                    return;
+                }
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    try {
+                        const text = e.target.result;
+                        const arr = JSON.parse(text);
+                        if (!Array.isArray(arr)) throw new Error("格式错误");
+                        let count = 0;
+                        if (importMode === "overwrite") {
+                            radioDataSource = [];
+                        }
+                        arr.forEach(item => {
+                            if (!item.id || !item.name || !item.stream) return;
+                            if (importMode === "append") {
+                                if (radioDataSource.find(r => r.id === item.id)) return;
+                            }
+                            radioDataSource.push({
+                                id: item.id,
+                                name: item.name || "",
+                                area: item.area || "",
+                                city: item.city || "",
+                                tag: item.tag || "",
+                                stream: item.stream || "",
+                                logo: item.logo || "",
+                                desc: item.desc || "",
+                                useProxy: item.useProxy !== undefined ? item.useProxy : undefined
+                            });
+                            count++;
+                        });
+                        Storage.save("ansonradio_list", radioDataSource);
+                        renderStationList();
+                        closeImportModal();
+                        showToast(`${importMode === "overwrite" ? "覆盖" : "追加"}共成功导入 ${count} 个电台`);
+                    } catch (err) {
+                        showToast("JSON 文件格式不正确");
+                        console.error(err);
+                    }
+                };
+                reader.readAsText(file);
+            }
+
+            function exportJson() {
+                const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(radioDataSource, null, 2));
+                const a = document.createElement("a");
+                a.href = dataStr;
+                a.download = "AnsonRadio_备份.json";
+                a.click();
+                showToast("导出成功");
+            }
+
+            function saveNewRadio() {
+                const name = document.getElementById("formName").value.trim();
+                const city = document.getElementById("formCity").value.trim();
+                const stream = document.getElementById("formStream").value.trim();
+                const logo = document.getElementById("formLogo").value.trim();
+                const tag = document.getElementById("formTag").value.trim();
+                
+
+                if (!name || !stream) { showToast("名称和地址不能为空"); return; }
+                const newId = "auto_" + Date.now();
+                radioDataSource.push({
+                    id: newId,
+                    name,
+                    city: city || "未知",
+                    area: tag || "自定义",
+                    tag: tag || "自定义",
+                    stream,
+                    logo,
+                    desc: "手动添加",
+                    
+                });
+                Storage.save("ansonradio_list", radioDataSource);
+                document.getElementById("addRadioModal").classList.remove("open");
+                document.getElementById("formName").value = "";
+                document.getElementById("formCity").value = "";
+                document.getElementById("formStream").value = "";
+                document.getElementById("formLogo").value = "";
+                document.getElementById("formTag").value = "";
+                
+                renderStationList();
+                updateFavButtonState();
+                showToast("添加成功");
+            }
+
+            // ============================================================
+            // 主题色控制
+            // ============================================================
+            function setThemeColor(color) {
+                const root = document.documentElement;
+                const r = parseInt(color.slice(1, 3), 16),
+                    g = parseInt(color.slice(3, 5), 16),
+                    b = parseInt(color.slice(5, 7), 16);
+                root.style.setProperty('--primary', color);
+                root.style.setProperty('--primary-light', color);
+                root.style.setProperty('--primary-dark', color);
+                root.style.setProperty('--primary-glow', `rgba(${r},${g},${b},0.5)`);
+                root.style.setProperty('--primary-soft', `rgba(${r},${g},${b},0.12)`);
+                root.style.setProperty('--primary-border', `rgba(${r},${g},${b},0.25)`);
+                document.querySelectorAll('.color-dot').forEach(d => d.classList.remove('active'));
+                document.querySelector(`.color-dot[data-color="${color}"]`)?.classList.add('active');
+                localStorage.setItem('radioThemeColor', color);
+                updateFavButtonState();
+            }
+
+            function loadThemeColor() {
+                const saved = localStorage.getItem('radioThemeColor');
+                if (saved) setThemeColor(saved);
+            }
+
+            function randomThemeColor() {
+                const idx = Math.floor(Math.random() * themeColors.length);
+                const color = themeColors[idx];
+                setThemeColor(color);
+            }
+
+            // ============================================================
+            // 底部点击反馈
+            // ============================================================
+            function addClickFeedback(btn) {
+                const color = themeColors[colorClickIndex % themeColors.length];
+                colorClickIndex++;
+
+                const icon = btn.querySelector('i');
+                const span = btn.querySelector('span');
+                const origIconColor = icon ? icon.style.color : '';
+                const origSpanColor = span ? span.style.color : '';
+                const origBtnColor = btn.style.color;
+
+                if (icon) {
+                    icon.style.transition = 'color 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)';
+                    icon.style.color = color;
+                }
+                if (span) {
+                    span.style.transition = 'color 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)';
+                    span.style.color = color;
+                }
+                btn.style.transition = 'color 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)';
+                btn.style.color = color;
+
+                btn.classList.remove('clicked');
+                void btn.offsetWidth;
+                btn.classList.add('clicked');
+
+                setTimeout(() => {
+                    btn.classList.remove('clicked');
+                    if (icon) {
+                        icon.style.color = origIconColor || '';
+                        icon.style.transition = '';
+                    }
+                    if (span) {
+                        span.style.color = origSpanColor || '';
+                        span.style.transition = '';
+                    }
+                    btn.style.color = origBtnColor || '';
+                    btn.style.transition = '';
+                }, 400);
+            }
+
+            // ============================================================
+            // 事件绑定
+            // ============================================================
+            function bindEvents() {
+                document.getElementById('searchInput').addEventListener('input', renderStationList);
+                // 搜索框输入时控制清空按钮显隐
+                const searchInput = document.getElementById('searchInput');
+                const clearBtn = document.getElementById('searchClearBtn');
+
+                searchInput.addEventListener('input', function() {
+                    clearBtn.style.display = this.value.trim().length > 0 ? 'flex' : 'none';
+                });
+
+                // 清空按钮点击：清空搜索框、触发搜索、隐藏按钮、聚焦搜索框
+                clearBtn.addEventListener('click', function() {
+                    searchInput.value = '';
+                    searchInput.dispatchEvent(new Event('input'));
+                    renderStationList();
+                    searchInput.focus();
+                });
+                discWrapper.addEventListener('click', togglePlay);
+                document.getElementById('prevBtn').addEventListener('click', prevStation);
+                document.getElementById('nextBtn').addEventListener('click', nextStation);
+
+                const btnFav = document.getElementById('btnFav');
+                btnFav.addEventListener('click', function(e) {
+                    addClickFeedback(this);
+                    toggleFav();
+                });
+
+                document.getElementById('btnPrev').addEventListener('click', function(e) {
+                    addClickFeedback(this);
+                    prevStation();
+                });
+
+                document.getElementById('btnPlay').addEventListener('click', function(e) {
+                    addClickFeedback(this);
+                    togglePlay();
+                });
+
+                document.getElementById('btnNext').addEventListener('click', function(e) {
+                    addClickFeedback(this);
+                    nextStation();
+                });
+
+                document.getElementById('btnSettings').addEventListener('click', function(e) {
+                    addClickFeedback(this);
+                    document.getElementById('settingsModal').classList.add('open');
+                });
+
+                // 设置面板内部项
+                document.getElementById('settingsAddRadio').addEventListener('click', () => {
+                    document.getElementById('settingsModal').classList.remove('open');
+                    document.getElementById('addRadioModal').classList.add('open');
+                });
+                document.getElementById('settingsImport').addEventListener('click', () => {
+                    document.getElementById('settingsModal').classList.remove('open');
+                    openImportModal();
+                });
+                document.getElementById('settingsExport').addEventListener('click', () => {
+                    document.getElementById('settingsModal').classList.remove('open');
+                    exportJson();
+                });
+                document.getElementById('settingsCategoryManage').addEventListener('click', () => {
+                    document.getElementById('settingsModal').classList.remove('open');
+                    openCategoryManageModal();
+                });
+                document.getElementById('settingsManage').addEventListener('click', () => {
+                    document.getElementById('settingsModal').classList.remove('open');
+                    openManageModal();
+                });
+                document.getElementById('settingsProxyManage').addEventListener('click', () => {
+                    document.getElementById('settingsModal').classList.remove('open');
+                    openProxyManageModal();
+                });
+                document.getElementById('settingsSysInfo').addEventListener('click', () => {
+                    document.getElementById('settingsModal').classList.remove('open');
+                    openSysInfoModal();
+                });
+                document.getElementById('settingsRandomColor').addEventListener('click', () => {
+                    randomThemeColor();
+                });
+
+                document.getElementById('closeSettings').addEventListener('click', () => {
+                    document.getElementById('settingsModal').classList.remove('open');
+                });
+                document.getElementById('settingsModal').addEventListener('click', (e) => {
+                    if (e.target === e.currentTarget) document.getElementById('settingsModal').classList.remove('open');
+                });
+
+                document.getElementById('closeSysInfo').addEventListener('click', () => {
+                    document.getElementById('sysInfoModal').classList.remove('open');
+                });
+                document.getElementById('sysInfoModal').addEventListener('click', (e) => {
+                    if (e.target === e.currentTarget) document.getElementById('sysInfoModal').classList.remove('open');
+                });
+
+                // 代理管理弹窗
+                document.getElementById('closeProxyManage').addEventListener('click', closeProxyManageModal);
+                document.getElementById('proxyManageModal').addEventListener('click', (e) => {
+                    if (e.target === e.currentTarget) closeProxyManageModal();
+                });
+                
+                // 代理管理 - 搜索
+                document.getElementById('proxySearchInput').addEventListener('input', renderProxyManageList);
+
+                // 代理管理 - 筛选按钮（4个）
+                document.querySelectorAll('.proxy-filter-btn').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        document.querySelectorAll('.proxy-filter-btn').forEach(b => b.classList.remove('active'));
+                        this.classList.add('active');
+                        renderProxyManageList();
+                    });
+                });
+
+                // 批量操作
+                document.getElementById('proxyBatchEnable').addEventListener('click', () => proxyBatchAction('enable'));
+                document.getElementById('proxyBatchDisable').addEventListener('click', () => proxyBatchAction('disable'));
+                document.getElementById('proxyBatchAuto').addEventListener('click', () => proxyBatchAction('auto'));
+
+                // 规则配置
+                document.getElementById('proxyRulesToggle').addEventListener('click', function() {
+                    const panel = document.getElementById('proxyRulesPanel');
+                    panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+                    this.querySelector('i').className = panel.style.display === 'none' ?
+                        'fa-solid fa-chevron-right' : 'fa-solid fa-chevron-down';
+                });
+                document.getElementById('saveProxyRules').addEventListener('click', saveRulesFromUI);
+
+                // 系统信息中的今日更新
+                document.getElementById('refreshStats').addEventListener('click', renderSysInfo);
+
+                document.getElementById('themeToggle').addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    document.getElementById('themePicker').classList.toggle('open');
+                });
+                document.addEventListener('click', () => {
+                    document.getElementById('themePicker').classList.remove('open');
+                });
+                document.querySelectorAll('.color-dot').forEach(dot => {
+                    dot.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        setThemeColor(dot.dataset.color);
+                        document.getElementById('themePicker').classList.remove('open');
+                    });
+                });
+
+                document.getElementById('darkModeToggle').addEventListener('click', function() {
+                    document.body.classList.toggle('light-mode');
+                    const mode = document.body.classList.contains('light-mode') ? 'light' : 'dark';
+                    Storage.save("ansonradio_theme", mode);
+                });
+
+                document.querySelectorAll('.closeModal').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        document.getElementById('addRadioModal').classList.remove('open');
+                    });
+                });
+                document.getElementById('saveRadio').addEventListener('click', saveNewRadio);
+                document.getElementById('addRadioModal').addEventListener('click', (e) => {
+                    if (e.target === e.currentTarget) document.getElementById('addRadioModal').classList.remove('open');
+                });
+
+                document.getElementById('closeCategoryManage').addEventListener('click', function() {
+                    document.getElementById('categoryManageModal').classList.remove('open');
+                });
+                document.getElementById('categoryManageModal').addEventListener('click', function(e) {
+                    if (e.target === e.currentTarget) this.classList.remove('open');
+                });
+
+                document.getElementById('addCategoryBtn').addEventListener('click', function() {
+                    const input = document.getElementById('newCategoryInput');
+                    const name = input.value.trim();
+                    if (!name) { showToast("请输入分类名称"); return; }
+                    if (categoryList.some(c => c.name === name)) { showToast("分类已存在"); return; }
+                    categoryList.push({ id: 'cat_' + Date.now(), name: name });
+                    saveCategoryList();
+                    renderCategoryManageList();
+                    input.value = '';
+                    renderCategoryTabs();
+                    showToast("分类已添加");
+                });
+                document.getElementById('newCategoryInput').addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter') {
+                        document.getElementById('addCategoryBtn').click();
+                    }
+                });
+
+                document.getElementById('importCancel').addEventListener('click', closeImportModal);
+                document.getElementById('importModal').addEventListener('click', (e) => {
+                    if (e.target === e.currentTarget) closeImportModal();
+                });
+                document.getElementById('importOverwrite').addEventListener('click', function() {
+                    importMode = "overwrite";
+                    document.getElementById('fileSelector').click();
+                });
+                document.getElementById('importAppend').addEventListener('click', function() {
+                    importMode = "append";
+                    document.getElementById('fileSelector').click();
+                });
+                document.getElementById('fileSelector').addEventListener('change', function(e) {
+                    const file = e.target.files[0];
+                    if (file && importMode) {
+                        performImport(file);
+                    } else if (file && !importMode) {
+                        showToast("请先选择导入方式");
+                        this.value = "";
+                    }
+                });
+
+                document.getElementById('closeManageModal').addEventListener('click', () => {
+                    document.getElementById('manageModal').classList.remove('open');
+                });
+                document.getElementById('manageModal').addEventListener('click', (e) => {
+                    if (e.target === e.currentTarget) document.getElementById('manageModal').classList.remove('open');
+                });
+                document.getElementById('manageSearchInput').addEventListener('input', function() {
+                    renderManageList(this.value);
+                });
+                document.getElementById('clearAllBtn').addEventListener('click', clearAllStations);
+
+                document.getElementById('closeEditModal').addEventListener('click', () => {
+                    document.getElementById('editModal').classList.remove('open');
+                });
+                document.getElementById('editModal').addEventListener('click', (e) => {
+                    if (e.target === e.currentTarget) document.getElementById('editModal').classList.remove('open');
+                });
+                document.getElementById('saveEditRadio').addEventListener('click', saveEditRadio);
+
+                document.addEventListener('keydown', (e) => {
+                    if (e.target.tagName === 'INPUT') return;
+                    if (e.key === ' ' || e.key === 'Space') {
+                        e.preventDefault();
+                        togglePlay();
+                    }
+                });
+            }
+
+            // ============================================================
+            // 初始化
+            // ============================================================
+            function init() {
+                initData();
+                loadThemeColor();
+
+                // 默认选中"广东"分类
+                currentFilter = "cat_gd";
+
+                renderCategoryTabs();
+                renderStationList();
+                bindEvents();
+
+                // 渲染规则配置（默认）
+                renderProxyRules();
+
+                nowPlaying.textContent = "未播放";
+                updatePlayButtonState();
+                updateFavButtonState();
+            }
+
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', init);
+            } else {
+                init();
+            }
+
+            window.addEventListener('beforeunload', () => {
+                if (hlsInstance) { hlsInstance.destroy(); hlsInstance = null; }
+                audioPlayer.pause();
+            });
+
+        })();
+    </script>
+</body>
+</html>
