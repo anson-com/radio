@@ -1,5 +1,5 @@
 // 缓存版本号，更新时修改数字刷新缓存
-const CACHE_VER = "AnsonFMv2026.1";
+const CACHE_VER = "AnsonFMv2026.2.19";
 
 // 离线必须缓存的核心本地文件（相对路径）
 const CACHE_FILES = [
