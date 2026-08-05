@@ -1,18 +1,1 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-  <rect width="512" height="512" rx="80" fill="#7c8dff"/>
-  <!-- 内部图标保持不变，居中显示，略微缩小避免溢出 -->
-  <g transform="translate(128, 108) scale(1.0)">
-    <path d="M 128 220 C 60 190, 30 120, 30 80 C 30 30, 70 10, 128 10 C 186 10, 226 30, 226 80 C 226 120, 196 190, 128 220 Z" fill="#ffffff" stroke="#ffffff" stroke-width="4"/>
-    <path d="M100 40 L 40 -32" stroke="#ffffff" stroke-width="6" stroke-linecap="round"/>
-    <path d="M156 40 L 216 -32" stroke="#ffffff" stroke-width="6" stroke-linecap="round"/>
-    <circle cx="40" cy="-32" r="8" fill="#ffffff"/>
-    <circle cx="216" cy="-32" r="8" fill="#ffffff"/>
-    <ellipse cx="80" cy="124" rx="28" ry="34" fill="#7c8dff" transform="rotate(-12 80 124)"/>
-    <circle cx="84" cy="128" r="14" fill="#ffffff" transform="rotate(-12 84 128)"/>
-    <circle cx="78" cy="120" r="5" fill="#7c8dff" transform="rotate(-12 78 120)"/>
-    <ellipse cx="176" cy="124" rx="28" ry="34" fill="#7c8dff" transform="rotate(12 176 124)"/>
-    <circle cx="172" cy="128" r="14" fill="#ffffff" transform="rotate(12 172 128)"/>
-    <circle cx="166" cy="120" r="5" fill="#7c8dff" transform="rotate(12 166 120)"/>
-    <path d="M100 172 Q 128 190 156 178" stroke="#ffffff" stroke-width="8" stroke-linecap="round" fill="none"/>
-  </g>
-</svg>
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 -40 256 296"><metadata><rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:dc="http://purl.org/dc/elements/1.1/"><rdf:Description><dc:creator>RealFaviconGenerator</dc:creator><dc:source>https://realfavicongenerator.net</dc:source></rdf:Description></rdf:RDF></metadata><path d="M 128 220 C 60 190, 30 120, 30 80 C 30 30, 70 10, 128 10 C 186 10, 226 30, 226 80 C 226 120, 196 190, 128 220 Z" fill="#7c8dff" stroke="#7c8dff" stroke-width="4"></path><path d="M100 40 L 40 -32" stroke="#7c8dff" stroke-width="6" stroke-linecap="round"></path><path d="M156 40 L 216 -32" stroke="#7c8dff" stroke-width="6" stroke-linecap="round"></path><circle cx="40" cy="-32" r="8" fill="#7c8dff"></circle><circle cx="216" cy="-32" r="8" fill="#7c8dff"></circle><ellipse cx="80" cy="124" rx="28" ry="34" fill="#ffffff" transform="rotate(-12 80 124)"></ellipse><circle cx="84" cy="128" r="14" fill="#1a1a2e" transform="rotate(-12 84 128)"></circle><circle cx="78" cy="120" r="5" fill="#ffffff" transform="rotate(-12 78 120)"></circle><ellipse cx="176" cy="124" rx="28" ry="34" fill="#ffffff" transform="rotate(12 176 124)"></ellipse><circle cx="172" cy="128" r="14" fill="#1a1a2e" transform="rotate(12 172 128)"></circle><circle cx="166" cy="120" r="5" fill="#ffffff" transform="rotate(12 166 120)"></circle><path d="M109 168 Q 130 180 150 170" stroke="#1a1a2e" stroke-width="8" stroke-linecap="round" fill="none"></path></svg>
