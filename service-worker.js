@@ -1,82 +1,51 @@
-// service-worker.js - AnsonFM 基础缓存
-const CACHE_NAME = 'ansonfm-v1';
+// 缓存版本号，更新时修改数字刷新缓存
+const CACHE_VER = "AnsonFMv2026.1";
 
-// 需要预缓存的静态资源（核心骨架）
-const urlsToCache = [
-  '/radio/',
-  '/radio/index.html',
-  '/radio/manifest.json',
-  '/radio/favicon.ico',
-  '/radio/favicon.svg',
-  '/radio/favicon-96x96.png',
-  '/radio/apple-touch-icon.png',
-  '/radio/web-app-manifest-192x192.png',
-  '/radio/web-app-manifest-512x512.png'
+// 离线必须缓存的核心本地文件（相对路径）
+const CACHE_FILES = [
+  "./index.html",
+  "./manifest.json",
+  "./favicon.svg",
+  "./favicon-96x96.png",
+  "./favicon.ico",
+  "./apple-touch-icon.png",
+  "./web-app-manifest-192x192.png",
+  "./web-app-manifest-512x512.png"
 ];
 
-// 安装阶段：预缓存核心文件
-self.addEventListener('install', event => {
+// 安装：预缓存核心文件
+self.addEventListener("install", (event) => {
   event.waitUntil(
-    caches.open(CACHE_NAME)
-      .then(cache => {
-        console.log('[Service Worker] 预缓存成功');
-        return cache.addAll(urlsToCache);
-      })
-      .catch(err => console.error('[SW] 缓存失败:', err))
+    caches.open(CACHE_VER).then((cache) => {
+      return cache.addAll(CACHE_FILES);
+    }).then(() => self.skipWaiting())
   );
-  self.skipWaiting(); // 立即激活
 });
 
-// 激活阶段：清理旧缓存
-self.addEventListener('activate', event => {
+// 激活：自动清理旧版本缓存
+self.addEventListener("activate", (event) => {
   event.waitUntil(
-    caches.keys().then(cacheNames => {
+    caches.keys().then((cacheNames) => {
       return Promise.all(
-        cacheNames.map(name => {
-          if (name !== CACHE_NAME) {
-            console.log('[SW] 删除旧缓存:', name);
-            return caches.delete(name);
-          }
-        })
+        cacheNames.filter(name => name !== CACHE_VER)
+          .map(name => caches.delete(name))
       );
-    })
+    }).then(() => self.clients.claim())
   );
-  return self.clients.claim();
 });
 
-// 拦截请求：优先缓存，网络回退（对音频流直连，不缓存）
-self.addEventListener('fetch', event => {
-  const requestUrl = event.request.url;
+// 拦截请求：优先本地缓存，断网自动兜底首页
+self.addEventListener("fetch", (event) => {
+  const req = event.request;
+  // POST 请求直接走原生逻辑，不缓存
+  if (req.method !== "GET") return;
+  // 只缓存本地同源文件，外部资源不缓存
+  const url = new URL(req.url);
+  if (url.origin !== self.location.origin) return;
 
-  // 🔥 跳过音频流（m3u8/mp3 等），避免错误缓存
-  if (requestUrl.includes('.m3u8') || requestUrl.includes('.mp3') || 
-      requestUrl.includes('stream') || requestUrl.includes('live')) {
-    event.respondWith(fetch(event.request));
-    return;
-  }
-
-  // 对 HTML/CSS/JS/图标等静态资源，优先用缓存
   event.respondWith(
-    caches.match(event.request)
-      .then(response => {
-        if (response) {
-          return response; // 缓存命中
-        }
-        // 网络请求并更新缓存（可选）
-        return fetch(event.request).then(networkResponse => {
-          // 只缓存成功的响应（非音频）
-          if (!networkResponse || networkResponse.status !== 200) {
-            return networkResponse;
-          }
-          const responseClone = networkResponse.clone();
-          caches.open(CACHE_NAME).then(cache => {
-            cache.put(event.request, responseClone);
-          });
-          return networkResponse;
-        }).catch(() => {
-          // 离线时显示自定义页面（可选）
-          return new Response('网络已断开，请检查连接', { status: 503 });
-        });
-      })
+    caches.match(req).then((cacheRes) => {
+      return cacheRes || fetch(req).catch(() => caches.match("./index.html"));
+    })
   );
 });
