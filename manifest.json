@@ -1,7 +1,7 @@
 {
-  "name": "AnsonRadio",
+  "name": "AnsonFM",
   "short_name": "AnsonFM",
-  "description": "流畅收听全球网络电台",
+  "description": "蓝星电台",
   "start_url": "./index.html",
   "display": "standalone",
   "orientation": "portrait",
