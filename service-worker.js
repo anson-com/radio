@@ -37,9 +37,7 @@ self.addEventListener("activate", (event) => {
 // 拦截请求：优先本地缓存，断网自动兜底首页
 self.addEventListener("fetch", (event) => {
   const req = event.request;
-  // POST 请求直接走原生逻辑，不缓存
   if (req.method !== "GET") return;
-  // 只缓存本地同源文件，外部资源不缓存
   const url = new URL(req.url);
   if (url.origin !== self.location.origin) return;
 
