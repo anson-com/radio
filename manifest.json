@@ -2,7 +2,7 @@
   "name": "AnsonRadio",
   "short_name": "AnsonFM",
   "description": "流畅收听全球网络电台",
-  "start_url": ".",
+  "start_url": "./index.html"
   "display": "standalone",
   "orientation": "portrait",
   "background_color": "#0b0d14",
