@@ -6,20 +6,19 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <title>AnsonFM</title>
 <!-- ===== PWA / Favicon ===== -->
-<link rel="icon" type="image/svg+xml" href="favicon.svg" />
-<link rel="icon" type="image/png" href="favicon-96x96.png" sizes="96x96" />
-<link rel="shortcut icon" href="favicon.ico" />
-<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png" />
+<link rel="icon" type="image/svg+xml" href="./favicon.svg" />
+<link rel="icon" type="image/png" href="./favicon-96x96.png" sizes="96x96" />
+<link rel="shortcut icon" href="./favicon.ico" />
+<link rel="apple-touch-icon" sizes="180x180" href="./apple-touch-icon.png" />
 <meta name="apple-mobile-web-app-title" content="AnsonFM" />
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 
-<!-- ===== PWA 清单 ===== -->
-<link rel="manifest" href="manifest.json" />
+<!-- ===== PWA 清单（改为相对路径） ===== -->
+<link rel="manifest" href="./manifest.json" />
 
 <!-- ===== 主题色 ===== -->
 <meta name="theme-color" content="#7c8dff" />
-
     <link href="https://fonts.googleapis.com/css2?family=Lobster&family=Pacifico&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script>
@@ -3972,13 +3971,7 @@ for (const domain of whitelistDomains) {
                 document.querySelector(`.color-dot[data-color="${color}"]`)?.classList.add('active');
                 localStorage.setItem('radioThemeColor', color);
                 updateFavButtonState();
-
-                // 👇 新增：同步更新 theme-color meta 标签
-    const metaTheme = document.querySelector('meta[name="theme-color"]');
-    if (metaTheme) {
-        metaTheme.content = color;
-    }
-}
+            }
 
             function loadThemeColor() {
                 const saved = localStorage.getItem('radioThemeColor');
@@ -4276,26 +4269,25 @@ for (const domain of whitelistDomains) {
             // 初始化
             // ============================================================
             function init() {
-    initData();
-    loadThemeColor();
+                initData();
+                loadThemeColor();
 
-    // 默认选中"广东"分类
-    currentFilter = "cat_gd";
+                // 默认选中"广东"分类
+                currentFilter = "cat_gd";
 
-    renderCategoryTabs();
-    renderStationList();
-    bindEvents();
+                renderCategoryTabs();
+                renderStationList();
+                bindEvents();
 
-    // 渲染规则配置（默认）
-    renderProxyRules();
+                // 渲染规则配置（默认）
+                renderProxyRules();
 
-    nowPlaying.textContent = "未播放";
-    updatePlayButtonState();
-    updateFavButtonState();
+                nowPlaying.textContent = "未播放";
+                updatePlayButtonState();
+                updateFavButtonState();
 
-    // 👇 新增：注册 Service Worker
-    if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('service-worker.js')   // 相对路径，指向 /radio/service-worker.js
+if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('./service-worker.js', { scope: './' })
         .then(registration => {
             console.log('[SW] 注册成功，范围:', registration.scope);
         })
@@ -4303,6 +4295,7 @@ for (const domain of whitelistDomains) {
             console.log('[SW] 注册失败:', error);
         });
 }
+            
 
             if (document.readyState === 'loading') {
                 document.addEventListener('DOMContentLoaded', init);
