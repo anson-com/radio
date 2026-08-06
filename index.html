@@ -3272,104 +3272,142 @@ for (const domain of whitelistDomains) {
                 audioPlayer.addEventListener('ended', () => updatePlayState(false));
             }
 
-            function playRadio(radioId) {
-                const radio = radioDataSource.find(r => r.id === radioId);
-                if (!radio) {
-                    setCardError(radioId, "找不到电台");
-                    return;
+           function playRadio(radioId) {
+    const radio = radioDataSource.find(r => r.id === radioId);
+    if (!radio) {
+        setCardError(radioId, "找不到电台");
+        return;
+    }
+
+    stopPlayback();
+    if (cardError) clearCardError();
+    currentPlayingId = radioId;
+    nowPlaying.textContent = radio.name;
+
+    // ===== 锁屏控制（MediaSession） =====
+    if ('mediaSession' in navigator) {
+        // 设置锁屏显示的元数据（电台名称）
+        navigator.mediaSession.metadata = new MediaMetadata({
+            title: radio.name || 'AnsonFM',
+            artist: 'AnsonFM 网络电台',
+            album: 'AnsonFM',
+            artwork: [
+                {
+                    src: radio.logo || './favicon.svg',
+                    sizes: '512x512',
+                    type: 'image/svg+xml'
                 }
+            ]
+        });
 
-                stopPlayback();
-                if (cardError) clearCardError();
-                currentPlayingId = radioId;
-                nowPlaying.textContent = radio.name;
-                hideToast();
-                if (errorTimer) clearTimeout(errorTimer);
+        // 设置锁屏控制按钮：上一曲 / 播放暂停 / 下一曲
+        try {
+            navigator.mediaSession.setActionHandler('play', () => {
+                audioPlayer.play();
+                updatePlayState(true);
+            });
+            navigator.mediaSession.setActionHandler('pause', () => {
+                audioPlayer.pause();
+                updatePlayState(false);
+            });
+            navigator.mediaSession.setActionHandler('previoustrack', () => {
+                prevStation();
+            });
+            navigator.mediaSession.setActionHandler('nexttrack', () => {
+                nextStation();
+            });
+        } catch (e) {
+            console.log('MediaSession 设置失败:', e);
+        }
+    }
 
-                if (!historyList.includes(radioId)) {
-                    historyList.unshift(radioId);
-                    if (historyList.length > 30) historyList.pop();
-                    Storage.save("ansonradio_history", historyList);
-                }
+    hideToast();
+    if (errorTimer) clearTimeout(errorTimer);
 
-                renderStationList();
+    if (!historyList.includes(radioId)) {
+        historyList.unshift(radioId);
+        if (historyList.length > 30) historyList.pop();
+        Storage.save("ansonradio_history", historyList);
+    }
 
-                let streamUrl = radio.stream.trim();
-                if (!streamUrl) {
-                    setCardError(radioId, "直播地址为空");
-                    return;
-                }
+    renderStationList();
 
-                // ===== 多层决策树判断 =====
-                const decision = shouldUseProxy(streamUrl, radio);
-                const proxyBase = "https://m3u8.kowiwa11.workers.dev/?url=";
+    let streamUrl = radio.stream.trim();
+    if (!streamUrl) {
+        setCardError(radioId, "直播地址为空");
+        return;
+    }
 
-                if (decision.useProxy) {
-                    streamUrl = proxyBase + encodeURIComponent(streamUrl);
-                    recordProxyUsage(radioId);
-                    console.log(`[代理] ${radio.name} 使用代理播放 (原因: ${decision.reason})`);
-                } else {
-                    console.log(`[直连] ${radio.name} 直接播放 (原因: ${decision.reason})`);
-                }
+    // ===== 多层决策树判断 =====
+    const decision = shouldUseProxy(streamUrl, radio);
+    const proxyBase = "https://m3u8.kowiwa11.workers.dev/?url=";
 
-                // ===== 后续播放逻辑 =====
-                const isM3U8 = streamUrl.includes('.m3u8') || streamUrl.includes('m3u8');
-                const nativeHlsSupport = audioPlayer.canPlayType('application/vnd.apple.mpegurl') ||
-                    audioPlayer.canPlayType('audio/mpegurl');
-                const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+    if (decision.useProxy) {
+        streamUrl = proxyBase + encodeURIComponent(streamUrl);
+        recordProxyUsage(radioId);
+        console.log(`[代理] ${radio.name} 使用代理播放 (原因: ${decision.reason})`);
+    } else {
+        console.log(`[直连] ${radio.name} 直接播放 (原因: ${decision.reason})`);
+    }
 
-                if (isM3U8 && (nativeHlsSupport || isIOS)) {
-                    audioPlayer.src = streamUrl;
-                    audioPlayer.play().then(() => updatePlayState(true)).catch((err) => {
-                        console.warn('原生HLS播放失败，降级到HLS.js:', err);
-                        fallbackToHLS(streamUrl);
-                    });
-                    audioPlayer.addEventListener('playing', () => updatePlayState(true));
-                    audioPlayer.addEventListener('pause', () => { if (!audioPlayer.ended) updatePlayState(false); });
-                    audioPlayer.addEventListener('ended', () => updatePlayState(false));
-                    audioPlayer.addEventListener('error', () => {
-                        console.warn('原生HLS报错，尝试降级');
-                        if (hlsInstance) { hlsInstance.destroy(); hlsInstance = null; }
-                        fallbackToHLS(streamUrl);
-                    });
-                                } else if (isM3U8 && Hls.isSupported()) {
-                    fallbackToHLS(streamUrl);
-                } else {
-                    // ===== 针对 iOS 云听源：加时间戳强制刷新 =====
-                    if (!isM3U8 && streamUrl.includes('ytcastmp3.radio.cn')) {
-                        const separator = streamUrl.includes('?') ? '&' : '?';
-                        streamUrl += separator + '_=' + Date.now();
-                    }
+    // ===== 后续播放逻辑（原样保留） =====
+    const isM3U8 = streamUrl.includes('.m3u8') || streamUrl.includes('m3u8');
+    const nativeHlsSupport = audioPlayer.canPlayType('application/vnd.apple.mpegurl') ||
+        audioPlayer.canPlayType('audio/mpegurl');
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
 
-                    audioPlayer.src = streamUrl;
-                    audioPlayer.play().then(() => updatePlayState(true)).catch(() => {
-                        if (currentPlayingId) {
-                            setCardError(currentPlayingId, "无法播放此流");
-                        }
-                        discWrapper.classList.remove('playing');
-                        updatePlayButtonState();
-                        updateFavButtonState();
-                        audioPlayer.pause();
-                        audioPlayer.src = '';
-                        audioPlayer.load();
-                    });
-                    audioPlayer.addEventListener('playing', () => updatePlayState(true));
-                    audioPlayer.addEventListener('pause', () => { if (!audioPlayer.ended) updatePlayState(false); });
-                    audioPlayer.addEventListener('ended', () => updatePlayState(false));
-                    audioPlayer.addEventListener('error', function onError() {
-                        if (currentPlayingId) {
-                            setCardError(currentPlayingId, "播放出错");
-                        }
-                        discWrapper.classList.remove('playing');
-                        updatePlayButtonState();
-                        updateFavButtonState();
-                        audioPlayer.pause();
-                        audioPlayer.src = '';
-                        audioPlayer.load();
-                        audioPlayer.removeEventListener('error', onError);
-                    });
-                }
+    if (isM3U8 && (nativeHlsSupport || isIOS)) {
+        audioPlayer.src = streamUrl;
+        audioPlayer.play().then(() => updatePlayState(true)).catch((err) => {
+            console.warn('原生HLS播放失败，降级到HLS.js:', err);
+            fallbackToHLS(streamUrl);
+        });
+        audioPlayer.addEventListener('playing', () => updatePlayState(true));
+        audioPlayer.addEventListener('pause', () => { if (!audioPlayer.ended) updatePlayState(false); });
+        audioPlayer.addEventListener('ended', () => updatePlayState(false));
+        audioPlayer.addEventListener('error', () => {
+            console.warn('原生HLS报错，尝试降级');
+            if (hlsInstance) { hlsInstance.destroy(); hlsInstance = null; }
+            fallbackToHLS(streamUrl);
+        });
+    } else if (isM3U8 && Hls.isSupported()) {
+        fallbackToHLS(streamUrl);
+    } else {
+        // ===== 针对 iOS 云听源：加时间戳强制刷新 =====
+        if (!isM3U8 && streamUrl.includes('ytcastmp3.radio.cn')) {
+            const separator = streamUrl.includes('?') ? '&' : '?';
+            streamUrl += separator + '_=' + Date.now();
+        }
+
+        audioPlayer.src = streamUrl;
+        audioPlayer.play().then(() => updatePlayState(true)).catch(() => {
+            if (currentPlayingId) {
+                setCardError(currentPlayingId, "无法播放此流");
             }
+            discWrapper.classList.remove('playing');
+            updatePlayButtonState();
+            updateFavButtonState();
+            audioPlayer.pause();
+            audioPlayer.src = '';
+            audioPlayer.load();
+        });
+        audioPlayer.addEventListener('playing', () => updatePlayState(true));
+        audioPlayer.addEventListener('pause', () => { if (!audioPlayer.ended) updatePlayState(false); });
+        audioPlayer.addEventListener('ended', () => updatePlayState(false));
+        audioPlayer.addEventListener('error', function onError() {
+            if (currentPlayingId) {
+                setCardError(currentPlayingId, "播放出错");
+            }
+            discWrapper.classList.remove('playing');
+            updatePlayButtonState();
+            updateFavButtonState();
+            audioPlayer.pause();
+            audioPlayer.src = '';
+            audioPlayer.load();
+            audioPlayer.removeEventListener('error', onError);
+        });
+    }
+}
 
             // ============================================================
             // 控制函数
