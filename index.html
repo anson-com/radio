@@ -2575,16 +2575,15 @@
             const CATEGORY_STORAGE_KEY = "ansonradio_categories";
 
             const initRadioList = [
-                { "id": "test001", "name": "羊城交通广播", "area": "广东", "city": "广州", "tag": "交通",
-                    "stream": "http://live.xmcdn.com/live/248/64.m3u8", "logo": "", "desc": "广东羊城交通广播" },
-                { "id": "cnr1", "name": "中国之声", "area": "全国", "city": "北京", "tag": "全国",
-                    "stream": "http://satellitepull.cnr.cn/live/wxzgzs/playlist.m3u8", "logo": "",
-                    "desc": "中央人民广播电台中国之声" },
-                { "id": "cnr3", "name": "音乐之声", "area": "全国", "city": "北京", "tag": "音乐",
-                    "stream": "http://satellitepull.cnr.cn/live/wxyyzs/playlist.m3u8", "logo": "",
-                    "desc": "中央人民广播电台音乐之声" }
-            ];
-
+    { "id": "test001", "name": "羊城交通广播", "area": "广东", "city": "广州", "tag": "交通",
+        "stream": "http://live.xmcdn.com/live/248/64.m3u8", "logo": "", "desc": "广东羊城交通广播", "useProxy": false },
+    { "id": "cnr1", "name": "中国之声", "area": "全国", "city": "北京", "tag": "全国",
+        "stream": "http://satellitepull.cnr.cn/live/wxzgzs/playlist.m3u8", "logo": "",
+        "desc": "中央人民广播电台中国之声", "useProxy": false },
+    { "id": "cnr3", "name": "音乐之声", "area": "全国", "city": "北京", "tag": "音乐",
+        "stream": "http://satellitepull.cnr.cn/live/wxyyzs/playlist.m3u8", "logo": "",
+        "desc": "中央人民广播电台音乐之声", "useProxy": false }
+];
             const Storage = {
                 save(key, data) { localStorage.setItem(key, JSON.stringify(data)); },
                 load(key) { const s = localStorage.getItem(key); return s ? JSON.parse(s) : null; }
@@ -2954,7 +2953,11 @@ for (const domain of whitelistDomains) {
                     Storage.save("ansonradio_list", radioDataSource);
                 } else {
                     radioDataSource = saved;
-                }
+        // ✅ 就这一行：把所有没有设置过代理的电台，默认设为关闭
+        radioDataSource.forEach(r => { if (r.useProxy === undefined) r.useProxy = false; });
+        Storage.save("ansonradio_list", radioDataSource);
+    }
+                
                 favList = Storage.load("ansonradio_fav") || [];
                 historyList = Storage.load("ansonradio_history") || [];
                 const theme = Storage.load("ansonradio_theme");
@@ -3293,7 +3296,7 @@ for (const domain of whitelistDomains) {
             album: 'AnsonFM',
             artwork: [
                 {
-                    src: radio.logo || './favicon.svg',
+                    src: radio.logo || './web-app-manifest-512x5121.png',
                     sizes: '512x512',
                     type: 'image/svg+xml'
                 }
@@ -3349,6 +3352,29 @@ for (const domain of whitelistDomains) {
     } else {
         console.log(`[直连] ${radio.name} 直接播放 (原因: ${decision.reason})`);
     }
+// ===== 🔥 验证 URL 是否有效，防止跳转到网页 =====
+if (!streamUrl.startsWith('http://') && !streamUrl.startsWith('https://')) {
+    setCardError(radioId, "无效的直播地址");
+    currentPlayingId = null;
+    nowPlaying.textContent = "未播放";
+    renderStationList();
+    return;
+}
+
+// 如果 URL 包含网页扩展名，直接报错（防止跳转到 QQ 音乐等网页）
+const webExtensions = ['.html', '.htm', '.php', '.asp', '.jsp', '.do', '.action'];
+const isWebPage = webExtensions.some(ext => streamUrl.toLowerCase().includes(ext));
+// 如果包含 ? 但没有 .m3u8 也没有 .mp3，也可能是网页链接
+const hasQuery = streamUrl.includes('?');
+const isAudio = streamUrl.includes('.m3u8') || streamUrl.includes('.mp3') || streamUrl.includes('.aac') || streamUrl.includes('.flac');
+
+if (isWebPage || (hasQuery && !isAudio && !streamUrl.includes('&'))) {
+    setCardError(radioId, "该电台地址无效");
+    currentPlayingId = null;
+    nowPlaying.textContent = "未播放";
+    renderStationList();
+    return;
+}
 
     // ===== 后续播放逻辑（原样保留） =====
     const isM3U8 = streamUrl.includes('.m3u8') || streamUrl.includes('m3u8');
