@@ -9,14 +9,20 @@
   "theme_color": "#7c8dff",
   "icons": [
     {
-      "src": "./web-app-manifest-512x5121.png",
+      "src": "./maskable_icon.png",
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "any"
+      "purpose": "maskable"
     },
     {
       "src": "./web-app-manifest-192x1921.png",
       "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./web-app-manifest-512x5121.png",
+      "sizes": "512x512",
       "type": "image/png",
       "purpose": "any"
     },
@@ -27,7 +33,7 @@
       "purpose": "any"
     },
     {
-      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 -40 256 296'%3E%3Cpath d='M128 220 C60 190 30 120 30 80 C30 30 70 10 128 10 C186 10 226 30 226 80 C226 120 196 190 128 220Z' fill='%237c8dff' stroke='%237c8dff' stroke-width='4'/%3E%3Cpath d='M100 40 L40 -32' stroke='%237c8dff' stroke-width='6' stroke-linecap='round'/%3E%3Cpath d='M156 40 L216 -32' stroke='%237c8dff' stroke-width='6' stroke-linecap='round'/%3E%3Ccircle cx='40' cy='-32' r='8' fill='%237c8dff'/%3E%3Ccircle cx='216' cy='-32' r='8' fill='%237c8dff'/%3E%3Cellipse cx='80' cy='124' rx='28' ry='34' fill='%23ffffff' transform='rotate(-12 80 124)'/%3E%3Ccircle cx='84' cy='128' r='14' fill='%231a1a2e' transform='rotate(-12 84 128)'/%3E%3Ccircle cx='78' cy='120' r='5' fill='%23ffffff' transform='rotate(-12 78 120)'/%3E%3Cellipse cx='176' cy='124' rx='28' ry='34' fill='%23ffffff' transform='rotate(12 176 124)'/%3E%3Ccircle cx='172' cy='128' r='14' fill='%231a1a2e' transform='rotate(12 172 128)'/%3E%3Ccircle cx='166' cy='120' r='5' fill='%23ffffff' transform='rotate(12 166 120)'/%3E%3Cpath d='M100 172 Q128 190 156 178' stroke='%231a1a2e' stroke-width='8' stroke-linecap='round' fill='none'/%3E%3C/svg%3E",
+      "src": "./favicon.svg",
       "sizes": "any",
       "type": "image/svg+xml",
       "purpose": "any"
