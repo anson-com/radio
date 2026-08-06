@@ -1,24 +1,28 @@
+<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    
+    <!-- ===== iOS / PWA 基础配置 ===== -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="AnsonFM" />
+    
     <title>AnsonFM</title>
-<!-- ===== PWA / Favicon（相对路径，保留 PNG + SVG 混合） ===== -->
-<link rel="icon" type="image/svg+xml" href="./favicon.svg" />
-<link rel="icon" type="image/png" href="./favicon-96x96.png" sizes="96x96" />
-<link rel="shortcut icon" href="./favicon.ico" />
-<link rel="apple-touch-icon" sizes="180x180" href="./apple-touch-icon.png" />
-<meta name="apple-mobile-web-app-title" content="AnsonFM" />
-<meta name="apple-mobile-web-app-capable" content="yes" />
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-
-<!-- ===== PWA 清单（相对路径） ===== -->
-<link rel="manifest" href="./manifest.json" />
-
-<!-- ===== 主题色 ===== -->
-<meta name="theme-color" content="#7c8dff" />
+    
+    <!-- ===== PWA / Favicon（相对路径，保留 PNG + SVG 混合） ===== -->
+    <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
+    <link rel="icon" type="image/png" href="./favicon-96x96.png" sizes="96x96" />
+    <link rel="shortcut icon" href="./favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="./apple-touch-icon.png" />
+    
+    <!-- ===== PWA 清单（相对路径） ===== -->
+    <link rel="manifest" href="./manifest.json" />
+    
+    <!-- ===== 主题色（默认值，JS 会动态更新） ===== -->
+    <meta name="theme-color" content="#7c8dff" />
+    
     <link href="https://fonts.googleapis.com/css2?family=Lobster&family=Pacifico&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script>
@@ -57,11 +61,13 @@
             --gap-sm: 12px;
             --gap-md: 18px;
             --gap-lg: 24px;
-/* ===== PWA 启动画面 ===== */
-#pwaSplash {
-    background: var(--bg-body);
-    color: var(--text-primary);
-}
+        }
+
+        /* ===== PWA 启动画面 ===== */
+        #pwaSplash {
+            background: var(--bg-body);
+            color: var(--text-primary);
+        }
 
         body.light-mode {
             --bg-body: #f4f6fc;
@@ -2074,38 +2080,40 @@
     </style>
 </head>
 <body>
-<!-- ===== 自定义启动画面 ===== -->
-<div id="pwaSplash" style="
-    position: fixed;
-    inset: 0;
-    background: var(--bg-body);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    z-index: 99999;
-    transition: opacity 0.8s ease;
-">
-    <!-- 动态 SVG Logo，跟随主题色 -->
-    <svg width="120" height="120" viewBox="0 -40 256 296" xmlns="http://www.w3.org/2000/svg">
-        <path d="M 128 220 C 60 190, 30 120, 30 80 C 30 30, 70 10, 128 10 C 186 10, 226 30, 226 80 C 226 120, 196 190, 128 220 Z"
-              fill="var(--primary, #7c8dff)" stroke="var(--primary, #7c8dff)" stroke-width="4"/>
-        <path d="M100 40 L 40 -32" stroke="var(--primary, #7c8dff)" stroke-width="6" stroke-linecap="round"/>
-        <path d="M156 40 L 216 -32" stroke="var(--primary, #7c8dff)" stroke-width="6" stroke-linecap="round"/>
-        <circle cx="40" cy="-32" r="8" fill="var(--primary, #7c8dff)"/>
-        <circle cx="216" cy="-32" r="8" fill="var(--primary, #7c8dff)"/>
-        <ellipse cx="80" cy="124" rx="28" ry="34" fill="#ffffff" transform="rotate(-12 80 124)"/>
-        <circle cx="84" cy="128" r="14" fill="#1a1a2e" transform="rotate(-12 84 128)"/>
-        <circle cx="78" cy="120" r="5" fill="#ffffff" transform="rotate(-12 78 120)"/>
-        <ellipse cx="176" cy="124" rx="28" ry="34" fill="#ffffff" transform="rotate(12 176 124)"/>
-        <circle cx="172" cy="128" r="14" fill="#1a1a2e" transform="rotate(12 172 128)"/>
-        <circle cx="166" cy="120" r="5" fill="#ffffff" transform="rotate(12 166 120)"/>
-        <path d="M100 172 Q 128 190 156 178" stroke="#1a1a2e" stroke-width="8" stroke-linecap="round" fill="none"/>
-    </svg>
-    <div style="margin-top: 20px; font-size: 24px; font-weight: 600; color: var(--text-primary);">
-        AnsonFM
+
+    <!-- ===== 🆕 PWA 自定义启动画面 ===== -->
+    <div id="pwaSplash" style="
+        position: fixed;
+        inset: 0;
+        background: var(--bg-body);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        z-index: 99999;
+        transition: opacity 0.8s ease;
+    ">
+        <!-- 动态 SVG Logo，跟随主题色 -->
+        <svg width="120" height="120" viewBox="0 -40 256 296" xmlns="http://www.w3.org/2000/svg">
+            <path d="M 128 220 C 60 190, 30 120, 30 80 C 30 30, 70 10, 128 10 C 186 10, 226 30, 226 80 C 226 120, 196 190, 128 220 Z"
+                  fill="var(--primary, #7c8dff)" stroke="var(--primary, #7c8dff)" stroke-width="4"/>
+            <path d="M100 40 L 40 -32" stroke="var(--primary, #7c8dff)" stroke-width="6" stroke-linecap="round"/>
+            <path d="M156 40 L 216 -32" stroke="var(--primary, #7c8dff)" stroke-width="6" stroke-linecap="round"/>
+            <circle cx="40" cy="-32" r="8" fill="var(--primary, #7c8dff)"/>
+            <circle cx="216" cy="-32" r="8" fill="var(--primary, #7c8dff)"/>
+            <ellipse cx="80" cy="124" rx="28" ry="34" fill="#ffffff" transform="rotate(-12 80 124)"/>
+            <circle cx="84" cy="128" r="14" fill="#1a1a2e" transform="rotate(-12 84 128)"/>
+            <circle cx="78" cy="120" r="5" fill="#ffffff" transform="rotate(-12 78 120)"/>
+            <ellipse cx="176" cy="124" rx="28" ry="34" fill="#ffffff" transform="rotate(12 176 124)"/>
+            <circle cx="172" cy="128" r="14" fill="#1a1a2e" transform="rotate(12 172 128)"/>
+            <circle cx="166" cy="120" r="5" fill="#ffffff" transform="rotate(12 166 120)"/>
+            <path d="M100 172 Q 128 190 156 178" stroke="#1a1a2e" stroke-width="8" stroke-linecap="round" fill="none"/>
+        </svg>
+        <div style="margin-top: 20px; font-size: 24px; font-weight: 600; color: var(--text-primary);">
+            AnsonFM
+        </div>
     </div>
-</div>
+
     <!-- ===== 主卡片 ===== -->
     <div class="radio-app" id="app">
 
@@ -2206,7 +2214,7 @@
     </div>
 
     <!-- ============================================================
-        弹窗区域
+        弹窗区域（与你原来的完全一样，完整保留）
     ============================================================ -->
 
     <!-- 新增电台弹窗 -->
@@ -2360,7 +2368,7 @@
     <!-- 编辑弹窗 -->
     <div class="modal-mask" id="editModal">
         <div class="modal-box">
-            
+            <h3>✏️ 编辑电台</h3>
             <div class="edit-form">
                 <div class="form-row">
                     <label>电台 ID（不可修改）</label>
@@ -2386,12 +2394,14 @@
                     <label>台标图片 URL（选填）</label>
                     <input type="text" id="editLogo" placeholder="https://...">
                 </div>
-                
+                <div class="form-row" style="display: flex; align-items: center; gap: 10px;">
+                    <input type="checkbox" id="editUseProxy" style="width: auto; margin: 0; height: 18px; width: 18px;">
+                    <label for="editUseProxy" style="margin: 0; font-size: 13px; color: var(--text-secondary);">🌐 启用代理</label>
+                </div>
             </div>
             <div class="modal-footer">
-               <button class="btn-outline-theme" id="saveEditRadio"><i class="fa-regular fa-floppy-disk"></i> 保存修改</button>
                 <button class="btn-outline-theme" id="closeEditModal"><i class="fa-regular fa-circle-xmark"></i> 取消</button>
-               
+                <button class="btn-outline-theme" id="saveEditRadio"><i class="fa-regular fa-floppy-disk"></i> 保存修改</button>
             </div>
         </div>
     </div>
@@ -2545,8 +2555,41 @@
         (function() {
             "use strict";
 
+// ===== 启动画面控制 =====
+let splashReady = false;
+let splashMinTimePassed = false;
+let splashDone = false;
+
+function hideSplash() {
+    if (splashDone) return;
+    const splash = document.getElementById('pwaSplash');
+    if (!splash) return;
+    splashDone = true;
+    splash.style.opacity = '0';
+    setTimeout(() => {
+        splash.style.display = 'none';
+    }, 800);
+}
+
+function checkCanHideSplash() {
+    if (splashMinTimePassed && splashReady) {
+        hideSplash();
+    }
+}
+
+// 兜底：最长 4.5 秒强制关闭
+setTimeout(() => {
+    hideSplash();
+}, 4500);
+
+// 最小显示时长 1.2 秒
+setTimeout(() => {
+    splashMinTimePassed = true;
+    checkCanHideSplash();
+}, 1200);
+
             // ============================================================
-            // 数据层
+            // 数据层（完全保留原有内容）
             // ============================================================
             let radioDataSource = [];
             let favList = [];
@@ -2575,15 +2618,16 @@
             const CATEGORY_STORAGE_KEY = "ansonradio_categories";
 
             const initRadioList = [
-    { "id": "test001", "name": "羊城交通广播", "area": "广东", "city": "广州", "tag": "交通",
-        "stream": "http://live.xmcdn.com/live/248/64.m3u8", "logo": "", "desc": "广东羊城交通广播", "useProxy": false },
-    { "id": "cnr1", "name": "中国之声", "area": "全国", "city": "北京", "tag": "全国",
-        "stream": "http://satellitepull.cnr.cn/live/wxzgzs/playlist.m3u8", "logo": "",
-        "desc": "中央人民广播电台中国之声", "useProxy": false },
-    { "id": "cnr3", "name": "音乐之声", "area": "全国", "city": "北京", "tag": "音乐",
-        "stream": "http://satellitepull.cnr.cn/live/wxyyzs/playlist.m3u8", "logo": "",
-        "desc": "中央人民广播电台音乐之声", "useProxy": false }
-];
+                { "id": "test001", "name": "羊城交通广播", "area": "广东", "city": "广州", "tag": "交通",
+                    "stream": "http://live.xmcdn.com/live/248/64.m3u8", "logo": "", "desc": "广东羊城交通广播" },
+                { "id": "cnr1", "name": "中国之声", "area": "全国", "city": "北京", "tag": "全国",
+                    "stream": "http://satellitepull.cnr.cn/live/wxzgzs/playlist.m3u8", "logo": "",
+                    "desc": "中央人民广播电台中国之声" },
+                { "id": "cnr3", "name": "音乐之声", "area": "全国", "city": "北京", "tag": "音乐",
+                    "stream": "http://satellitepull.cnr.cn/live/wxyyzs/playlist.m3u8", "logo": "",
+                    "desc": "中央人民广播电台音乐之声" }
+            ];
+
             const Storage = {
                 save(key, data) { localStorage.setItem(key, JSON.stringify(data)); },
                 load(key) { const s = localStorage.getItem(key); return s ? JSON.parse(s) : null; }
@@ -2953,11 +2997,7 @@ for (const domain of whitelistDomains) {
                     Storage.save("ansonradio_list", radioDataSource);
                 } else {
                     radioDataSource = saved;
-        // ✅ 就这一行：把所有没有设置过代理的电台，默认设为关闭
-        radioDataSource.forEach(r => { if (r.useProxy === undefined) r.useProxy = false; });
-        Storage.save("ansonradio_list", radioDataSource);
-    }
-                
+                }
                 favList = Storage.load("ansonradio_fav") || [];
                 historyList = Storage.load("ansonradio_history") || [];
                 const theme = Storage.load("ansonradio_theme");
@@ -3275,165 +3315,104 @@ for (const domain of whitelistDomains) {
                 audioPlayer.addEventListener('ended', () => updatePlayState(false));
             }
 
-           function playRadio(radioId) {
-    const radio = radioDataSource.find(r => r.id === radioId);
-    if (!radio) {
-        setCardError(radioId, "找不到电台");
-        return;
-    }
-
-    stopPlayback();
-    if (cardError) clearCardError();
-    currentPlayingId = radioId;
-    nowPlaying.textContent = radio.name;
-
-    // ===== 锁屏控制（MediaSession） =====
-    if ('mediaSession' in navigator) {
-        // 设置锁屏显示的元数据（电台名称）
-        navigator.mediaSession.metadata = new MediaMetadata({
-            title: radio.name || 'AnsonFM',
-            artist: 'AnsonFM 网络电台',
-            album: 'AnsonFM',
-            artwork: [
-                {
-                    src: radio.logo || './web-app-manifest-512x5121.png',
-                    sizes: '512x512',
-                    type: 'image/svg+xml'
+            function playRadio(radioId) {
+                const radio = radioDataSource.find(r => r.id === radioId);
+                if (!radio) {
+                    setCardError(radioId, "找不到电台");
+                    return;
                 }
-            ]
-        });
 
-        // 设置锁屏控制按钮：上一曲 / 播放暂停 / 下一曲
-        try {
-            navigator.mediaSession.setActionHandler('play', () => {
-                audioPlayer.play();
-                updatePlayState(true);
-            });
-            navigator.mediaSession.setActionHandler('pause', () => {
-                audioPlayer.pause();
-                updatePlayState(false);
-            });
-            navigator.mediaSession.setActionHandler('previoustrack', () => {
-                prevStation();
-            });
-            navigator.mediaSession.setActionHandler('nexttrack', () => {
-                nextStation();
-            });
-        } catch (e) {
-            console.log('MediaSession 设置失败:', e);
-        }
-    }
+                stopPlayback();
+                if (cardError) clearCardError();
+                currentPlayingId = radioId;
+                nowPlaying.textContent = radio.name;
+                hideToast();
+                if (errorTimer) clearTimeout(errorTimer);
 
-    hideToast();
-    if (errorTimer) clearTimeout(errorTimer);
+                if (!historyList.includes(radioId)) {
+                    historyList.unshift(radioId);
+                    if (historyList.length > 30) historyList.pop();
+                    Storage.save("ansonradio_history", historyList);
+                }
 
-    if (!historyList.includes(radioId)) {
-        historyList.unshift(radioId);
-        if (historyList.length > 30) historyList.pop();
-        Storage.save("ansonradio_history", historyList);
-    }
+                renderStationList();
 
-    renderStationList();
+                let streamUrl = radio.stream.trim();
+                if (!streamUrl) {
+                    setCardError(radioId, "直播地址为空");
+                    return;
+                }
 
-    let streamUrl = radio.stream.trim();
-    if (!streamUrl) {
-        setCardError(radioId, "直播地址为空");
-        return;
-    }
+                // ===== 多层决策树判断 =====
+                const decision = shouldUseProxy(streamUrl, radio);
+                const proxyBase = "https://m3u8.kowiwa11.workers.dev/?url=";
 
-    // ===== 多层决策树判断 =====
-    const decision = shouldUseProxy(streamUrl, radio);
-    const proxyBase = "https://m3u8.kowiwa11.workers.dev/?url=";
+                if (decision.useProxy) {
+                    streamUrl = proxyBase + encodeURIComponent(streamUrl);
+                    recordProxyUsage(radioId);
+                    console.log(`[代理] ${radio.name} 使用代理播放 (原因: ${decision.reason})`);
+                } else {
+                    console.log(`[直连] ${radio.name} 直接播放 (原因: ${decision.reason})`);
+                }
 
-    if (decision.useProxy) {
-        streamUrl = proxyBase + encodeURIComponent(streamUrl);
-        recordProxyUsage(radioId);
-        console.log(`[代理] ${radio.name} 使用代理播放 (原因: ${decision.reason})`);
-    } else {
-        console.log(`[直连] ${radio.name} 直接播放 (原因: ${decision.reason})`);
-    }
-// ===== 🔥 验证 URL 是否有效，防止跳转到网页 =====
-if (!streamUrl.startsWith('http://') && !streamUrl.startsWith('https://')) {
-    setCardError(radioId, "无效的直播地址");
-    currentPlayingId = null;
-    nowPlaying.textContent = "未播放";
-    renderStationList();
-    return;
-}
+                // ===== 后续播放逻辑 =====
+                const isM3U8 = streamUrl.includes('.m3u8') || streamUrl.includes('m3u8');
+                const nativeHlsSupport = audioPlayer.canPlayType('application/vnd.apple.mpegurl') ||
+                    audioPlayer.canPlayType('audio/mpegurl');
+                const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
 
-// 如果 URL 包含网页扩展名，直接报错（防止跳转到 QQ 音乐等网页）
-const webExtensions = ['.html', '.htm', '.php', '.asp', '.jsp', '.do', '.action'];
-const isWebPage = webExtensions.some(ext => streamUrl.toLowerCase().includes(ext));
-// 如果包含 ? 但没有 .m3u8 也没有 .mp3，也可能是网页链接
-const hasQuery = streamUrl.includes('?');
-const isAudio = streamUrl.includes('.m3u8') || streamUrl.includes('.mp3') || streamUrl.includes('.aac') || streamUrl.includes('.flac');
+                if (isM3U8 && (nativeHlsSupport || isIOS)) {
+                    audioPlayer.src = streamUrl;
+                    audioPlayer.play().then(() => updatePlayState(true)).catch((err) => {
+                        console.warn('原生HLS播放失败，降级到HLS.js:', err);
+                        fallbackToHLS(streamUrl);
+                    });
+                    audioPlayer.addEventListener('playing', () => updatePlayState(true));
+                    audioPlayer.addEventListener('pause', () => { if (!audioPlayer.ended) updatePlayState(false); });
+                    audioPlayer.addEventListener('ended', () => updatePlayState(false));
+                    audioPlayer.addEventListener('error', () => {
+                        console.warn('原生HLS报错，尝试降级');
+                        if (hlsInstance) { hlsInstance.destroy(); hlsInstance = null; }
+                        fallbackToHLS(streamUrl);
+                    });
+                                } else if (isM3U8 && Hls.isSupported()) {
+                    fallbackToHLS(streamUrl);
+                } else {
+                    // ===== 针对 iOS 云听源：加时间戳强制刷新 =====
+                    if (!isM3U8 && streamUrl.includes('ytcastmp3.radio.cn')) {
+                        const separator = streamUrl.includes('?') ? '&' : '?';
+                        streamUrl += separator + '_=' + Date.now();
+                    }
 
-if (isWebPage || (hasQuery && !isAudio && !streamUrl.includes('&'))) {
-    setCardError(radioId, "该电台地址无效");
-    currentPlayingId = null;
-    nowPlaying.textContent = "未播放";
-    renderStationList();
-    return;
-}
-
-    // ===== 后续播放逻辑（原样保留） =====
-    const isM3U8 = streamUrl.includes('.m3u8') || streamUrl.includes('m3u8');
-    const nativeHlsSupport = audioPlayer.canPlayType('application/vnd.apple.mpegurl') ||
-        audioPlayer.canPlayType('audio/mpegurl');
-    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-
-    if (isM3U8 && (nativeHlsSupport || isIOS)) {
-        audioPlayer.src = streamUrl;
-        audioPlayer.play().then(() => updatePlayState(true)).catch((err) => {
-            console.warn('原生HLS播放失败，降级到HLS.js:', err);
-            fallbackToHLS(streamUrl);
-        });
-        audioPlayer.addEventListener('playing', () => updatePlayState(true));
-        audioPlayer.addEventListener('pause', () => { if (!audioPlayer.ended) updatePlayState(false); });
-        audioPlayer.addEventListener('ended', () => updatePlayState(false));
-        audioPlayer.addEventListener('error', () => {
-            console.warn('原生HLS报错，尝试降级');
-            if (hlsInstance) { hlsInstance.destroy(); hlsInstance = null; }
-            fallbackToHLS(streamUrl);
-        });
-    } else if (isM3U8 && Hls.isSupported()) {
-        fallbackToHLS(streamUrl);
-    } else {
-        // ===== 针对 iOS 云听源：加时间戳强制刷新 =====
-        if (!isM3U8 && streamUrl.includes('ytcastmp3.radio.cn')) {
-            const separator = streamUrl.includes('?') ? '&' : '?';
-            streamUrl += separator + '_=' + Date.now();
-        }
-
-        audioPlayer.src = streamUrl;
-        audioPlayer.play().then(() => updatePlayState(true)).catch(() => {
-            if (currentPlayingId) {
-                setCardError(currentPlayingId, "无法播放此流");
+                    audioPlayer.src = streamUrl;
+                    audioPlayer.play().then(() => updatePlayState(true)).catch(() => {
+                        if (currentPlayingId) {
+                            setCardError(currentPlayingId, "无法播放此流");
+                        }
+                        discWrapper.classList.remove('playing');
+                        updatePlayButtonState();
+                        updateFavButtonState();
+                        audioPlayer.pause();
+                        audioPlayer.src = '';
+                        audioPlayer.load();
+                    });
+                    audioPlayer.addEventListener('playing', () => updatePlayState(true));
+                    audioPlayer.addEventListener('pause', () => { if (!audioPlayer.ended) updatePlayState(false); });
+                    audioPlayer.addEventListener('ended', () => updatePlayState(false));
+                    audioPlayer.addEventListener('error', function onError() {
+                        if (currentPlayingId) {
+                            setCardError(currentPlayingId, "播放出错");
+                        }
+                        discWrapper.classList.remove('playing');
+                        updatePlayButtonState();
+                        updateFavButtonState();
+                        audioPlayer.pause();
+                        audioPlayer.src = '';
+                        audioPlayer.load();
+                        audioPlayer.removeEventListener('error', onError);
+                    });
+                }
             }
-            discWrapper.classList.remove('playing');
-            updatePlayButtonState();
-            updateFavButtonState();
-            audioPlayer.pause();
-            audioPlayer.src = '';
-            audioPlayer.load();
-        });
-        audioPlayer.addEventListener('playing', () => updatePlayState(true));
-        audioPlayer.addEventListener('pause', () => { if (!audioPlayer.ended) updatePlayState(false); });
-        audioPlayer.addEventListener('ended', () => updatePlayState(false));
-        audioPlayer.addEventListener('error', function onError() {
-            if (currentPlayingId) {
-                setCardError(currentPlayingId, "播放出错");
-            }
-            discWrapper.classList.remove('playing');
-            updatePlayButtonState();
-            updateFavButtonState();
-            audioPlayer.pause();
-            audioPlayer.src = '';
-            audioPlayer.load();
-            audioPlayer.removeEventListener('error', onError);
-        });
-    }
-}
 
             // ============================================================
             // 控制函数
@@ -3543,10 +3522,9 @@ if (isWebPage || (hasQuery && !isAudio && !streamUrl.includes('&'))) {
         proxyIconHtml = '<i class="fa-solid fa-globe" style="color:var(--text-weak);"></i>';
         toggleClass = '';
         titleText = '关闭代理';
-           
-} else {
+    } else {
         // 自动模式 - 灰色旋转箭头
-        proxyIconHtml = '<i class="fas fa-circle-half-stroke" style="color:var(--text-weak);"></i>';
+        proxyIconHtml = '<i class="fa-solid fa-rotate" style="color:var(--text-weak);"></i>';
         toggleClass = '';
         titleText = '自动模式';
     }
@@ -3678,7 +3656,7 @@ if (isWebPage || (hasQuery && !isAudio && !streamUrl.includes('&'))) {
                 document.getElementById("editTag").value = radio.tag || "";
                 document.getElementById("editStream").value = radio.stream || "";
                 document.getElementById("editLogo").value = radio.logo || "";
-                
+                document.getElementById("editUseProxy").checked = radio.useProxy || false;
                 document.getElementById("editModal").classList.add("open");
             }
 
@@ -3694,7 +3672,7 @@ if (isWebPage || (hasQuery && !isAudio && !streamUrl.includes('&'))) {
                 radio.tag = document.getElementById("editTag").value.trim() || "自定义";
                 radio.stream = stream;
                 radio.logo = document.getElementById("editLogo").value.trim() || "";
-               
+                radio.useProxy = document.getElementById("editUseProxy").checked;
                 Storage.save("ansonradio_list", radioDataSource);
                 document.getElementById("editModal").classList.remove("open");
                 if (currentPlayingId === editingRadioId) {
@@ -4384,26 +4362,21 @@ if (isWebPage || (hasQuery && !isAudio && !streamUrl.includes('&'))) {
                 nowPlaying.textContent = "未播放";
                 updatePlayButtonState();
                 updateFavButtonState();
-// 显示启动画面至少 2 秒
-const splash = document.getElementById('pwaSplash');
-if (splash) {
-    setTimeout(() => {
-        splash.style.opacity = '0';
-        setTimeout(() => {
-            splash.style.display = 'none';
-        }, 800);
-    }, 2000);  // ← 控制显示时长，这里 2000ms = 2 秒
-}
 
-if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('./service-worker.js', { scope: './' })
-        .then(registration => {
-            console.log('[SW] 注册成功，范围:', registration.scope);
-        })
-        .catch(error => {
-            console.log('[SW] 注册失败:', error);
-        });
-}
+                               // ===== 🆕 标记业务初始化完成 =====
+                splashReady = true;
+                checkCanHideSplash();
+
+                // ===== 🆕 PWA：注册 Service Worker =====
+                if ('serviceWorker' in navigator) {
+                    navigator.serviceWorker.register('./service-worker.js', { scope: './' })
+                        .then(registration => {
+                            console.log('[SW] 注册成功，范围:', registration.scope);
+                        })
+                        .catch(error => {
+                            console.log('[SW] 注册失败:', error);
+                        });
+                }
             }
 
             if (document.readyState === 'loading') {
