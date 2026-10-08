@@ -3972,6 +3972,9 @@ for (const domain of whitelistDomains) {
                 document.querySelectorAll('.color-dot').forEach(d => d.classList.remove('active'));
                 document.querySelector(`.color-dot[data-color="${color}"]`)?.classList.add('active');
                 localStorage.setItem('radioThemeColor', color);
+                    // 👇 加这一行，同步更新浏览器/系统 UI 颜色
+    const themeMeta = document.querySelector('meta[name="theme-color"]');
+    if (themeMeta) themeMeta.setAttribute('content', color);
                 updateFavButtonState();
             }
 
