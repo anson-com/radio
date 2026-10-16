@@ -1,5 +1,5 @@
 // 缓存版本号，更新时修改数字刷新缓存
-const CACHE_VER = "StarFMv2026.11";
+const CACHE_VER = "StarFMv2026.13";
 
 // 离线必须缓存的核心本地文件（相对路径）
 const CACHE_FILES = [
