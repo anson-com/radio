@@ -1,6 +1,6 @@
 {
-  "name": "AnsonFM",
-  "short_name": "AnsonFM",
+  "name": "StarFM",
+  "short_name": "StarFM",
   "description": "蓝星电台",
   "start_url": "./index.html",
   "display": "standalone",
