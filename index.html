@@ -3301,6 +3301,21 @@ if (rules.ipDirect) {
                     navigator.mediaSession.playbackState =
                         audioPlayer.paused ? 'paused' : 'playing';
                 } catch (e) { /* 部分浏览器只读，忽略 */ }
+
+                // ★ iOS 直播流方案：
+                //   iOS 锁屏根据「duration 是否为 Infinity」来决定
+                //   显示「上一曲/下一曲」还是「10秒快进/快退」
+                //   setPositionState(duration: Infinity) 可以告诉 iOS
+                //   这是一个直播流，锁屏应显示上一曲/下一曲
+                try {
+                    if ('setPositionState' in navigator.mediaSession) {
+                        navigator.mediaSession.setPositionState({
+                            duration: Infinity,
+                            position: 0,
+                            playbackRate: audioPlayer.playbackRate || 1
+                        });
+                    }
+                } catch (e) { /* 直播流可能不支持，忽略 */ }
             }
 
             // ★ 平台检测：区分 iOS 与 Android（锁屏媒体会话用）
@@ -3311,28 +3326,23 @@ if (rules.ipDirect) {
             // ============================================================
             // ★ iOS 锁屏按钮显示规则（关键！）
             //
-            // iOS 锁屏播放器两侧按钮显示什么，完全取决于
-            // <audio> 元素的 duration 值：
+            // iOS 锁屏播放器两侧按钮显示什么，取决于 audio.duration：
             //
             //   duration = Infinity 或 NaN  → 显示「上一曲 / 下一曲」
             //   duration = 有限正数        → 显示「-10s / +10s」
             //
-            // 所以想让锁屏显示上一曲/下一曲，核心是确保
-            // audioPlayer.duration 始终为 Infinity（直播流语义）。
-            //
-            // 问题：通过代理 / HLS.js 播放时，duration 可能被设为
-            //       0 或某个有限值，iOS 就会显示 10 秒按钮。
-            //
-            // 解决：监听 durationchange 事件，一旦 duration 变为
-            //       有限值，立刻改写为 Infinity。
-            //       （注意：duration 是只读属性，需要通过
-            //        Object.defineProperty 或直接赋值覆盖）
+            // 三管齐下确保 iOS 显示上一曲/下一曲：
+            // 1. setPositionState({ duration: Infinity })
+            //    通过 MediaSession API 告诉 iOS 这是直播流
+            // 2. 覆盖 HTMLMediaElement.prototype.duration getter
+            //    让 audio.duration 始终返回 Infinity
+            //    （原型链级覆盖，比实例 defineProperty 更可靠）
+            // 3. 注销 seekbackward/seekforward handler（兜底）
             //
             // 【Android 的不同】
             // Android Chrome 的锁屏按钮由 setActionHandler 决定：
             //   注册了 previoustrack/nexttrack → 显示上一曲/下一曲
             //   注册了 seekbackward/seekforward → 显示 10 秒按钮
-            //   两者都注册 → 都显示（或按优先级）
             // 所以 Android 端只需确保 seek handler 未注册即可。
             // ============================================================
 
@@ -3378,46 +3388,75 @@ if (rules.ipDirect) {
 
                 if (lockscreenIsIOS) {
                     // ── iOS 方案 ──
-                    // iOS 不看 setActionHandler，看 audio.duration
-                    // 确保 duration 始终为 Infinity
                     //
-                    // 方法：durationchange 事件触发时强制覆盖 duration
-                    //       但 duration 是只读的，需用 defineProperty
-                    let _forcing = false; // 防止递归
-                    const forceLiveDuration = () => {
-                        if (_forcing) return;
-                        _forcing = true;
+                    // iOS Safari/PWA 锁屏按钮显示规则：
+                    //   - duration = Infinity/NaN（直播流）→ 上一曲/下一曲
+                    //   - duration = 有限值（点播）     → 10秒快进/快退
+                    //
+                    // 方案三管齐下：
+                    // 1. setPositionState({ duration: Infinity })
+                    //    告诉 iOS MediaSession 这是直播流
+                    // 2. 覆盖 HTMLMediaElement.prototype.duration getter
+                    //    让 audio.duration 始终返回 Infinity
+                    //    （比实例级 defineProperty 更可靠，因为 duration
+                    //     是原型链上的 getter，不是实例属性）
+                    // 3. 注销 seek handler（兜底）
+
+                    // ── 方案 2：原型链级覆盖 duration ──
+                    // 在原型上替换 getter，所有 audio 元素都生效
+                    if (!HTMLMediaElement.prototype._durationOverridden) {
                         try {
-                            const d = audioPlayer.duration;
-                            // 只要 duration 不是 Infinity/NaN，就强制改为 Infinity
-                            // （0 和有限正数都会让 iOS 显示 10 秒按钮）
-                            if (!isNaN(d) && isFinite(d)) {
-                                Object.defineProperty(audioPlayer, 'duration', {
-                                    value: Infinity,
-                                    writable: true,
-                                    configurable: true
+                            const originalDesc = Object.getOwnPropertyDescriptor(
+                                HTMLMediaElement.prototype, 'duration'
+                            );
+                            Object.defineProperty(HTMLMediaElement.prototype, 'duration', {
+                                get() {
+                                    // 原始 duration 值
+                                    let origVal = 0;
+                                    try {
+                                        origVal = originalDesc
+                                            ? originalDesc.get.call(this)
+                                            : NaN;
+                                    } catch (e) { origVal = NaN; }
+
+                                    // 直播流：原值为 Infinity/NaN/0 时
+                                    // 强制返回 Infinity，让 iOS 显示上一曲/下一曲
+                                    if (!isFinite(origVal) || origVal === 0) {
+                                        return Infinity;
+                                    }
+                                    // 非零有限值保留原值（不应该出现在电台场景）
+                                    return origVal;
+                                },
+                                configurable: true
+                            });
+                            HTMLMediaElement.prototype._durationOverridden = true;
+                        } catch (e) {
+                            // 某些浏览器不允许覆盖原型属性
+                        }
+                    }
+
+                    // ── 方案 1：在多个时机调用 setPositionState ──
+                    const notifyLiveStream = () => {
+                        try {
+                            if ('setPositionState' in navigator.mediaSession) {
+                                navigator.mediaSession.setPositionState({
+                                    duration: Infinity,
+                                    position: 0,
+                                    playbackRate: audioPlayer.playbackRate || 1
                                 });
                             }
-                        } catch (e) {
-                            // 部分 iOS 版本不允许覆盖 duration（原生属性）
-                        }
-                        _forcing = false;
+                        } catch (e) { /* 忽略 */ }
                     };
 
-                    audioPlayer.addEventListener('durationchange', forceLiveDuration);
-                    audioPlayer.addEventListener('loadedmetadata', forceLiveDuration);
-                    audioPlayer.addEventListener('loadstart', () => {
-                        setTimeout(forceLiveDuration, 100);
-                        setTimeout(forceLiveDuration, 500);
-                        setTimeout(forceLiveDuration, 2000);
-                    });
+                    audioPlayer.addEventListener('loadedmetadata', notifyLiveStream);
+                    audioPlayer.addEventListener('durationchange', notifyLiveStream);
                     audioPlayer.addEventListener('playing', () => {
-                        setTimeout(forceLiveDuration, 100);
-                        setTimeout(forceLiveDuration, 1000);
+                        setTimeout(notifyLiveStream, 100);
+                        setTimeout(notifyLiveStream, 500);
+                        setTimeout(notifyLiveStream, 2000);
                     });
 
-                    // iOS 上 seek handler 注册与否不影响按钮显示
-                    // 但仍注销以防万一
+                    // ── 方案 3：注销 seek handler（兜底）──
                     safeSet('seekbackward', null);
                     safeSet('seekforward',  null);
                     safeSet('seekto',       null);
