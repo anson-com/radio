@@ -4083,6 +4083,7 @@ if (decision.useProxy) {
                     // 👇 加这一行，同步更新浏览器/系统 UI 颜色
     const themeMeta = document.querySelector('meta[name="theme-color"]');
     if (themeMeta) themeMeta.setAttribute('content', color);
+    // ★ 把这段插在这里 ★
     // ★ 主题色变了，如果正在播放且用的是占位图，刷新锁屏
     if (currentPlayingId) {
         const r = radioDataSource.find(x => x.id === currentPlayingId);
