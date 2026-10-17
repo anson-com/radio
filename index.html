@@ -3444,12 +3444,32 @@ function setupMediaSession() {
     //   点击时执行 prevStation / nextStation。
     //   （注册了 handler 后，系统不会再执行默认的 seek 行为）
     // ------------------------------------------------------------
-    if (lockscreenIsIOS) {
-        safeSet('seekbackward', () => { doPrev(); });   // ⏪ → 上一台
-        safeSet('seekforward',  () => { doNext(); });   // ⏩ → 下一台
-        safeSet('seekto', null);                        // 进度条拖动保持禁用
-    }
+       if (lockscreenIsIOS) {
+        // 首次尝试注册（部分 iOS 立即生效）
+        safeSet('seekbackward', doPrev);
+        safeSet('seekforward',  doNext);
+        safeSet('seekto', null);
 
+        // ★ 关键：每次开始播放后重新注册
+        // iOS 在 playing 后会重置媒体会话，只有此时注册的 handler 才真正响应
+        audioPlayer.addEventListener('playing', () => {
+            setTimeout(() => {
+                safeSet('seekbackward', doPrev);
+                safeSet('seekforward',  doNext);
+                safeSet('seekto', null);
+            }, 100);
+            setTimeout(() => {
+                safeSet('seekbackward', doPrev);
+                safeSet('seekforward',  doNext);
+                safeSet('seekto', null);
+            }, 400);
+            setTimeout(() => {
+                safeSet('seekbackward', doPrev);
+                safeSet('seekforward',  doNext);
+                safeSet('seekto', null);
+            }, 1200);
+        });
+    }
     // ------------------------------------------------------------
     // Android / 桌面：注销 seek，保持显示上一曲/下一曲
     // ------------------------------------------------------------
