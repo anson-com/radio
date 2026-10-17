@@ -3361,86 +3361,118 @@
                           || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
             const lockscreenIsAndroid = /Android/i.test(navigator.userAgent);
 
-            function setupMediaSession() {
-                if (!('mediaSession' in navigator)) return;
+// ============================================================
+// ★ 媒体会话（锁屏 / 通知栏控制）
+// 【iOS 关键改动】
+//   iOS 直播流场景下，系统会强制显示 ⏪ / ⏩ 按钮（快退/快进），
+//   并且不允许同时显示「上一曲/下一曲」。
+//   因此我们把这俩按钮的功能重载为「切换电台」：
+//     点击 ⏪ → 上一台（prevStation）
+//     点击 ⏩ → 下一台（nextStation）
+//   这样图标虽仍是快进快退样式，但实际功能是切台。
+// ============================================================
+function setupMediaSession() {
+    if (!('mediaSession' in navigator)) return;
 
-                const ms = navigator.mediaSession;
+    const ms = navigator.mediaSession;
 
-                const safeSet = (action, handler) => {
-                    try { ms.setActionHandler(action, handler); } catch (e) { }
-                };
+    const safeSet = (action, handler) => {
+        try { ms.setActionHandler(action, handler); } catch (e) { }
+    };
 
-                // 持续强制标记为直播流
-                const forceLiveMediaState = () => {
-                    try {
-                        if ('setPositionState' in navigator.mediaSession) {
-                            navigator.mediaSession.setPositionState({
-                                duration: Infinity,
-                                position: 0,
-                                playbackRate: audioPlayer.playbackRate || 1
-                            });
-                        }
-                    } catch (e) {}
-                };
-                audioPlayer.addEventListener('loadedmetadata', forceLiveMediaState);
-                audioPlayer.addEventListener('durationchange', forceLiveMediaState);
-                audioPlayer.addEventListener('playing', () => {
-                    setTimeout(forceLiveMediaState, 50);
-                    setTimeout(forceLiveMediaState, 300);
-                    setTimeout(forceLiveMediaState, 1000);
+    // ------------------------------------------------------------
+    // 持续强制标记为直播流（保持 iOS 的“直播”语境）
+    // ------------------------------------------------------------
+    const forceLiveMediaState = () => {
+        try {
+            if ('setPositionState' in navigator.mediaSession) {
+                navigator.mediaSession.setPositionState({
+                    duration: Infinity,
+                    position: 0,
+                    playbackRate: audioPlayer.playbackRate || 1
                 });
-
-                // 播放 / 暂停
-                safeSet('play', () => {
-                    if (!currentPlayingId) { togglePlay(); return; }
-                    audioPlayer.play()
-                        .then(() => updatePlayState(true))
-                        .catch(() => { });
-                });
-
-                safeSet('pause', () => {
-                    audioPlayer.pause();
-                    updatePlayState(false);
-                });
-
-                // 锁屏左右按钮 → 上一曲 / 下一曲
-                safeSet('previoustrack', () => { prevStation(); });
-                safeSet('nexttrack',     () => { nextStation(); });
-
-                // 停止（部分安卓锁屏会显示）
-                safeSet('stop', () => {
-                    stopPlayback();
-                    currentPlayingId = null;
-                    nowPlaying.textContent = '未播放';
-                    syncMediaSessionState();
-                    renderStationList();
-                    updateFavButtonState();
-                });
-
-                if (lockscreenIsIOS) {
-                    safeSet('seekbackward', null);
-                    safeSet('seekforward',  null);
-                    safeSet('seekto',       null);
-                }
-
-                if (lockscreenIsAndroid || (!lockscreenIsIOS && !lockscreenIsAndroid)) {
-                    try {
-                        ms.setActionHandler('seekbackward', null);
-                        ms.setActionHandler('seekforward',  null);
-                        ms.setActionHandler('seekto',       null);
-                    } catch (e) { /* 忽略 */ }
-                    try {
-                        ms.setActionHandler('seekbackward', () => {});
-                        ms.setActionHandler('seekforward',  () => {});
-                        ms.setActionHandler('seekto',       () => {});
-                    } catch (e) { /* 忽略 */ }
-                }
-
-                // 状态同步
-                audioPlayer.addEventListener('play',  syncMediaSessionState);
-                audioPlayer.addEventListener('pause', syncMediaSessionState);
-                audioPlayer.addEventListener('ended', syncMediaSessionState);
             }
+        } catch (e) {}
+    };
+    audioPlayer.addEventListener('loadedmetadata', forceLiveMediaState);
+    audioPlayer.addEventListener('durationchange', forceLiveMediaState);
+    audioPlayer.addEventListener('playing', () => {
+        setTimeout(forceLiveMediaState, 50);
+        setTimeout(forceLiveMediaState, 300);
+        setTimeout(forceLiveMediaState, 1000);
+    });
+
+    // ------------------------------------------------------------
+    // 播放 / 暂停
+    // ------------------------------------------------------------
+    safeSet('play', () => {
+        if (!currentPlayingId) { togglePlay(); return; }
+        audioPlayer.play()
+            .then(() => updatePlayState(true))
+            .catch(() => { });
+    });
+
+    safeSet('pause', () => {
+        audioPlayer.pause();
+        updatePlayState(false);
+    });
+
+    // ------------------------------------------------------------
+    // 切台动作（供多处复用）
+    // ------------------------------------------------------------
+    const doPrev = () => { prevStation(); };
+    const doNext = () => { nextStation(); };
+
+    // 标准上一曲 / 下一曲（Android / 桌面 / 部分 iOS 场景会用到）
+    safeSet('previoustrack', doPrev);
+    safeSet('nexttrack',     doNext);
+
+    // 停止（部分安卓锁屏会显示）
+    safeSet('stop', () => {
+        stopPlayback();
+        currentPlayingId = null;
+        nowPlaying.textContent = '未播放';
+        syncMediaSessionState();
+        renderStationList();
+        updateFavButtonState();
+    });
+
+    // ------------------------------------------------------------
+    // ★ iOS：重载 ⏪ / ⏩ 按钮为切台
+    //   iOS 直播流下会显示快退/快进按钮，
+    //   我们注册 seekbackward / seekforward 回调，
+    //   点击时执行 prevStation / nextStation。
+    //   （注册了 handler 后，系统不会再执行默认的 seek 行为）
+    // ------------------------------------------------------------
+    if (lockscreenIsIOS) {
+        safeSet('seekbackward', () => { doPrev(); });   // ⏪ → 上一台
+        safeSet('seekforward',  () => { doNext(); });   // ⏩ → 下一台
+        safeSet('seekto', null);                        // 进度条拖动保持禁用
+    }
+
+    // ------------------------------------------------------------
+    // Android / 桌面：注销 seek，保持显示上一曲/下一曲
+    // ------------------------------------------------------------
+    if (lockscreenIsAndroid || (!lockscreenIsIOS && !lockscreenIsAndroid)) {
+        try {
+            ms.setActionHandler('seekbackward', null);
+            ms.setActionHandler('seekforward',  null);
+            ms.setActionHandler('seekto',       null);
+        } catch (e) { /* 忽略 */ }
+        try {
+            ms.setActionHandler('seekbackward', () => {});
+            ms.setActionHandler('seekforward',  () => {});
+            ms.setActionHandler('seekto',       () => {});
+        } catch (e) { /* 忽略 */ }
+    }
+
+    // ------------------------------------------------------------
+    // 状态同步
+    // ------------------------------------------------------------
+    audioPlayer.addEventListener('play',  syncMediaSessionState);
+    audioPlayer.addEventListener('pause', syncMediaSessionState);
+    audioPlayer.addEventListener('ended', syncMediaSessionState);
+}
 
             function stopPlayback() {
                 if (hlsInstance) { hlsInstance.destroy(); hlsInstance = null; }
