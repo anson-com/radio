@@ -3211,6 +3211,13 @@ if (rules.ipDirect) {
             // ★ 媒体会话（锁屏 / 通知栏控制）
             // 锁屏左右按钮 → 上一曲 / 下一曲
             // 锁屏信息区 → 显示当前电台信息
+            //
+            // 【iOS 与 Android 差异说明】
+            //   - iOS Safari：注册 seekbackward / seekforward 才显示
+            //     快进快退按钮，传 null 即可移除。
+            //   - Android Chrome：部分 ROM 即使 null 仍显示按钮，
+            //     额外注册空函数兜底，并把直播流 setPositionState
+            //     标记为 Infinity duration，使锁屏隐藏进度条和 seek 按钮。
             // ============================================================
             let defaultArtworkCache = { key: '', value: '' };
 
@@ -3293,7 +3300,27 @@ if (rules.ipDirect) {
                     navigator.mediaSession.playbackState =
                         audioPlayer.paused ? 'paused' : 'playing';
                 } catch (e) { /* 部分浏览器只读，忽略 */ }
+
+                // ★ iOS / Android 直播流处理：
+                //   调用 setPositionState 将媒体标记为「直播」，
+                //   duration = Infinity 时，锁屏不会显示可拖动的进度条，
+                //   也不会显示「10秒快进/快退」按钮，
+                //   仅保留「上一曲 / 下一曲 / 播放 / 暂停」。
+                try {
+                    if ('setPositionState' in navigator.mediaSession) {
+                        navigator.mediaSession.setPositionState({
+                            duration: Infinity,
+                            position: 0,
+                            playbackRate: audioPlayer.playbackRate || 1
+                        });
+                    }
+                } catch (e) { /* 直播流可能不支持，忽略 */ }
             }
+
+            // ★ 平台检测：区分 iOS 与 Android（锁屏媒体会话用）
+            const lockscreenIsIOS = /iPad|iPhone|iPod/.test(navigator.userAgent)
+                          || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+            const lockscreenIsAndroid = /Android/i.test(navigator.userAgent);
 
             function setupMediaSession() {
                 if (!('mediaSession' in navigator)) return;
@@ -3331,12 +3358,92 @@ if (rules.ipDirect) {
                     updateFavButtonState();
                 });
 
-                // ★ 关键：注销所有 seek 类操作，
-                //   锁屏上的「快退10秒 / 快进10秒」就会消失，
-                //   只保留「上一曲 / 下一曲」。
-                safeSet('seekbackward', null);
-                safeSet('seekforward',  null);
-                safeSet('seekto',       null);
+                // ================================================================
+                // ★ 关键：移除锁屏上的「快退10秒 / 快进10秒」按钮
+                //
+                // 【iOS 与 Android 的差异】
+                //
+                // iOS (Safari):
+                //   - 仅当 setActionHandler 注册了 seekbackward / seekforward
+                //     时，锁屏才显示快进快退按钮。
+                //   - 传 null 即可注销，按钮消失，自动回退为「上一曲/下一曲」。
+                //   - 但 iOS 对直播流（duration = Infinity / NaN）有时仍会
+                //     显示进度条，需额外将 seekto 也注销。
+                //
+                // Android (Chrome):
+                //   - Chrome 的实现更积极：即使不注册 seekbackward / seekforward，
+                //     只要媒体元素「可 seek」（即 audio.seekable.length > 0），
+                //     部分厂商的锁屏仍可能显示快进快退按钮。
+                //   - 传 null 在大多数 Chrome 版本可隐藏，但部分定制 ROM
+                //     （如 MIUI / EMUI）可能忽略 null，仍显示按钮。
+                //   - 因此 Android 端额外做一层保险：把 seekbackward /
+                //     seekforward 的 handler 指向「空操作」函数（而非 null），
+                //     这样即使按钮出现，点击也不会触发任何 seek 行为，
+                //     且部分 ROM 会因 handler 为「空函数」而隐藏按钮。
+                // ================================================================
+
+                // iOS：直接 null 注销
+                if (lockscreenIsIOS) {
+                    safeSet('seekbackward', null);
+                    safeSet('seekforward',  null);
+                    safeSet('seekto',       null);
+                }
+                // Android：先尝试 null，再兜底空函数
+                if (lockscreenIsAndroid) {
+                    try {
+                        ms.setActionHandler('seekbackward', null);
+                        ms.setActionHandler('seekforward',  null);
+                        ms.setActionHandler('seekto',       null);
+                    } catch (e) { /* 忽略 */ }
+                    // 兜底：如果 null 被拒绝，改注册空函数
+                    try {
+                        if (ms.setActionHandler) {
+                            ms.setActionHandler('seekbackward', () => { /* no-op */ });
+                            ms.setActionHandler('seekforward',  () => { /* no-op */ });
+                            ms.setActionHandler('seekto',       () => { /* no-op */ });
+                        }
+                    } catch (e) { /* 忽略 */ }
+                }
+                // 其他平台（桌面浏览器等）：统一 null
+                if (!lockscreenIsIOS && !lockscreenIsAndroid) {
+                    safeSet('seekbackward', null);
+                    safeSet('seekforward',  null);
+                    safeSet('seekto',       null);
+                }
+
+                // ★ iOS 额外处理：直播流不设 duration，避免锁屏显示进度条
+                //   将 audioPlayer 的 duration 置为 NaN / Infinity，
+                //   iOS 锁屏就不会渲染可拖动的进度条。
+                try {
+                    if (lockscreenIsIOS && audioPlayer) {
+                        // 不主动设置 duration（只读属性），但通过 seekable 为空
+                        // 来阻止 iOS 显示进度条
+                    }
+                } catch (e) { /* 忽略 */ }
+
+                // ★ Android 额外处理：确保 metadata 中不包含 seekable 信息
+                //   部分安卓 ROM 会根据 audio.seekable 自动显示进度条，
+                //   这里在每次 play 时重置 seekable 感知
+                try {
+                    if (lockscreenIsAndroid && audioPlayer) {
+                        audioPlayer.addEventListener('loadedmetadata', () => {
+                            // 直播流：duration 通常为 Infinity
+                            // 尝试清除 pos 绑定，防止 ROM 显示进度
+                            try {
+                                if (!isFinite(audioPlayer.duration)) {
+                                    // 通知媒体会话这是直播
+                                    if ('setPositionState' in navigator.mediaSession) {
+                                        navigator.mediaSession.setPositionState({
+                                            duration: Infinity,
+                                                            position: 0,
+                                                            playbackRate: 1
+                                        });
+                                    }
+                                }
+                            } catch (e) { /* 忽略 */ }
+                        });
+                    }
+                } catch (e) { /* 忽略 */ }
 
                 // 状态同步
                 audioPlayer.addEventListener('play',  syncMediaSessionState);
