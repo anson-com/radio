@@ -2554,6 +2554,64 @@
             let cardError = null;
             let cardErrorTimer = null;
 
+            // ============================================================
+            // ★ 静音占位符 - 用于在切台/暂停期间保持 iOS 媒体会话活跃
+            // 清空 audioPlayer.src 会导致 iOS 认为媒体会话结束，
+            // 从而把锁屏控制权交还给上一个 App（例如 QQ 音乐）。
+            // 用一个极短的静音 WAV 占位，可以让媒体会话“活着”，
+            // 锁屏控制权不会转移到其他 App。
+            // ============================================================
+            let silentAudioUrl = null;
+
+            function getSilentAudioUrl() {
+                if (silentAudioUrl) return silentAudioUrl;
+                try {
+                    const sr = 8000;
+                    const dur = 0.5;
+                    const numSamples = sr * dur;
+                    const buffer = new ArrayBuffer(44 + numSamples * 2);
+                    const view = new DataView(buffer);
+                    const ws = (offset, str) => {
+                        for (let i = 0; i < str.length; i++)
+                            view.setUint8(offset + i, str.charCodeAt(i));
+                    };
+                    ws(0, 'RIFF');
+                    view.setUint32(4, 36 + numSamples * 2, true);
+                    ws(8, 'WAVE');
+                    ws(12, 'fmt ');
+                    view.setUint32(16, 16, true);
+                    view.setUint16(20, 1, true);
+                    view.setUint16(22, 1, true);
+                    view.setUint32(24, sr, true);
+                    view.setUint32(28, sr * 2, true);
+                    view.setUint16(32, 2, true);
+                    view.setUint16(34, 16, true);
+                    ws(36, 'data');
+                    view.setUint32(40, numSamples * 2, true);
+                    const blob = new Blob([buffer], { type: 'audio/wav' });
+                    silentAudioUrl = URL.createObjectURL(blob);
+                } catch (e) {
+                    return null;
+                }
+                return silentAudioUrl;
+            }
+
+            function keepMediaSessionAlive() {
+                const silentUrl = getSilentAudioUrl();
+                if (!silentUrl) return false;
+                try {
+                    try { audioPlayer.pause(); } catch (e) {}
+                    audioPlayer.src = silentUrl;
+                    audioPlayer.load();
+                    if ('mediaSession' in navigator) {
+                        try { navigator.mediaSession.playbackState = 'paused'; } catch (e) {}
+                    }
+                    return true;
+                } catch (e) {
+                    return false;
+                }
+            }
+
             const PROXY_RULES_KEY = "ansonradio_proxy_rules";
             const PROXY_STATS_KEY = "ansonradio_proxy_stats";
 
@@ -3222,26 +3280,6 @@
             // ============================================================
             // ★ 锁屏封面 / artwork 生成
             // ============================================================
-            // 【关于图标大小】
-            //   锁屏上显示多大，最终由系统决定（Android 约 64dp、iOS 约 60pt），
-            //   网页无法直接指定。我们只能通过：
-            //     1) 提供高分辨率的源图（这里 canvas 生成 96/128/192/256/384/512 多尺寸）；
-            //     2) 在 artwork[].sizes 中写明真实像素尺寸；
-            //   让系统选到最清晰的那张，避免被拉伸模糊。
-            //
-            // 【关于不跳外链】
-            //   MediaMetadata.artwork 的 src 如果是 http(s) 外链，
-            //   部分 Android ROM 在点击通知栏大图时会直接打开该外链
-            //   （可能是带广告/推广的图床页面）。
-            //   因此这里只接受 data: / blob: 内联资源作为 artwork；
-            //   http(s) 台标被忽略，统一用 canvas 生成的 data URL 兜底，
-            //   这样点击时只会走系统原生的图片放大预览，不会跳出页面。
-            //
-            // 【关于主题色同步】
-            //   artwork 缓存以当前主题色为 key，主题色变化时调用
-            //   refreshArtworkCache() 清空，正在播放时立即重新
-            //   updateMediaSessionMetadata()，锁屏图标瞬间变新色。
-            // ============================================================
             let defaultArtworkCache = { key: '', value: null };
 
             function renderArtworkCanvas(color, size) {
@@ -3257,7 +3295,7 @@
                     ctx.fillRect(0, 0, size, size);
 
                     ctx.beginPath();
-                    ctx.arc(size / 2, size / 2, size * 0.35, 0, Math.PI * 2);
+                    ctx.arc(size / 2, size / 2, size * 0.37, 0, Math.PI * 2);
                     ctx.fillStyle = 'rgba(0, 0, 0, 0.25)';
                     ctx.fill();
 
@@ -3274,7 +3312,6 @@
             }
 
             function buildArtworkArray(color) {
-                // 多尺寸候选，覆盖 Android / iOS / 桌面常见需求
                 const sizesList = [96, 128, 192, 256, 384, 512];
                 const out = [];
                 sizesList.forEach(size => {
@@ -3299,7 +3336,6 @@
                 return arr;
             }
 
-            // 主题色变化后调用，强制下次重新生成
             function refreshArtworkCache() {
                 defaultArtworkCache = { key: '', value: null };
             }
@@ -3310,7 +3346,6 @@
                 try {
                     const artwork = [];
 
-                    // 台标：仅接受 data: / blob:，避免点击通知栏封面时打开外链
                     if (radio && radio.logo) {
                         const logo = String(radio.logo).trim();
                         if (logo.startsWith('data:') || logo.startsWith('blob:')) {
@@ -3318,7 +3353,6 @@
                         }
                     }
 
-                    // 兜底：canvas 生成的多尺寸 data URL（随主题色变化）
                     const fallbackArr = getDefaultArtworkArray();
                     fallbackArr.forEach(item => artwork.push(item));
 
@@ -3356,20 +3390,12 @@
                 } catch (e) { /* 直播流可能不支持，忽略 */ }
             }
 
-            // ★ 平台检测：区分 iOS 与 Android（锁屏媒体会话用）
             const lockscreenIsIOS = /iPad|iPhone|iPod/.test(navigator.userAgent)
                           || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
             const lockscreenIsAndroid = /Android/i.test(navigator.userAgent);
 
 // ============================================================
 // ★ 媒体会话（锁屏 / 通知栏控制）
-// 【iOS 关键改动】
-//   iOS 直播流场景下，系统会强制显示 ⏪ / ⏩ 按钮（快退/快进），
-//   并且不允许同时显示「上一曲/下一曲」。
-//   因此我们把这俩按钮的功能重载为「切换电台」：
-//     点击 ⏪ → 上一台（prevStation）
-//     点击 ⏩ → 下一台（nextStation）
-//   这样图标虽仍是快进快退样式，但实际功能是切台。
 // ============================================================
 function setupMediaSession() {
     if (!('mediaSession' in navigator)) return;
@@ -3380,9 +3406,6 @@ function setupMediaSession() {
         try { ms.setActionHandler(action, handler); } catch (e) { }
     };
 
-    // ------------------------------------------------------------
-    // 持续强制标记为直播流（保持 iOS 的“直播”语境）
-    // ------------------------------------------------------------
     const forceLiveMediaState = () => {
         try {
             if ('setPositionState' in navigator.mediaSession) {
@@ -3402,9 +3425,6 @@ function setupMediaSession() {
         setTimeout(forceLiveMediaState, 1000);
     });
 
-    // ------------------------------------------------------------
-    // 播放 / 暂停
-    // ------------------------------------------------------------
     safeSet('play', () => {
         if (!currentPlayingId) { togglePlay(); return; }
         audioPlayer.play()
@@ -3417,17 +3437,12 @@ function setupMediaSession() {
         updatePlayState(false);
     });
 
-    // ------------------------------------------------------------
-    // 切台动作（供多处复用）
-    // ------------------------------------------------------------
     const doPrev = () => { prevStation(); };
     const doNext = () => { nextStation(); };
 
-    // 标准上一曲 / 下一曲（Android / 桌面 / 部分 iOS 场景会用到）
     safeSet('previoustrack', doPrev);
     safeSet('nexttrack',     doNext);
 
-    // 停止（部分安卓锁屏会显示）
     safeSet('stop', () => {
         stopPlayback();
         currentPlayingId = null;
@@ -3437,21 +3452,11 @@ function setupMediaSession() {
         updateFavButtonState();
     });
 
-    // ------------------------------------------------------------
-    // ★ iOS：重载 ⏪ / ⏩ 按钮为切台
-    //   iOS 直播流下会显示快退/快进按钮，
-    //   我们注册 seekbackward / seekforward 回调，
-    //   点击时执行 prevStation / nextStation。
-    //   （注册了 handler 后，系统不会再执行默认的 seek 行为）
-    // ------------------------------------------------------------
-       if (lockscreenIsIOS) {
-        // 首次尝试注册（部分 iOS 立即生效）
+    if (lockscreenIsIOS) {
         safeSet('seekbackward', doPrev);
         safeSet('seekforward',  doNext);
         safeSet('seekto', null);
 
-        // ★ 关键：每次开始播放后重新注册
-        // iOS 在 playing 后会重置媒体会话，只有此时注册的 handler 才真正响应
         audioPlayer.addEventListener('playing', () => {
             setTimeout(() => {
                 safeSet('seekbackward', doPrev);
@@ -3470,9 +3475,7 @@ function setupMediaSession() {
             }, 1200);
         });
     }
-    // ------------------------------------------------------------
-    // Android / 桌面：注销 seek，保持显示上一曲/下一曲
-    // ------------------------------------------------------------
+
     if (lockscreenIsAndroid || (!lockscreenIsIOS && !lockscreenIsAndroid)) {
         try {
             ms.setActionHandler('seekbackward', null);
@@ -3486,18 +3489,20 @@ function setupMediaSession() {
         } catch (e) { /* 忽略 */ }
     }
 
-    // ------------------------------------------------------------
-    // 状态同步
-    // ------------------------------------------------------------
     audioPlayer.addEventListener('play',  syncMediaSessionState);
     audioPlayer.addEventListener('pause', syncMediaSessionState);
     audioPlayer.addEventListener('ended', syncMediaSessionState);
 }
 
+            // ============================================================
+            // ★ 关键修改：stopPlayback 用静音占位保持媒体会话
+            // ============================================================
             function stopPlayback() {
                 if (hlsInstance) { hlsInstance.destroy(); hlsInstance = null; }
-                audioPlayer.pause();
-                audioPlayer.src = '';
+                if (!keepMediaSessionAlive()) {
+                    audioPlayer.pause();
+                    audioPlayer.src = '';
+                }
                 updatePlayState(false);
                 if (errorTimer) clearTimeout(errorTimer);
             }
@@ -3526,6 +3531,8 @@ function setupMediaSession() {
                         else if (data.type === Hls.ErrorTypes.MEDIA_ERROR) msg = "媒体解析错误";
                         if (currentPlayingId) setCardError(currentPlayingId, msg);
                         if (hlsInstance) { hlsInstance.destroy(); hlsInstance = null; }
+                        // ★ 用静音占位保持媒体会话
+                        keepMediaSessionAlive();
                         updatePlayState(false);
                     }
                 });
@@ -3616,9 +3623,8 @@ function setupMediaSession() {
                         discWrapper.classList.remove('playing');
                         updatePlayButtonState();
                         updateFavButtonState();
-                        audioPlayer.pause();
-                        audioPlayer.src = '';
-                        audioPlayer.load();
+                        // ★ 用静音占位保持媒体会话
+                        keepMediaSessionAlive();
                     });
                     audioPlayer.addEventListener('playing', () => updatePlayState(true));
                     audioPlayer.addEventListener('pause', () => { if (!audioPlayer.ended) updatePlayState(false); });
@@ -3630,9 +3636,8 @@ function setupMediaSession() {
                         discWrapper.classList.remove('playing');
                         updatePlayButtonState();
                         updateFavButtonState();
-                        audioPlayer.pause();
-                        audioPlayer.src = '';
-                        audioPlayer.load();
+                        // ★ 用静音占位保持媒体会话
+                        keepMediaSessionAlive();
                         audioPlayer.removeEventListener('error', onError);
                     });
                 }
@@ -4250,7 +4255,6 @@ function setupMediaSession() {
                 const themeMeta = document.querySelector('meta[name="theme-color"]');
                 if (themeMeta) themeMeta.setAttribute('content', color);
 
-                // ★ 主题色变了：清空 artwork 缓存，并立即刷新锁屏图标
                 refreshArtworkCache();
                 if (currentPlayingId) {
                     const currentRadio = radioDataSource.find(r => r.id === currentPlayingId);
