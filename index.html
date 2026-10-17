@@ -3191,7 +3191,7 @@ if (rules.ipDirect) {
                 }
                 updatePlayButtonState();
                 updateFavButtonState();
-    updateMediaSessionState();   // ★ 新增
+                syncMediaSessionState();   // ★ 同步锁屏播放状态
             }
 
             function updatePlayButtonState() {
@@ -3205,6 +3205,143 @@ if (rules.ipDirect) {
                     icon.className = 'fa-solid fa-play';
                     span.textContent = '播放';
                 }
+            }
+
+            // ============================================================
+            // ★ 媒体会话（锁屏 / 通知栏控制）
+            // 锁屏左右按钮 → 上一曲 / 下一曲
+            // 锁屏信息区 → 显示当前电台信息
+            // ============================================================
+            let defaultArtworkCache = { key: '', value: '' };
+
+            function getDefaultArtwork() {
+                const color = (getComputedStyle(document.documentElement)
+                    .getPropertyValue('--primary') || '#7c8dff').trim();
+
+                if (defaultArtworkCache.key === color && defaultArtworkCache.value) {
+                    return defaultArtworkCache.value;
+                }
+
+                let url = '';
+                try {
+                    const size = 512;
+                    const canvas = document.createElement('canvas');
+                    canvas.width = canvas.height = size;
+                    const ctx = canvas.getContext('2d');
+
+                    const grd = ctx.createLinearGradient(0, 0, size, size);
+                    grd.addColorStop(0, color);
+                    grd.addColorStop(1, '#1a1f2e');
+                    ctx.fillStyle = grd;
+                    ctx.fillRect(0, 0, size, size);
+
+                    ctx.beginPath();
+                    ctx.arc(size / 2, size / 2, 150, 0, Math.PI * 2);
+                    ctx.fillStyle = 'rgba(0, 0, 0, 0.25)';
+                    ctx.fill();
+
+                    ctx.fillStyle = '#ffffff';
+                    ctx.font = 'bold 170px system-ui, -apple-system, sans-serif';
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'middle';
+                    ctx.fillText('♪', size / 2, size / 2 + 12);
+
+                    url = canvas.toDataURL('image/png');
+                } catch (e) {
+                    url = '';
+                }
+
+                defaultArtworkCache = { key: color, value: url };
+                return url;
+            }
+
+            function updateMediaSessionMetadata(radio) {
+                if (!('mediaSession' in navigator) || typeof window.MediaMetadata === 'undefined') return;
+
+                try {
+                    const artwork = [];
+
+                    // 有台标就用台标
+                    if (radio && radio.logo) {
+                        artwork.push({ src: radio.logo, sizes: '512x512' });
+                    }
+                    // 兜底封面（canvas 生成的 PNG，兼容 iOS）
+                    const fallback = getDefaultArtwork();
+                    if (fallback) {
+                        artwork.push({ src: fallback, sizes: '512x512', type: 'image/png' });
+                    }
+
+                    const title  = radio ? radio.name : 'StarFM';
+                    const artist = radio
+                        ? ([radio.city, radio.tag].filter(Boolean).join(' · ') || '电台直播')
+                        : '电台直播';
+
+                    navigator.mediaSession.metadata = new MediaMetadata({
+                        title:  title,          // 锁屏第一行：电台名称
+                        artist: artist,         // 锁屏第二行：城市 · 分类
+                        album:  'StarFM 电台',   // 锁屏第三行
+                        artwork: artwork
+                    });
+                } catch (e) {
+                    console.warn('MediaSession metadata 设置失败:', e);
+                }
+            }
+
+            function syncMediaSessionState() {
+                if (!('mediaSession' in navigator)) return;
+                try {
+                    navigator.mediaSession.playbackState =
+                        audioPlayer.paused ? 'paused' : 'playing';
+                } catch (e) { /* 部分浏览器只读，忽略 */ }
+            }
+
+            function setupMediaSession() {
+                if (!('mediaSession' in navigator)) return;
+
+                const ms = navigator.mediaSession;
+
+                const safeSet = (action, handler) => {
+                    try { ms.setActionHandler(action, handler); } catch (e) { }
+                };
+
+                // 播放 / 暂停
+                safeSet('play', () => {
+                    if (!currentPlayingId) { togglePlay(); return; }
+                    audioPlayer.play()
+                        .then(() => updatePlayState(true))
+                        .catch(() => { });
+                });
+
+                safeSet('pause', () => {
+                    audioPlayer.pause();
+                    updatePlayState(false);
+                });
+
+                // ★ 核心：锁屏左右按钮 → 上一曲 / 下一曲
+                safeSet('previoustrack', () => { prevStation(); });
+                safeSet('nexttrack',     () => { nextStation(); });
+
+                // 停止（部分安卓锁屏会显示）
+                safeSet('stop', () => {
+                    stopPlayback();
+                    currentPlayingId = null;
+                    nowPlaying.textContent = '未播放';
+                    syncMediaSessionState();
+                    renderStationList();
+                    updateFavButtonState();
+                });
+
+                // ★ 关键：注销所有 seek 类操作，
+                //   锁屏上的「快退10秒 / 快进10秒」就会消失，
+                //   只保留「上一曲 / 下一曲」。
+                safeSet('seekbackward', null);
+                safeSet('seekforward',  null);
+                safeSet('seekto',       null);
+
+                // 状态同步
+                audioPlayer.addEventListener('play',  syncMediaSessionState);
+                audioPlayer.addEventListener('pause', syncMediaSessionState);
+                audioPlayer.addEventListener('ended', syncMediaSessionState);
             }
 
             function stopPlayback() {
@@ -3241,111 +3378,6 @@ if (rules.ipDirect) {
                 audioPlayer.addEventListener('ended', () => updatePlayState(false));
             }
 
-// ============================================================
-// Media Session API（锁屏 / 通知栏 / 车载系统）
-// ============================================================
-
-// 生成锁屏艺术图（PNG dataURL，兼容 iOS/Android）
-function buildArtwork(radio) {
-    const artworks = [];
-
-    // 台标必须是 HTTPS，否则锁屏会拒载
-    if (radio.logo && /^https:\/\//i.test(radio.logo)) {
-        artworks.push({ src: radio.logo, sizes: '512x512', type: 'image/jpeg' });
-        return artworks;
-    }
-
-    // 无台标 / HTTP 台标 → canvas 生成主题色占位图
-    try {
-        const S = 512;
-        const canvas = document.createElement('canvas');
-        canvas.width = canvas.height = S;
-        const ctx = canvas.getContext('2d');
-        const primary = getComputedStyle(document.documentElement)
-            .getPropertyValue('--primary').trim() || '#7c8dff';
-
-        const grad = ctx.createLinearGradient(0, 0, S, S);
-        grad.addColorStop(0, primary);
-        grad.addColorStop(1, '#1a1f2e');
-        ctx.fillStyle = grad;
-        ctx.fillRect(0, 0, S, S);
-
-        ctx.fillStyle = '#ffffff';
-        ctx.font = 'bold 260px system-ui, -apple-system, sans-serif';
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.fillText('♪', S / 2, S / 2 + 30);
-
-        artworks.push({ src: canvas.toDataURL('image/png'), sizes: '512x512', type: 'image/png' });
-    } catch (e) {
-        console.warn('锁屏占位图生成失败:', e);
-    }
-
-    return artworks;
-}
-
-function updateMediaSession(radio) {
-    if (!('mediaSession' in navigator) || !radio) return;
-    try {
-        navigator.mediaSession.metadata = new MediaMetadata({
-            title:  radio.name || '未知电台',
-            artist: radio.city ? `${radio.city} · StarFM` : 'StarFM',
-            album:  radio.tag  ? `${radio.tag} 电台` : 'StarFM 电台',
-            artwork: buildArtwork(radio)
-        });
-    } catch (e) {
-        console.warn('设置锁屏信息失败:', e);
-    }
-}
-
-function updateMediaSessionState() {
-    if (!('mediaSession' in navigator)) return;
-    try {
-        navigator.mediaSession.playbackState = audioPlayer.paused ? 'paused' : 'playing';
-    } catch (e) {}
-}
-
-function setupMediaSession() {
-    if (!('mediaSession' in navigator)) return;
-
-    const safeSet = (action, handler) => {
-        try { navigator.mediaSession.setActionHandler(action, handler); }
-        catch (e) { /* 该浏览器不支持此 action，忽略 */ }
-    };
-
-    // 中间按钮：播放/暂停
-    safeSet('play', () => {
-        if (audioPlayer.paused && currentPlayingId) {
-            audioPlayer.play().then(() => updatePlayState(true)).catch(() => {});
-        }
-    });
-    safeSet('pause', () => {
-        if (!audioPlayer.paused) audioPlayer.pause();
-    });
-
-    // ★ 左右两侧按钮：上一曲 / 下一曲
-    safeSet('previoustrack', () => prevStation());
-    safeSet('nexttrack',     () => nextStation());
-
-    // 可选：停止
-    safeSet('stop', () => {
-        stopPlayback();
-        currentPlayingId = null;
-        nowPlaying.textContent = '未播放';
-        try { navigator.mediaSession.metadata = null; } catch (e) {}
-        renderStationList();
-    });
-
-      // ★ 关键修复：显式移除 seek 按钮，
-    // 让 iOS / Android 锁屏都显示 ⏮ ⏸ ⏭ 而不是 -10s / +10s
-    const safeRemove = (action) => {
-        try { navigator.mediaSession.setActionHandler(action, null); }
-        catch (e) {}
-    };
-    safeRemove('seekbackward');
-    safeRemove('seekforward');
-    safeRemove('seekto');
-}
             function playRadio(radioId) {
                 const radio = radioDataSource.find(r => r.id === radioId);
                 if (!radio) {
@@ -3355,10 +3387,14 @@ function setupMediaSession() {
 
                 stopPlayback();
                 if (cardError) clearCardError();
-               currentPlayingId = radioId;
-nowPlaying.textContent = radio.name;
-updateMediaSession(radio);   // ★ 新增
-hideToast();
+                currentPlayingId = radioId;
+                nowPlaying.textContent = radio.name;
+
+                // ★ 新增：更新锁屏显示信息 + 同步播放状态
+                updateMediaSessionMetadata(radio);
+                syncMediaSessionState();
+
+                hideToast();
                 if (errorTimer) clearTimeout(errorTimer);
 
                 if (!historyList.includes(radioId)) {
@@ -3716,6 +3752,7 @@ if (decision.useProxy) {
                 document.getElementById("editModal").classList.remove("open");
                 if (currentPlayingId === editingRadioId) {
                     nowPlaying.textContent = radio.name;
+                    updateMediaSessionMetadata(radio);   // ★ 同步锁屏信息
                 }
                 renderStationList();
                 const kw = document.getElementById("manageSearchInput").value;
@@ -4089,14 +4126,10 @@ if (decision.useProxy) {
                     // 👇 加这一行，同步更新浏览器/系统 UI 颜色
     const themeMeta = document.querySelector('meta[name="theme-color"]');
     if (themeMeta) themeMeta.setAttribute('content', color);
-    // ★ 把这段插在这里 ★
-    // ★ 主题色变了，如果正在播放且用的是占位图，刷新锁屏
-    if (currentPlayingId) {
-        const r = radioDataSource.find(x => x.id === currentPlayingId);
-        if (r && !(r.logo && /^https:\/\//i.test(r.logo))) {
-            updateMediaSession(r);
-        }
-    }
+
+                // ★ 主题色变了，重新生成默认封面
+                defaultArtworkCache = { key: '', value: '' };
+
                 updateFavButtonState();
             }
 
@@ -4405,7 +4438,9 @@ if (decision.useProxy) {
                 renderCategoryTabs();
                 renderStationList();
                 bindEvents();
-setupMediaSession();   // ★ 新增
+
+                // ★ 初始化锁屏媒体会话
+                setupMediaSession();
 
                 // 渲染规则配置（默认）
                 renderProxyRules();
