@@ -3336,9 +3336,15 @@ function setupMediaSession() {
         renderStationList();
     });
 
-    // 直播流无进度，注册空 handler 让部分系统不报错
-    safeSet('seekbackward', () => {});
-    safeSet('seekforward',  () => {});
+      // ★ 关键修复：显式移除 seek 按钮，
+    // 让 iOS / Android 锁屏都显示 ⏮ ⏸ ⏭ 而不是 -10s / +10s
+    const safeRemove = (action) => {
+        try { navigator.mediaSession.setActionHandler(action, null); }
+        catch (e) {}
+    };
+    safeRemove('seekbackward');
+    safeRemove('seekforward');
+    safeRemove('seekto');
 }
             function playRadio(radioId) {
                 const radio = radioDataSource.find(r => r.id === radioId);
