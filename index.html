@@ -2509,7 +2509,7 @@
     <input type="file" accept=".json" id="fileSelector" style="display:none;" data-page-node-id="NwLpHFknOVxBS07BjM30tA">
     <audio id="audioPlayer" preload="none" data-page-node-id="1utF7QEu1NDqGa8aOXEiRb"></audio>
 
-    <script>
+        <script>
         (function() {
             "use strict";
 
@@ -2555,11 +2555,7 @@
             let cardErrorTimer = null;
 
             // ============================================================
-            // ★ 静音占位符 - 用于在切台/暂停期间保持 iOS 媒体会话活跃
-            // 清空 audioPlayer.src 会导致 iOS 认为媒体会话结束，
-            // 从而把锁屏控制权交还给上一个 App（例如 QQ 音乐）。
-            // 用一个极短的静音 WAV 占位，可以让媒体会话“活着”，
-            // 锁屏控制权不会转移到其他 App。
+            // ★ 静音占位 - iOS 锁屏保活 + 切台超时自动跳过
             // ============================================================
             let silentAudioUrl = null;
 
@@ -2567,7 +2563,7 @@
                 if (silentAudioUrl) return silentAudioUrl;
                 try {
                     const sr = 8000;
-                    const dur = 0.5;
+                    const dur = 2; // 2秒静音片段
                     const numSamples = sr * dur;
                     const buffer = new ArrayBuffer(44 + numSamples * 2);
                     const view = new DataView(buffer);
@@ -2591,18 +2587,24 @@
                     const blob = new Blob([buffer], { type: 'audio/wav' });
                     silentAudioUrl = URL.createObjectURL(blob);
                 } catch (e) {
-                    return null;
+                    silentAudioUrl = null;
                 }
                 return silentAudioUrl;
             }
 
+            // ★ 关键：让静音占位循环播放，媒体会话一直"活着"
             function keepMediaSessionAlive() {
-                const silentUrl = getSilentAudioUrl();
-                if (!silentUrl) return false;
+                const url = getSilentAudioUrl();
+                if (!url) {
+                    // 兜底：极少数情况生成静音失败，退回原逻辑
+                    try { audioPlayer.pause(); audioPlayer.src = ''; } catch (e) {}
+                    return false;
+                }
                 try {
-                    try { audioPlayer.pause(); } catch (e) {}
-                    audioPlayer.src = silentUrl;
-                    audioPlayer.load();
+                    // 先播放静音占位（这个动作不会让 iOS 判定会话结束）
+                    audioPlayer.loop = true;
+                    audioPlayer.src = url;
+                    audioPlayer.play().catch(() => {});
                     if ('mediaSession' in navigator) {
                         try { navigator.mediaSession.playbackState = 'paused'; } catch (e) {}
                     }
@@ -3250,6 +3252,16 @@
             const discWrapper = document.getElementById("discWrapper");
             const nowPlaying = document.getElementById("nowPlaying");
 
+            // ★ 全局 playing 事件：清除超时、关闭 loop、重置自动跳过计数器
+            audioPlayer.addEventListener('playing', () => {
+                audioPlayer.loop = false;
+                if (window._playbackTimeout) {
+                    clearTimeout(window._playbackTimeout);
+                    window._playbackTimeout = null;
+                }
+                window._autoSkipCount = 0;
+            });
+
             function updatePlayState(state) {
                 if (state) {
                     discWrapper.classList.add('playing');
@@ -3495,13 +3507,12 @@ function setupMediaSession() {
 }
 
             // ============================================================
-            // ★ 关键修改：stopPlayback 用静音占位保持媒体会话
+            // ★ stopPlayback：不再清空 src，用静音占位保活媒体会话
             // ============================================================
             function stopPlayback() {
                 if (hlsInstance) { hlsInstance.destroy(); hlsInstance = null; }
                 if (!keepMediaSessionAlive()) {
-                    audioPlayer.pause();
-                    audioPlayer.src = '';
+                    try { audioPlayer.pause(); audioPlayer.src = ''; } catch (e) {}
                 }
                 updatePlayState(false);
                 if (errorTimer) clearTimeout(errorTimer);
@@ -3542,12 +3553,36 @@ function setupMediaSession() {
                 audioPlayer.addEventListener('ended', () => updatePlayState(false));
             }
 
-            function playRadio(radioId) {
+            function playRadio(radioId, isAuto = false) {
                 const radio = radioDataSource.find(r => r.id === radioId);
                 if (!radio) {
                     setCardError(radioId, "找不到电台");
                     return;
                 }
+
+                // ★ 超时监控：新源 8 秒内未 playing 就自动跳下一台
+                if (window._playbackTimeout) clearTimeout(window._playbackTimeout);
+                if (isAuto) {
+                    window._autoSkipCount = (window._autoSkipCount || 0) + 1;
+                } else {
+                    window._autoSkipCount = 0;
+                }
+                if ((window._autoSkipCount || 0) > radioDataSource.length) {
+                    console.error("[自动跳过] 所有电台均尝试失败，停止自动跳过");
+                    window._autoSkipCount = 0;
+                    showToast("所有电台均无法播放");
+                    return;
+                }
+                window._playbackTimeout = setTimeout(() => {
+                    console.warn(`[自动跳过] ${radio.name} 加载超时，尝试下一台`);
+                    if (currentPlayingId === radioId && audioPlayer.paused) {
+                        if (radioDataSource.length > 1) {
+                            nextStation(true);
+                        } else {
+                            setCardError(radioId, "流加载超时");
+                        }
+                    }
+                }, 8000);
 
                 stopPlayback();
                 if (cardError) clearCardError();
@@ -3594,6 +3629,7 @@ function setupMediaSession() {
                 const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
 
                 if (isM3U8 && (nativeHlsSupport || isIOS)) {
+                    audioPlayer.loop = false;
                     audioPlayer.src = streamUrl;
                     audioPlayer.play().then(() => updatePlayState(true)).catch((err) => {
                         console.warn('原生HLS播放失败，降级到HLS.js:', err);
@@ -3615,6 +3651,7 @@ function setupMediaSession() {
                         streamUrl += separator + '_=' + Date.now();
                     }
 
+                    audioPlayer.loop = false;
                     audioPlayer.src = streamUrl;
                     audioPlayer.play().then(() => updatePlayState(true)).catch(() => {
                         if (currentPlayingId) {
@@ -3663,24 +3700,24 @@ function setupMediaSession() {
                 }
             }
 
-            function prevStation() {
+            function prevStation(isAuto = false) {
                 if (radioDataSource.length === 0) return;
-                if (!currentPlayingId) { playRadio(radioDataSource[0].id); return; }
+                if (!currentPlayingId) { playRadio(radioDataSource[0].id, isAuto); return; }
                 const idx = radioDataSource.findIndex(r => r.id === currentPlayingId);
-                if (idx === -1) { playRadio(radioDataSource[0].id); return; }
+                if (idx === -1) { playRadio(radioDataSource[0].id, isAuto); return; }
                 let newIdx = idx - 1;
                 if (newIdx < 0) newIdx = radioDataSource.length - 1;
-                playRadio(radioDataSource[newIdx].id);
+                playRadio(radioDataSource[newIdx].id, isAuto);
             }
 
-            function nextStation() {
+            function nextStation(isAuto = false) {
                 if (radioDataSource.length === 0) return;
-                if (!currentPlayingId) { playRadio(radioDataSource[0].id); return; }
+                if (!currentPlayingId) { playRadio(radioDataSource[0].id, isAuto); return; }
                 const idx = radioDataSource.findIndex(r => r.id === currentPlayingId);
-                if (idx === -1) { playRadio(radioDataSource[0].id); return; }
+                if (idx === -1) { playRadio(radioDataSource[0].id, isAuto); return; }
                 let newIdx = idx + 1;
                 if (newIdx >= radioDataSource.length) newIdx = 0;
-                playRadio(radioDataSource[newIdx].id);
+                playRadio(radioDataSource[newIdx].id, isAuto);
             }
 
             function toggleFav() {
