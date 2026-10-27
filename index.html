@@ -2068,6 +2068,13 @@
         @media (min-width: 1025px) {
             .station-list { grid-template-columns: repeat(3, 1fr); gap: 10px; }
         }
+/* 移动端竖屏：隐藏播放器两侧的上一曲/下一曲按钮 */
+@media (max-width: 640px) and (orientation: portrait) {
+    #prevBtn,
+    #nextBtn {
+        display: none;
+    }
+}
     </style>
 </head>
 <body data-page-node-id="2RTGlvkD3ouf6Dv7t0sAc6">
