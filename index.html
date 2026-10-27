@@ -413,8 +413,8 @@
         }
         .disc-wrapper {
             position: relative;
-            width: 270px;
-            height: 270px;
+            width: 260px;
+            height: 260px;
             flex-shrink: 0;
             cursor: pointer;
             -webkit-tap-highlight-color: transparent;
@@ -436,8 +436,8 @@
             pointer-events: none;
         }
         .disc-inner {
-            width: 150px;
-            height: 150px;
+            width: 130px;
+            height: 130px;
             border-radius: 50%;
             background: radial-gradient(circle at 40% 40%, #727a9e, #2a2f42);
             box-shadow: inset 0 0 0 4px #1c1f2b, 0 0 0 6px rgba(255, 255, 255, 0.03);
@@ -602,17 +602,16 @@
         }
 
         /* ===== 电台列表 ===== */
-    .station-list-wrapper {
-    flex: 1 1 0;
-    overflow-y: auto;
-    overscroll-behavior: contain;   /* ← 新增：滚动到边界不再传递给页面 */
-    margin-top: 4px;
-    padding-right: 0;
-    min-height: 0;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none !important;
-    -ms-overflow-style: none !important;
-}
+        .station-list-wrapper {
+            flex: 1 1 0;
+            overflow-y: auto;
+            margin-top: 4px;
+            padding-right: 0;
+            min-height: 0;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none !important;
+            -ms-overflow-style: none !important;
+        }
         .station-list-wrapper::-webkit-scrollbar {
             display: none !important;
             width: 0 !important;
@@ -1985,13 +1984,6 @@
 
         /* ===== 移动端适配 ===== */
         @media (max-width: 640px) {
-    html {
-        height: 100%;
-        overflow: hidden;
-        overscroll-behavior: none;
-    }
-   /* ===== 移动端适配 ===== */
-        @media (max-width: 640px) {
             body { padding: 0; overscroll-behavior: none; }
             .radio-app {
                 width: 100%; max-width: 100%; height: 100vh; max-height: 100vh;
@@ -2026,15 +2018,15 @@
             .station-item .cover .cover-info .tag { font-size: 9px; padding: 0 6px; border-radius: 12px; }
             .station-item .cover .playing-dot { width: 6px; height: 6px; top: 6px; right: 6px; }
             .station-item .actions { padding: 2px 6px 6px; gap: 8px; }
-            .station-item .actions button { font-size: 18px; padding: 0; width: 30px; height: 30px; }
-            .station-item .actions button i { font-size: 16px; }
+            .station-item .actions button { font-size: 14px; padding: 0; width: 30px; height: 30px; }
+            .station-item .actions button i { font-size: 14px; }
             .station-item .actions .del-btn { font-size: 10px; }
             .station-item .error-overlay { border-radius: 10px; }
             .station-item .error-overlay .error-toast { font-size: 12px; padding: 6px 16px; max-width: 90%; }
-            .bottom-actions { padding: 8px 2px 8px; border-radius: 16px; margin: 0px 0px -12px; box-shadow: 0 12px 30px -2px var(--primary-glow); }
+            .bottom-actions { padding: 4px 2px 6px; border-radius: 16px; margin: 0px 0px -12px; box-shadow: 0 12px 30px -2px var(--primary-glow); }
             .bottom-actions::after { bottom: -10px; left: -10px; right: -10px; height: 30px; filter: blur(15px); opacity: 0.5; }
-            .bottom-actions .btn-action { font-size: 12px; min-height: 44px; padding: 0px 0 0 0; }
-            .bottom-actions .btn-action i { font-size: 22px; }
+            .bottom-actions .btn-action { font-size: 12px; min-height: 44px; padding: 2px 0 0 0; }
+            .bottom-actions .btn-action i { font-size: 18px; }
             .bottom-actions .btn-action span { font-size: 12px; }
             .bottom-actions .btn-action.active-fav::after { width: 12px; height: 2px; bottom: 0px; }
             .station-list-wrapper { scrollbar-width: none !important; -ms-overflow-style: none !important; }
@@ -2042,102 +2034,38 @@
         }
 
         @media (orientation: landscape) and (max-height: 500px) {
-    html {
-        height: 100%;
-        overflow: hidden;
-        overscroll-behavior: none;
-    }
-    body {
-        position: fixed;
-        top: 0;
-        right: 0;
-        bottom: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        min-height: 0;
-        overflow: hidden;
-        overscroll-behavior: none;
-        padding: 0;
-    }
-    .radio-app {
-        width: 100%;
-        max-width: 100%;
-        height: 100%;
-        max-height: 100%;
-        border-radius: 24px;
-        box-shadow: none;
-        border: none;
-        padding-top: max(12px, env(safe-area-inset-top));
-        padding-bottom: max(12px, env(safe-area-inset-bottom));
-        padding-left: max(16px, env(safe-area-inset-left));
-        padding-right: max(16px, env(safe-area-inset-right));
-        justify-content: center;
-    }
-    .function-bar, .station-list-wrapper, .bottom-actions { display: none !important; }
-    .player-display { min-height: auto; margin-bottom: 0; justify-content: center; }
-    .player-row { gap: 100px; }
-    .disc-wrapper { width: 300px; height: 300px; }
-    .disc-inner { width: 158px; height: 158px; font-size: 50px; }
-    .btn-skip-disc { width: 60px; height: 60px; }
-    .btn-skip-disc svg { width: 26px; height: 26px; }
-    .now-playing-wrapper { margin-top: 12px; }
-    .now-playing { font-size: 18px; }
-    .toast { font-size: 13px; padding: 6px 16px; top: 20px; }
-    .search-header { margin-bottom: -20px; }
-    .search-container { background: transparent !important; border: none !important; border-radius: 0 !important; padding: 4px 0; min-height: auto; justify-content: space-between; box-shadow: none !important; }
-    .brand { font-size: 20px; }
-    .search-container .search-input { display: none !important; }
-    .header-actions .icon-btn { width: 36px; height: 36px; font-size: 24px; }
-}
-        @media (min-width: 641px) and (max-width: 1024px) {
-    html {
-        height: 100%;
-        overflow: hidden;
-        overscroll-behavior: none;
-    }
-    body {
-        position: fixed;
-        top: 0;
-        right: 0;
-        bottom: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        min-height: 0;
-        overflow: hidden;
-        overscroll-behavior: none;
-        padding: 0 !important;
-        align-items: flex-start;
-        justify-content: center;
-        background: var(--bg-body);
-    }
-    .radio-app {
-        max-width: 100% !important;
-        width: 100%;
-        height: 100%;
-        max-height: 100%;
-        border-radius: 0 !important;
-        padding: 20px 16px 0;
-        box-shadow: none !important;
-        border: none !important;
-        display: flex;
-        flex-direction: column;
-        justify-content: flex-start;
-        background: var(--bg-card);
-        overflow: hidden;
-        position: relative;
-    }
-    .station-list-wrapper { flex: 1 1 auto; overflow-y: auto; min-height: 0; -webkit-overflow-scrolling: touch; }
-    .station-list { grid-template-columns: repeat(3, 1fr); gap: 8px; }
-    .bottom-actions { margin-top: 14px; flex-shrink: 0; padding-bottom: env(safe-area-inset-bottom, 12px); }
-    .now-playing { font-size: 19px; }
-    .category-tab { font-size: 12px; padding: 5px 12px; }
-    .bottom-actions .btn-action { font-size: 12px; padding: 6px 14px; }
-    .search-container { min-height: 44px; }
-}
+            body { padding: 0; overscroll-behavior: none; }
+            .radio-app { width: 100%; max-width: 100%; height: 100dvh; max-height: 100dvh; border-radius: 24px; box-shadow: none; border: none; padding-top: max(12px, env(safe-area-inset-top)); padding-bottom: max(12px, env(safe-area-inset-bottom)); padding-left: max(16px, env(safe-area-inset-left)); padding-right: max(16px, env(safe-area-inset-right)); justify-content: center; }
+            .function-bar, .station-list-wrapper, .bottom-actions { display: none !important; }
+            .player-display { min-height: auto; margin-bottom: 0; justify-content: center; }
+            .player-row { gap: 100px; }
+            .disc-wrapper { width: 300px; height: 300px; }
+            .disc-inner { width: 150px; height: 150px; font-size: 50px; }
+            .btn-skip-disc { width: 60px; height: 60px; }
+            .btn-skip-disc svg { width: 26px; height: 26px; }
+            .now-playing-wrapper { margin-top: 12px; }
+            .now-playing { font-size: 18px; }
+            .toast { font-size: 13px; padding: 6px 16px; top: 20px; }
+            .search-header { margin-bottom: -20px; }
+            .search-container { background: transparent !important; border: none !important; border-radius: 0 !important; padding: 4px 0; min-height: auto; justify-content: space-between; box-shadow: none !important; }
+            .brand { font-size: 20px; }
+            .search-container .search-input { display: none !important; }
+            .header-actions .icon-btn { width: 36px; height: 36px; font-size: 24px; }
+        }
 
-       @media (min-width: 1025px) {
+        @media (min-width: 641px) and (max-width: 1024px) {
+            body { padding: 0 !important; overflow: hidden; align-items: flex-start; justify-content: center; background: var(--bg-body); }
+            .radio-app { max-width: 100% !important; width: 100%; height: 100vh; max-height: 100vh; border-radius: 0 !important; padding: 20px 16px 0; box-shadow: none !important; border: none !important; display: flex; flex-direction: column; justify-content: flex-start; background: var(--bg-card); overflow: hidden; position: relative; }
+            .station-list-wrapper { flex: 1 1 auto; overflow-y: auto; min-height: 0; -webkit-overflow-scrolling: touch; }
+            .station-list { grid-template-columns: repeat(3, 1fr); gap: 8px; }
+            .bottom-actions { margin-top: 14px; flex-shrink: 0; padding-bottom: env(safe-area-inset-bottom, 12px); }
+            .now-playing { font-size: 19px; }
+            .category-tab { font-size: 12px; padding: 5px 12px; }
+            .bottom-actions .btn-action { font-size: 12px; padding: 6px 14px; }
+            .search-container { min-height: 44px; }
+        }
+
+        @media (min-width: 1025px) {
             .station-list { grid-template-columns: repeat(3, 1fr); gap: 10px; }
         }
 /* 移动端竖屏：隐藏播放器两侧的上一曲/下一曲按钮 */
@@ -2176,7 +2104,7 @@
                     <span class="brand-name" data-page-node-id="LZpkBrY1aC3RxEFex7Ovbc">StarFM</span>
                 </span>
 
-                <input type="text" class="search-input" id="searchInput" placeholder="星空调频 ··" data-page-node-id="dNIMAFWNLsPKLKm4fotCcJ">
+                <input type="text" class="search-input" id="searchInput" placeholder="搜索电台名称或城市.." data-page-node-id="dNIMAFWNLsPKLKm4fotCcJ">
 
 <button class="search-clear-btn" id="searchClearBtn" title="清除搜索" style="display:none;" data-page-node-id="g2zI9b2lXDGabYj6tCdu1F">
     <i class="fa-regular fa-circle-xmark" data-page-node-id="WXudo0VBxDYYR0kOMIProY"></i>
@@ -2198,7 +2126,7 @@
                         <div class="color-dot" style="background:#E86A17;" data-color="#E86A17" data-page-node-id="RJ79hWB1ayDz29dfkukyEf"></div>
                         <div class="color-dot" style="background:#D4AF37;" data-color="#D4AF37" data-page-node-id="d6fiqGhxlZwGY5kiQ4VJv9"></div>
                         <div class="color-dot" style="background:#C0C0C0;" data-color="#C0C0C0" data-page-node-id="BedNftyF3wYkmdO5ljSI2k"></div>
-                        <div class="color-dot" style="background:#E53935;" data-color="#E53935" data-page-node-id="ZRtmgjlDoAepI5IzpL2Ccy"></div>
+                        <div class="color-dot" style="background:#003153;" data-color="#003153" data-page-node-id="ZRtmgjlDoAepI5IzpL2Ccy"></div>
                     </div>
                 </div>
             </div>
@@ -2700,7 +2628,7 @@
             const themeColors = [
                 "#7c8dff", "#ff6b6b", "#4ecdc4", "#ffb347", "#ff6b9d",
                 "#4dabf7", "#a855f7", "#34d399", "#E86A17", "#D4AF37",
-                "#C0C0C0", "#E53935"
+                "#C0C0C0", "#003153"
             ];
             let colorClickIndex = 0;
 
@@ -4313,7 +4241,7 @@ function setupMediaSession() {
                 const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(radioDataSource, null, 2));
                 const a = document.createElement("a");
                 a.href = dataStr;
-                a.download = "StarRadio_backup.json";
+                a.download = "AnsonRadio_备份.json";
                 a.click();
                 showToast("导出成功");
             }
