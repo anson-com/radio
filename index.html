@@ -15,52 +15,8 @@
 <meta name="apple-mobile-web-app-capable" content="yes" data-page-node-id="cGJaKUrUZzP03FmgH7eDfu" />
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" data-page-node-id="uhlTdnPuuyguZwfLdaPGQc" />
 
-<!-- ===== PWA 清单（动态生成：PC用SVG，手机用原版） ===== -->
-<link rel="manifest" href="./manifest.json" id="manifestLink" data-page-node-id="SiYNVABZCX9n7rtkvfbHyZ" />
-<script>
-(function() {
-    // 1. 判断是否为移动端（手机、平板、鸿蒙）
-    const ua = navigator.userAgent;
-    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|Mobile|HarmonyOS/i.test(ua) || 
-                     (navigator.maxTouchPoints > 1 && window.innerWidth <= 1024);
-    
-    // 如果是移动端，直接返回，继续使用你的 ./manifest.json（多尺寸 PNG 和 maskable）
-    if (isMobile) return;
-
-    // 2. 如果是 PC 端，动态生成一份“只包含 SVG”的 manifest
-    // 自动获取根目录下 favicon.svg 的绝对路径（最稳妥，不会受 Blob 相对路径影响）
-    const svgUrl = new URL('./favicon.svg', window.location.href).href;
-
-    const pcManifest = {
-        "name": "StarFM",
-        "short_name": "StarFM",
-        "description": "星空调频",
-        "start_url": "./index.html",
-        "display": "standalone",
-        "orientation": "any", 
-        "background_color": "#ffffff",
-        "theme_color": "#7c8dff",
-        "icons": [
-            {
-                "src": svgUrl,        // 直接引用你上传在根目录的 favicon.svg
-                "sizes": "any",
-                "type": "image/svg+xml",
-                "purpose": "any"
-            }
-        ]
-    };
-
-    // 3. 将这个纯净的 PC manifest 转换为 Blob URL，并替换页面的 manifest 链接
-    const blob = new Blob([JSON.stringify(pcManifest)], { type: 'application/manifest+json' });
-    const blobUrl = URL.createObjectURL(blob);
-    
-    // 替换 link 标签
-    const manifestLink = document.getElementById('manifestLink');
-    if (manifestLink) {
-        manifestLink.href = blobUrl;
-    }
-})();
-</script>
+<!-- ===== PWA 清单（相对路径） ===== -->
+<link rel="manifest" href="./manifest.json" data-page-node-id="SiYNVABZCX9n7rtkvfbHyZ" />
 
 <!-- ===== 主题色 ===== -->
 <meta name="theme-color" content="#7c8dff" data-page-node-id="xkJ3gHMoif612DLB0TqaBR" />
