@@ -1,7 +1,7 @@
 {
   "name": "StarFM",
   "short_name": "StarFM",
-  "description": "蓝星电台",
+  "description": "星空调频",
   "start_url": "./index.html",
   "display": "standalone",
   "orientation": "portrait",
