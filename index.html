@@ -6,68 +6,17 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" data-page-node-id="CAeZNnNn6TDVGw0qfIQm9Y">
     <title>StarFM</title>
 
-<!-- ===== PWA / Favicon / Manifest 动态生成（PC端全用SVG，移动端用原版PNG） ===== -->
-<link rel="icon" type="image/svg+xml" id="dynamicFavicon" />
-<link rel="apple-touch-icon" sizes="180x180" href="./apple-touch-icon.png" />
-<meta name="apple-mobile-web-app-title" content="StarFM" />
-<meta name="apple-mobile-web-app-capable" content="yes" />
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-<link rel="manifest" href="./manifest.json" id="manifestLink" />
+<!-- ===== PWA / Favicon（相对路径，保留 PNG + SVG 混合） ===== -->
+<link rel="icon" type="image/svg+xml" href="./favicon.svg" data-page-node-id="IOlk5JlUXwN39UTZs7hpqi" />
+<link rel="icon" type="image/png" href="./favicon-96x96.png" sizes="96x96" data-page-node-id="3SQGa2kQLuX7rnUKWpS5LE" />
+<link rel="shortcut icon" href="./favicon.ico" data-page-node-id="ld7MTu8PEEfsq6UGYmGqqA" />
+<link rel="apple-touch-icon" sizes="180x180" href="./apple-touch-icon.png" data-page-node-id="DZ3lXVrPNT0L1jR3VsEtBq" />
+<meta name="apple-mobile-web-app-title" content="StarFM" data-page-node-id="ry8bmDxiRNKkGBOHceFP4V" />
+<meta name="apple-mobile-web-app-capable" content="yes" data-page-node-id="cGJaKUrUZzP03FmgH7eDfu" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" data-page-node-id="uhlTdnPuuyguZwfLdaPGQc" />
 
-<script>
-(function() {
-    // 1. 提取内联的 SVG（硬编码颜色，确保脱离 CSS 变量也能渲染）
-    const svgContent = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -40 256 296" width="256" height="256">
-        <path d="M 128 220 C 60 190, 30 120, 30 80 C 30 30, 70 10, 128 10 C 186 10, 226 30, 226 80 C 226 120, 196 190, 128 220 Z" fill="#7c8dff" stroke="#7c8dff" stroke-width="4"/>
-        <path d="M100 40 L 40 -32" stroke="#7c8dff" stroke-width="6" stroke-linecap="round"/>
-        <path d="M156 40 L 216 -32" stroke="#7c8dff" stroke-width="6" stroke-linecap="round"/>
-        <circle cx="40" cy="-32" r="8" fill="#7c8dff"/>
-        <circle cx="216" cy="-32" r="8" fill="#7c8dff"/>
-        <ellipse cx="80" cy="124" rx="28" ry="34" fill="#ffffff" transform="rotate(-12 80 124)"/>
-        <circle cx="84" cy="128" r="14" fill="#1a1a2e" transform="rotate(-12 84 128)"/>
-        <circle cx="78" cy="120" r="5" fill="#ffffff" transform="rotate(-12 78 120)"/>
-        <ellipse cx="176" cy="124" rx="28" ry="34" fill="#ffffff" transform="rotate(12 176 124)"/>
-        <circle cx="172" cy="128" r="14" fill="#1a1a2e" transform="rotate(12 172 128)"/>
-        <circle cx="166" cy="120" r="5" fill="#ffffff" transform="rotate(12 166 120)"/>
-        <path d="M100 172 Q 128 190 156 178" stroke="#1a1a2e" stroke-width="8" stroke-linecap="round" fill="none"/>
-    </svg>`;
-
-    const svgBase64 = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svgContent)));
-
-    // 2. 强制替换浏览器标签页（及 PWA 标题栏）图标
-    document.getElementById('dynamicFavicon').href = svgBase64;
-
-    // 3. 设备识别：移动端退出，继续使用原有的 ./manifest.json（多尺寸 PNG）
-    const ua = navigator.userAgent;
-    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|Mobile|HarmonyOS/i.test(ua) || 
-                     (navigator.maxTouchPoints > 1 && window.innerWidth <= 1024);
-    if (isMobile) return;
-
-    // 4. PC端专属：动态生成只包含 SVG 的 manifest，强行覆盖
-    const pcManifest = {
-        "name": "StarFM",
-        "short_name": "StarFM",
-        "description": "星空调频",
-        "start_url": "./index.html",
-        "display": "standalone",
-        "orientation": "any", 
-        "background_color": "#ffffff",
-        "theme_color": "#7c8dff",
-        "icons": [
-            {
-                "src": svgBase64,
-                "sizes": "any",
-                "type": "image/svg+xml",
-                "purpose": "any"
-            }
-        ]
-    };
-
-    const blob = new Blob([JSON.stringify(pcManifest)], { type: 'application/manifest+json' });
-    const blobUrl = URL.createObjectURL(blob);
-    document.getElementById('manifestLink').href = blobUrl;
-})();
-</script>
+<!-- ===== PWA 清单（相对路径） ===== -->
+<link rel="manifest" href="./manifest.json" data-page-node-id="SiYNVABZCX9n7rtkvfbHyZ" />
 
 <!-- ===== 主题色 ===== -->
 <meta name="theme-color" content="#7c8dff" data-page-node-id="xkJ3gHMoif612DLB0TqaBR" />
